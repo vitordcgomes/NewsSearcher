@@ -6,6 +6,7 @@
 
 
 void Le_Arquivo_Inicial(int argc, char** argv);
+void Le_Conteudo(char* caminho, char* classe);
 
 int main(int argc, char** argv) {
 
@@ -18,6 +19,7 @@ void Le_Arquivo_Inicial(int argc, char** argv) {
     
     if (argc <= 1) {
         printf("ERRO: O diretorio de arquivos de configuracao nao foi informado.\n");
+        // imprimir 'help' posteriormente
         exit(0);
     }
 
@@ -44,10 +46,38 @@ void Le_Arquivo_Inicial(int argc, char** argv) {
 
     printf("\nsucesso!\n\n");
 
+    int i = 0;
+    while(!feof(file)) {
+        char caminho[50];
+        char classe[4];
 
-    //while(!feof(file)) {
-        //fscanf(file, "%[^ ] ", var);
-    //}
+        fscanf(file, "%[^ ] ", caminho);
+        printf("\n%s\n", caminho);
+        fscanf(file, "%[^\n]\n", classe);
+        printf("\n%s\n", classe);
+        //Le_Conteudo(caminho, classe);
+        
+        i++;
+
+    }
 
     fclose(file);
 }
+
+/*
+void Le_Conteudo(char* caminho, char* classe) {
+    FILE* file;
+
+    file = fopen(caminho, "r");
+
+    if (file == NULL) {
+        printf("Nao foi possivel abrir o arquivo de conteudo pelo caminho '%s'\n", caminho);
+        exit(0);
+    }
+
+    while(!feof(file)) {
+
+    }
+
+}
+*/

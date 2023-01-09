@@ -1,16 +1,16 @@
-all: indices.c tads/palavras.c tads/palavras.h tads/documento.c tads/documento.h tads/propriedades.c tads/propriedades.h
-	gcc -c indices.c
+all: indexador.c tads/palavras.c tads/palavras.h tads/documento.c tads/documento.h tads/propriedades.c tads/propriedades.h
+	gcc -c indexador.c
 	gcc -c tads/palavras.c
 	gcc -c tads/documento.c
 	gcc -c tads/propriedades.c
-	gcc -o indices indices.o palavras.o documento.o propriedades.o
+	gcc -o indexador indexador.o palavras.o documento.o propriedades.o
 
 run: 
 	make
-	./indices datasets/tiny/test/1016102006poc.txt tolete.bin 
+	./indexador datasets/tiny/test.txt tolete.bin 
 
 clean:
-	rm -f indices *.o
+	rm -f indexador *.o
 
 valgrind:
-	valgrind ./indices datasets/tiny/test/1016102006poc.txt tolete.bin
+	valgrind ./indexador datasets/tiny/test.txt tolete.bin

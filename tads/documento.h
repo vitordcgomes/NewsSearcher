@@ -1,3 +1,3 @@
 #pragma once
 
-typedef struct documento Documento;
+typedef struct documento* Documento;

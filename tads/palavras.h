@@ -1,6 +1,6 @@
 #pragma once
 
-typedef struct palavras Palavras;
+typedef struct palavras* Palavras;
 
 
 
