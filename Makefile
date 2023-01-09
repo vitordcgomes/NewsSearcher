@@ -1,9 +1,10 @@
-all: indexador.c tads/palavras.c tads/palavras.h tads/documento.c tads/documento.h tads/propriedades.c tads/propriedades.h
+all: indexador.c tads/palavras.c tads/palavras.h tads/documentos.c tads/documentos.h tads/propriedades.c tads/propriedades.h tads/indices.c tads/indices.h
 	gcc -c indexador.c
 	gcc -c tads/palavras.c
-	gcc -c tads/documento.c
+	gcc -c tads/documentos.c
 	gcc -c tads/propriedades.c
-	gcc -o indexador indexador.o palavras.o documento.o propriedades.o
+	gcc -c tads/indices.c
+	gcc -o indexador indexador.o palavras.o documentos.o propriedades.o indices.o
 
 run: 
 	make
