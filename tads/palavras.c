@@ -5,7 +5,7 @@
 
 struct palavras {
     char nome[101];
-    Propriedades p;
+    Propriedades prop;
     double tf_idf;
 };
 
@@ -20,13 +20,14 @@ Palavras* Palavras_vetor_cria (){
  Palavras Palavra_cria (){
 
    Palavras palavra = (Palavras)calloc(1, sizeof(struct palavras));
-   palavra->p = Propriedades_cria();
+   palavra->prop = Propriedades_cria();
    return palavra;
  }
 
- Palavras Palavra_le (Palavras p, FILE* f){
+ Palavras Palavra_le (Palavras p, FILE* f, int ind){
 
    fscanf(f, "%[^ ] ", p->nome);
+  
    return p;
  }
 
@@ -41,6 +42,6 @@ Palavras* Palavras_vetor_cria (){
  }
 
  void Palavras_Libera(Palavras pal) {
-   Propriedades_Libera(pal->p);
+   Propriedades_Libera(pal->prop);
    free(pal);
  }

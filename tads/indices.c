@@ -74,11 +74,11 @@ Indices Le_Arquivo_Inicial(Indices ind, int argc, char** argv) {
         char classe[4];
 
         fscanf(file, "%[^ ] ", caminho);
-        //printf("\n%s\n", caminho);
+        printf("\n%s\n", caminho);
         fscanf(file, "%[^\n]\n", classe);
         //printf("\n%s\n", classe);
         
-        ind = Le_Conteudo(ind, argv, caminho, classe);
+        ind = Le_Conteudo(ind, argv, caminho, classe, i);
         
         i++;
 
@@ -91,7 +91,7 @@ Indices Le_Arquivo_Inicial(Indices ind, int argc, char** argv) {
 }
 
 
-Indices Le_Conteudo(Indices indices, char** argv, char* caminho, char* classe) {
+Indices Le_Conteudo(Indices indices, char** argv, char* caminho, char* classe, int ind) {
     
     //Indices indices = Indices_cria();
 
@@ -100,8 +100,11 @@ Indices Le_Conteudo(Indices indices, char** argv, char* caminho, char* classe) {
 
     for (i; i >= 0; i--) {
         if (argv[1][i] == '/') {
+            //strcpy(caminho_completo, argv[1]);
+            //strcat(caminho_completo, caminho);
             sprintf(caminho_completo, "%s%s", argv[1], caminho);
-            printf("\n\n %s\n\n", caminho_completo);
+            printf("\n\n%s\n\n", caminho_completo);
+            printf("%s\n\n", argv[1]);
             break;
         }
         argv[1][i] = '\0';
@@ -118,8 +121,8 @@ Indices Le_Conteudo(Indices indices, char** argv, char* caminho, char* classe) {
     while(!feof(file)) {
 
         Palavras_realoca (indices);
-        indices->palavras_ind[indices->palavras_usadas] = Palavra_cria ();
-        indices->palavras_ind[indices->palavras_usadas] = Palavra_le (indices->palavras_ind[indices->palavras_usadas], file);
+        indices->palavras_ind[indices->palavras_usadas] = Palavra_cria();
+        indices->palavras_ind[indices->palavras_usadas] = Palavra_le (indices->palavras_ind[indices->palavras_usadas], file, ind);
         indices->palavras_usadas++;
     }
 
