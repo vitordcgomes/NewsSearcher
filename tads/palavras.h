@@ -10,6 +10,7 @@ Palavras* Palavras_vetor_cria ();
 Palavras Palavra_cria ();
 Palavras Palavra_le (Palavras p, FILE* f);
 void Palavras_imprime (Palavras* p, int qtd);
+void Palavras_Libera(Palavras pal);
 
 
 

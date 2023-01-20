@@ -19,15 +19,15 @@ Palavras* Palavras_vetor_cria (){
 
  Palavras Palavra_cria (){
 
-    Palavras palavra = (Palavras)calloc(1, sizeof(struct palavras));
-    palavra->p = Propriedades_cria();
-    return palavra;
+   Palavras palavra = (Palavras)calloc(1, sizeof(struct palavras));
+   palavra->p = Propriedades_cria();
+   return palavra;
  }
 
  Palavras Palavra_le (Palavras p, FILE* f){
 
-    fscanf(f, "%[^ ] ", p->nome);
-    return p;
+   fscanf(f, "%[^ ] ", p->nome);
+   return p;
  }
 
  void Palavras_imprime (Palavras* p, int qtd){
@@ -38,4 +38,9 @@ Palavras* Palavras_vetor_cria (){
     
     printf ("\n\n");
 
+ }
+
+ void Palavras_Libera(Palavras pal) {
+   Propriedades_Libera(pal->p);
+   free(pal);
  }

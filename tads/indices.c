@@ -25,7 +25,7 @@ Indices Indices_cria (){
 
     Indices indice = (Indices)calloc(1, sizeof(struct indices));
 
-    indice->palavras_ind = Palavras_vetor_cria ();
+    indice->palavras_ind = Palavras_vetor_cria();
     indice->documentos_ind = Documentos_vetor_cria();
 
     indice->palavras_alocadas = QTD_INICIAL;
@@ -35,7 +35,7 @@ Indices Indices_cria (){
 }
 
 
-void Le_Arquivo_Inicial(int argc, char** argv) {
+Indices Le_Arquivo_Inicial(Indices ind, int argc, char** argv) {
     
     if (argc <= 1) {
         printf("ERRO: O diretorio de arquivos de configuracao nao foi informado.\n");
@@ -74,11 +74,11 @@ void Le_Arquivo_Inicial(int argc, char** argv) {
         char classe[4];
 
         fscanf(file, "%[^ ] ", caminho);
-        printf("\n%s\n", caminho);
+        //printf("\n%s\n", caminho);
         fscanf(file, "%[^\n]\n", classe);
-        printf("\n%s\n", classe);
+        //printf("\n%s\n", classe);
         
-        Le_Conteudo(caminho, classe);
+        ind = Le_Conteudo(ind, argv, caminho, classe);
         
         i++;
 
@@ -86,15 +86,27 @@ void Le_Arquivo_Inicial(int argc, char** argv) {
 
     printf ("\n\n\nQTD: %d\n\n\n", i);
     fclose(file);
+
+    return ind;
 }
 
 
-void Le_Conteudo(char* caminho, char* classe) {
-
-    Indices indices = Indices_cria ();
+Indices Le_Conteudo(Indices indices, char** argv, char* caminho, char* classe) {
     
+    //Indices indices = Indices_cria();
+
+    int i = strlen(argv[1]);
     char caminho_completo[QTD_INICIAL];
-    sprintf (caminho_completo, "datasets/tiny/%s", caminho);
+
+    for (i; i >= 0; i--) {
+        if (argv[1][i] == '/') {
+            sprintf(caminho_completo, "%s%s", argv[1], caminho);
+            printf("\n\n %s\n\n", caminho_completo);
+            break;
+        }
+        argv[1][i] = '\0';
+    }
+
     FILE* file = fopen(caminho_completo, "r");
     
 
@@ -111,8 +123,11 @@ void Le_Conteudo(char* caminho, char* classe) {
         indices->palavras_usadas++;
     }
 
-    //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
+    Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
 
+    fclose(file);
+    
+    return indices;
 }
 
 
@@ -128,4 +143,18 @@ void Documentos_realoca (Indices indices){
         indices->documentos_alocados*=2;
         indices->documentos_ind = (Documentos*)realloc(indices->documentos_ind, indices->documentos_alocados* sizeof(Documentos));
     }
+}
+
+void Indices_Libera(Indices ind) {
+
+    for (int i = 0; i < ind->documentos_usados; i++) {
+        Documentos_Libera(ind->documentos_ind[i]);
+    }
+
+    for (int i = 0; i < ind->palavras_usadas; i++) {
+        Palavras_Libera(ind->palavras_ind[i]);
+    }
+    free(ind->documentos_ind);
+    free(ind->palavras_ind);
+    free(ind);
 }

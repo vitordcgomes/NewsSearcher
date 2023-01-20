@@ -14,4 +14,5 @@ clean:
 	rm -f indexador *.o
 
 valgrind:
-	valgrind ./indexador datasets/tiny/test.txt tolete.bin
+	make
+	valgrind --leak-check=full --show-leak-kinds=all ./indexador datasets/tiny/test.txt tolete.bin

@@ -9,3 +9,7 @@ Propriedades Propriedades_cria(){
     Propriedades p = (Propriedades)calloc(1, sizeof(struct propriedades));
     return p;
 }
+
+void Propriedades_Libera(Propriedades p) {
+    free(p);
+}

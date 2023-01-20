@@ -7,8 +7,13 @@
 
 int main(int argc, char** argv) {
 
-    Le_Arquivo_Inicial(argc, argv);
+    Indices ind = Indices_cria();
+    
+    ind = Le_Arquivo_Inicial(ind, argc, argv);
 
+    //ind = Organiza_Vetor(ind);
+
+    Indices_Libera(ind);
     return 0;
 }
 

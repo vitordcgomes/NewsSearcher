@@ -25,3 +25,8 @@ Documentos* Documentos_vetor_cria(){
     documento->p = Propriedades_cria();
     return documento;
  }
+
+void Documentos_Libera(Documentos doc) {
+    Propriedades_Libera(doc->p);
+    free(doc);
+}
