@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "indices.h"
+#include "propriedades.h"
 #include "documentos.h"
 #include "palavras.h"
 
@@ -127,22 +128,14 @@ Indices Le_Conteudo(Indices indices, char** argv, char* caminho, char* classe, i
         //Indexador_Documentos ();
 
         Palavras_realoca (indices);
-        //indices->palavras_ind = Palavra_le (indices->palavras_ind, file, ind, indices->palavras_usadas);
-        
-        //indices->palavras_ind[indices->palavras_usadas] = Palavra_cria();
-        //indices->palavras_ind[indices->palavras_usadas] = Palavra_le (indices->palavras_ind[indices->palavras_usadas], file, ind, indices->palavras_usadas+1);
-        //indices->palavras_ind[indices->palavras_usadas] = Palavra_le (indices->palavras_ind, file, ind, indices->palavras_usadas);
-        
+
         int palavra_nova = Palavra_le (indices->palavras_ind, file, ind, indices->palavras_usadas);
         if (palavra_nova){
              indices->palavras_usadas++;
-             printf("\nPalavra nova %d\n", indices->palavras_usadas);
+             //printf("\nPalavra nova %d\n", indices->palavras_usadas);
         }
-           
-           
         }
-
-    Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
+            Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
 
     fclose(file);
     
