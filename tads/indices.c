@@ -15,6 +15,7 @@ struct indices {
 
     int palavras_usadas;
     int palavras_alocadas;
+
     int documentos_usados;
     int documentos_alocados;
 };
@@ -95,19 +96,21 @@ Indices Le_Conteudo(Indices indices, char** argv, char* caminho, char* classe, i
     
     //Indices indices = Indices_cria();
 
-    int i = strlen(argv[1]);
-    char caminho_completo[QTD_INICIAL];
+    //modificando caminho
+    
+    char caminho_completo[1000];
+    strcpy(caminho_completo, argv[1]);
+    int i = strlen(caminho_completo);
 
     for (i; i >= 0; i--) {
-        if (argv[1][i] == '/') {
-            //strcpy(caminho_completo, argv[1]);
-            //strcat(caminho_completo, caminho);
-            sprintf(caminho_completo, "%s%s", argv[1], caminho);
+        if (caminho_completo[i] == '/') {
+
+            sprintf(caminho_completo, "%s%s", caminho_completo, caminho);
             printf("\n\n%s\n\n", caminho_completo);
             printf("%s\n\n", argv[1]);
             break;
         }
-        argv[1][i] = '\0';
+        caminho_completo[i] = '\0';
     }
 
     FILE* file = fopen(caminho_completo, "r");
@@ -119,12 +122,25 @@ Indices Le_Conteudo(Indices indices, char** argv, char* caminho, char* classe, i
     }
 
     while(!feof(file)) {
+        
+        //Indexador_Palavras ();
+        //Indexador_Documentos ();
 
         Palavras_realoca (indices);
-        indices->palavras_ind[indices->palavras_usadas] = Palavra_cria();
-        indices->palavras_ind[indices->palavras_usadas] = Palavra_le (indices->palavras_ind[indices->palavras_usadas], file, ind);
-        indices->palavras_usadas++;
-    }
+        //indices->palavras_ind = Palavra_le (indices->palavras_ind, file, ind, indices->palavras_usadas);
+        
+        //indices->palavras_ind[indices->palavras_usadas] = Palavra_cria();
+        //indices->palavras_ind[indices->palavras_usadas] = Palavra_le (indices->palavras_ind[indices->palavras_usadas], file, ind, indices->palavras_usadas+1);
+        //indices->palavras_ind[indices->palavras_usadas] = Palavra_le (indices->palavras_ind, file, ind, indices->palavras_usadas);
+        
+        int palavra_nova = Palavra_le (indices->palavras_ind, file, ind, indices->palavras_usadas);
+        if (palavra_nova){
+             indices->palavras_usadas++;
+             printf("\nPalavra nova %d\n", indices->palavras_usadas);
+        }
+           
+           
+        }
 
     Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
 

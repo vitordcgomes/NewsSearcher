@@ -7,9 +7,14 @@
 struct documentos {
     char nome[101];
     char classe[4];
+    
     Propriedades p;
+
     double* tf_idf;
     int qtd_palavras;
+
+    int prop_alocado;
+    int prop_usado;
 };
 
 Documentos* Documentos_vetor_cria(){
@@ -22,7 +27,7 @@ Documentos* Documentos_vetor_cria(){
  Documentos Documento_cria (){
 
     Documentos documento = (Documentos)calloc(1, sizeof(struct documentos));
-    documento->p = Propriedades_cria();
+    //documento->p = Propriedades_cria();
     return documento;
  }
 

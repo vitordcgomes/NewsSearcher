@@ -8,7 +8,7 @@ typedef struct palavras* Palavras;
 
 Palavras* Palavras_vetor_cria ();
 Palavras Palavra_cria ();
-Palavras Palavra_le (Palavras p, FILE* f, int ind);
+int Palavra_le (Palavras* pal, FILE* f, int ind, int qtd);
 void Palavras_imprime (Palavras* p, int qtd);
 void Palavras_Libera(Palavras pal);
 
