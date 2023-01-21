@@ -16,3 +16,7 @@ clean:
 valgrind:
 	make
 	valgrind --leak-check=full --show-leak-kinds=all ./indexador datasets/tiny/test.txt tolete.bin
+
+gdb:
+	make
+	gdb ./indexador datasets/tiny/test.txt tolete.bin 

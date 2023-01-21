@@ -11,6 +11,6 @@ Palavras Palavra_cria ();
 int Palavra_le (Palavras* pal, FILE* f, int ind, int qtd);
 void Palavras_imprime (Palavras* p, int qtd);
 void Palavras_Libera(Palavras pal);
-
+void Propriedades_realoca (Palavras p);
 
 
