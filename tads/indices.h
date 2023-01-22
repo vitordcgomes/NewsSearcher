@@ -3,8 +3,8 @@
 typedef struct indices* Indices;
 
 Indices Indices_cria ();
-Indices Le_Arquivo_Inicial(Indices ind, int argc, char** argv);
-Indices Le_Conteudo(Indices indices, char** argv, char* caminho, char* classe, int ind);
+Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv);
+Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe, int ind);
 void Palavras_realoca (Indices indices);
 void Documentos_realoca (Indices indices);
 void Indices_Libera(Indices ind);

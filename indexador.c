@@ -8,12 +8,9 @@
 int main(int argc, char** argv) {
 
     Indices ind = Indices_cria();
-    
-    ind = Le_Arquivo_Inicial(ind, argc, argv);
-
-    //ind = Organiza_Vetor(ind);
-
+    ind = Le_Arquivo_Principal(ind, argc, argv);
     Indices_Libera(ind);
+
     return 0;
 }
 

@@ -21,7 +21,11 @@ Propriedades Propriedades_cria (int ind){
 }
 
 
-void Propriedades_Libera(Propriedades p) {
+void Propriedades_Libera(Propriedades* p, int qtd) {
+    for (int i=0; i<qtd; i++){
+        free(p[i]);
+    }
+    
     free(p);
 }
 
@@ -41,15 +45,11 @@ void Propriedades_Imprime (Propriedades* p, int qtd){
 
 int Propriedades_busca (Propriedades* p, int ind_doc, int qtd_prop){
 
-    //printf ("\n\nQTD PROP: %d\tIND: %d!", qtd_prop, ind_doc);
 
     for (int i=0; i<qtd_prop; i++){
-        //printf ("entrei!");
 
         if (p[i]->indice == ind_doc){
-            //printf ("\nindice doc: %d, indice vetor: %d\n", p[i]->indice, i);
             p[i]->frequencia++;
-            //printf ("freq: %d\n", p[i]->frequencia);
             return i;
         }
     }
