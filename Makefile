@@ -19,4 +19,5 @@ valgrind:
 
 gdb:
 	make
-	gdb ./indexador datasets/tiny/test.txt tolete.bin 
+	gdb ./indexador 
+	r datasets/tiny/train.txt tolete.bin 

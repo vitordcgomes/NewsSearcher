@@ -47,7 +47,7 @@ Palavras* Palavras_vetor_cria (){
       //se o indice do documento não existir no vetor de propriedades, ou seja, a função retornar <0, criamos outra "casinha" para o novo indice
       if (indice_vetor < 0){
         if (pal[i]->prop_alocado == pal[i]->prop_usado)
-          Propriedades_realoca (pal[ind_palavra]);
+          Propriedades_realoca (pal[i]);
           
         pal[i]->prop[pal[i]->prop_usado] = Propriedades_cria (ind_doc);
         pal[i]->prop_usado++;

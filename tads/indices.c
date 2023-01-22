@@ -40,7 +40,7 @@ Indices Indices_cria (){
 Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv) {
     
     if (argc <= 1) {
-        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O diretorio de arquivos de configuracao nao foi informado.\n\n");
+        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O diretorio de arquivos de configuracao nao foi informado.\n");
         printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
         exit(0);
     }
@@ -78,10 +78,10 @@ Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv) {
         char classe[4];
 
         fscanf(file, "%[^ ] ", caminho);
-        printf("\n%s\n", caminho);
+        //printf("\n%s\n", caminho);
 
         fscanf(file, "%[^\n]\n", classe);
-        printf("\n%s\n", classe);
+        //printf("\n%s\n", classe);
 
         //Indexador de documentos:
             Documentos_realoca(ind);
@@ -89,7 +89,7 @@ Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv) {
             ind->documentos_usados++;
 
             //Indexador de palavras:
-                ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
+            ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
             
     }
 
@@ -115,15 +115,14 @@ Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe,
         if (caminho_completo[i] == '/') {
 
             sprintf(caminho_completo, "%s%s", caminho_completo, caminho);
-            printf("\n\n%s\n\n", caminho_completo);
-            printf("%s\n\n", argv[1]);
+            //printf("\n\n%s\n\n", caminho_completo);
+            //printf("%s\n\n", argv[1]);
             break;
         }
         caminho_completo[i] = '\0';
     }
 
     FILE* file = fopen(caminho_completo, "r");
-    printf ("Oi!");
     
 
     if (file == NULL) {
@@ -138,7 +137,7 @@ Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe,
 
         int palavra_nova = Palavra_le (indices->palavras_ind, file, ind, indices->palavras_usadas);
         if (palavra_nova){
-            Documentos_Atualiza (indices->palavras_usadas, indices->documentos_ind, ind);
+            //Documentos_Atualiza (indices->palavras_usadas, indices->documentos_ind, ind);
             indices->palavras_usadas++;
         }
         
@@ -159,7 +158,7 @@ void Palavras_realoca (Indices indices){
 }
 
 void Documentos_realoca (Indices indices){
-    if (indices->documentos_usados == indices->documentos_usados){
+    if (indices->documentos_usados == indices->documentos_alocados){
         indices->documentos_alocados*=2;
         indices->documentos_ind = (Documentos*)realloc(indices->documentos_ind, indices->documentos_alocados* sizeof(Documentos));
     }
