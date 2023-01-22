@@ -8,7 +8,7 @@ all: indexador.c tads/palavras.c tads/palavras.h tads/documentos.c tads/document
 
 run: 
 	make
-	./indexador datasets/tiny/test.txt tolete.bin 
+	./indexador datasets/tiny/test.txt tolete.bin
 
 clean:
 	rm -f indexador *.o

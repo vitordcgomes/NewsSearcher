@@ -37,23 +37,27 @@ Indices Indices_cria (){
 }
 
 
-Indices Le_Arquivo_Inicial(Indices ind, int argc, char** argv) {
+Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv) {
     
     if (argc <= 1) {
-        printf("ERRO: O diretorio de arquivos de configuracao nao foi informado.\n");
-        // imprimir 'help' posteriormente
+        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O diretorio de arquivos de configuracao nao foi informado.\n\n");
+        printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
         exit(0);
     }
 
     
     else if (argc == 2) {
-        printf("ERRO: O nome do arquivo de saida nao foi informado.\n");
+        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O nome do arquivo de saida nao foi informado.\n");
+        printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
+
         exit(0);
     }
     
 
     else if (argc > 3) {
-        printf("ERRO: O numero de entradas excedeu o limite de 2 arquivos.\n");
+        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O numero de entradas excedeu seu limite.\n");
+        printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
+
         exit(0);
     }
     
@@ -62,13 +66,11 @@ Indices Le_Arquivo_Inicial(Indices ind, int argc, char** argv) {
     file = fopen(argv[1], "r");
 
     if (file == NULL) {
-        printf("Nao foi possivel abrir o arquivo pelo caminho '%s'\n", argv[1]);
+        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m Nao foi possivel abrir o arquivo pelo caminho '%s'\n", argv[1]);
         exit(0);
     }
 
     printf("\nsucesso!\n\n");
-
-    int i = 0;
 
     while(!feof(file)) {
 
@@ -77,28 +79,34 @@ Indices Le_Arquivo_Inicial(Indices ind, int argc, char** argv) {
 
         fscanf(file, "%[^ ] ", caminho);
         printf("\n%s\n", caminho);
-        fscanf(file, "%[^\n]\n", classe);
-        //printf("\n%s\n", classe);
-        
-        ind = Le_Conteudo(ind, argv, caminho, classe, i);
-        
-        i++;
 
+        fscanf(file, "%[^\n]\n", classe);
+        printf("\n%s\n", classe);
+
+        //Indexador de documentos:
+            Documentos_realoca(ind);
+            ind->documentos_ind[ind->documentos_usados] = Documentos_cria (caminho, classe);
+            ind->documentos_usados++;
+
+            //Indexador de palavras:
+                ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
+            
     }
 
-    printf ("\n\n\nQTD: %d\n\n\n", i);
+    printf ("\n\n\nQTD: %d\n\n\n", ind->documentos_usados);
+
+    Documentos_imprime (ind->documentos_usados, ind->documentos_ind);
+
     fclose(file);
 
     return ind;
 }
 
 
-Indices Le_Conteudo(Indices indices, char** argv, char* caminho, char* classe, int ind) {
+Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe, int ind) {
     
-    //Indices indices = Indices_cria();
 
     //modificando caminho
-    
     char caminho_completo[1000];
     strcpy(caminho_completo, argv[1]);
     int i = strlen(caminho_completo);
@@ -115,28 +123,28 @@ Indices Le_Conteudo(Indices indices, char** argv, char* caminho, char* classe, i
     }
 
     FILE* file = fopen(caminho_completo, "r");
+    printf ("Oi!");
     
 
     if (file == NULL) {
-        printf("Nao foi possivel abrir o arquivo de conteudo pelo caminho '%s'\n", caminho_completo);
+        printf("\033[91mNao foi possivel abrir o arquivo de conteudo pelo caminho '%s'\n\033[0m", caminho_completo);
         exit(0);
     }
 
     while(!feof(file)) {
         
-        //Indexador_Palavras ();
-        //Indexador_Documentos ();
-
+        //Indexador de palavras:
         Palavras_realoca (indices);
 
         int palavra_nova = Palavra_le (indices->palavras_ind, file, ind, indices->palavras_usadas);
         if (palavra_nova){
-             indices->palavras_usadas++;
-             //printf("\nPalavra nova %d\n", indices->palavras_usadas);
+            Documentos_Atualiza (indices->palavras_usadas, indices->documentos_ind, ind);
+            indices->palavras_usadas++;
         }
-        }
-            Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
-
+        
+    }
+    
+    //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
     fclose(file);
     
     return indices;
@@ -166,7 +174,10 @@ void Indices_Libera(Indices ind) {
     for (int i = 0; i < ind->palavras_usadas; i++) {
         Palavras_Libera(ind->palavras_ind[i]);
     }
+
     free(ind->documentos_ind);
     free(ind->palavras_ind);
     free(ind);
 }
+
+
