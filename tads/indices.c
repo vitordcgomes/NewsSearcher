@@ -123,6 +123,7 @@ Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe,
     }
 
     FILE* file = fopen(caminho_completo, "r");
+    printf ("Oi!");
     
 
     if (file == NULL) {
