@@ -60,3 +60,18 @@ int Propriedades_busca (Propriedades* p, int ind_doc, int qtd_prop){
 void Propriedade_Atualiza_Freq (Propriedades* p, int indice){
     p[indice]->frequencia++;
 }
+
+int Propriedades_Retorna_Ind(Propriedades* p, int ind) {
+    return p[ind]->indice;
+}
+
+int Propriedades_Retorna_Freq(Propriedades* p, int ind) {
+    return p[ind]->indice;
+}
+
+Propriedades* Propriedades_Doc_Atribui(Propriedades* p, int ind_vet, int ind_pal, int freq_pal) {
+    p[ind_vet]->indice = ind_pal;
+    p[ind_vet]->frequencia = freq_pal;
+
+    return p;
+}

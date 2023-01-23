@@ -179,4 +179,24 @@ void Indices_Libera(Indices ind) {
     free(ind);
 }
 
+void Documentos_Indexador(Indices ind) {
+    for (int i = 0; i < ind->palavras_usadas; i++) {
+
+        // pega o indice do doc e a frequencia de cada palavra
+
+        int prop_usado = Palavras_Retorna_Prop_Usado(ind->palavras_ind[i]); //qtd de docs q a palavra se encontra
+        int ind_doc[prop_usado];
+        int freq_pal[prop_usado];
+
+        for (int j = 0; j < prop_usado; j++) {
+
+            ind_doc[j] = Palavras_Retorna_Ind(ind->palavras_ind[i], j);
+            freq_pal[j] = Palavras_Retorna_Freq(ind->palavras_ind[i], j);
+
+            // atribui essas informações dentro da struct documentos
+            ind->documentos_ind[ind_doc[j]] = Documentos_Atribui(ind->documentos_ind[ind_doc[j]], i, freq_pal);
+        }
+    }
+}
+
 

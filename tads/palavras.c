@@ -46,12 +46,14 @@ Palavras* Palavras_vetor_cria (){
       
       //se o indice do documento não existir no vetor de propriedades, ou seja, a função retornar <0, criamos outra "casinha" para o novo indice
       if (indice_vetor < 0){
-        if (pal[i]->prop_alocado == pal[i]->prop_usado)
+        if (pal[i]->prop_alocado == pal[i]->prop_usado) {
           Propriedades_realoca (pal[i]);
+        }
           
         pal[i]->prop[pal[i]->prop_usado] = Propriedades_cria (ind_doc);
         pal[i]->prop_usado++;
-      }     
+      }  
+
       return 0; //retornar 0 indica que a palavra lida já existia no vetor.
     
     }
@@ -62,7 +64,7 @@ Palavras* Palavras_vetor_cria (){
   strcpy(pal[ind_palavra]->nome, nome);
   pal[ind_palavra]->prop[pal[ind_palavra]->prop_usado] = Propriedades_cria (ind_doc);
   pal[ind_palavra]->prop_usado++;
-
+  
   
    return 1; //retornar 1 significa que foi criada uma palavra nova.
  }
@@ -88,3 +90,15 @@ Palavras* Palavras_vetor_cria (){
    Propriedades_Libera(pal->prop, pal->prop_usado);
    free(pal);
  }
+
+int Palavras_Retorna_Ind(Palavras p, int ind) {
+  return Propriedades_Retorna_Ind(p->prop, ind);
+}
+
+int Palavras_Retorna_Freq(Palavras p, int ind) {
+  return Propriedades_Retorna_Freq(p->prop, ind);
+}
+
+int Palavras_Retorna_Prop_Usado(Palavras p) {
+  return p->prop_usado;
+}

@@ -38,11 +38,6 @@ Documentos* Documentos_vetor_cria(){
     return doc;
  }
 
- void Documentos_Atualiza (){
-
- }
- 
-
 void Documentos_Libera(Documentos doc) {
     Propriedades_Libera(doc->prop, doc->prop_usado);
     free(doc);
@@ -53,4 +48,12 @@ void Documentos_imprime(int qtd, Documentos* docs){
     for (int i=0; i<qtd; i++){
         printf ("DOC: %d, NOME: %s, CLASSE: %s\n", i, docs[i]->nome, docs[i]->classe);
     }
+}
+
+Documentos Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal) {
+    doc->prop = Propriedades_Doc_Atribui(doc->prop, doc->prop_usado, ind_pal, freq_pal);
+
+    doc->prop_usado++;
+
+    return doc;
 }
