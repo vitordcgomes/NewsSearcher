@@ -9,7 +9,10 @@ int main(int argc, char** argv) {
 
     Indices ind = Indices_cria();
     ind = Le_Arquivo_Principal(ind, argc, argv);
+    printf("\n\ncheguei1\n\n");
     Documentos_Indexador(ind);
+    printf("\n\ncheguei2\n\n");
+    Imprime_Tudo(ind);
     Indices_Libera(ind);
 
     return 0;

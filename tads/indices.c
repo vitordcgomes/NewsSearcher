@@ -137,7 +137,8 @@ Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe,
 
         int palavra_nova = Palavra_le (indices->palavras_ind, file, ind, indices->palavras_usadas);
         if (palavra_nova){
-            //Documentos_Atualiza (indices->palavras_usadas, indices->documentos_ind, ind);
+            //indices->documentos_ind = Documentos_Atualiza (indices->documentos_ind, ind);
+            //Documentos_Atualiza (indices->documentos_ind, ind);
             indices->palavras_usadas++;
         }
         
@@ -192,11 +193,17 @@ void Documentos_Indexador(Indices ind) {
 
             ind_doc[j] = Palavras_Retorna_Ind(ind->palavras_ind[i], j);
             freq_pal[j] = Palavras_Retorna_Freq(ind->palavras_ind[i], j);
-
+            
+            printf("\nj: %d\n", j);
             // atribui essas informações dentro da struct documentos
-            ind->documentos_ind[ind_doc[j]] = Documentos_Atribui(ind->documentos_ind[ind_doc[j]], i, freq_pal);
+            //ind->documentos_ind[ind_doc[j]] = Documentos_Atribui(ind->documentos_ind[ind_doc[j]], i, freq_pal[j]);
+            Documentos_Atribui(ind->documentos_ind[ind_doc[j]], i, freq_pal[j]);
         }
     }
 }
 
+void Imprime_Tudo(Indices indices) {
+    Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
+    Documentos_imprime(indices->documentos_usados, indices->documentos_ind);
+}
 

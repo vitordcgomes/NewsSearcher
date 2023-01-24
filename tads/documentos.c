@@ -12,6 +12,7 @@ struct documentos {
 
     double* tf_idf;
 
+    int qtd_palavras;
     int prop_alocado;
     int prop_usado;
 };
@@ -34,6 +35,7 @@ Documentos* Documentos_vetor_cria(){
 
     doc->prop_alocado = QTD_INICIAL;
     doc->prop_usado = 0;
+    doc->qtd_palavras = 0;
 
     return doc;
  }
@@ -48,12 +50,37 @@ void Documentos_imprime(int qtd, Documentos* docs){
     for (int i=0; i<qtd; i++){
         printf ("DOC: %d, NOME: %s, CLASSE: %s\n", i, docs[i]->nome, docs[i]->classe);
     }
+
+    for (int i = 0; i < qtd; i++) {
+        //Propriedades_Documentos_Imprime(docs[i]->prop, docs[i]->prop_usado);
+    }
 }
 
-Documentos Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal) {
+void Documentos_Propriedades_Realoca(Documentos doc) {
+    doc->prop_alocado*= 2;
+    doc->prop = (Propriedades*)realloc(doc->prop, doc->prop_alocado* sizeof(Propriedades));
+}
+
+void Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal) {
+
+    if(doc->prop_usado == doc->prop_alocado) {
+        Documentos_Propriedades_Realoca(doc);
+    }
+
+    printf("\nprop_usado: %d\nprop_alocado: %d\nqtd_palavras: %d\n\n", doc->prop_usado, doc->prop_alocado, doc->qtd_palavras);
+    doc->prop[doc->prop_usado] = Documentos_Propriedade_Cria();
+
+    //int i = 1;
+    //printf("\n\nTESTE\n\n");
     doc->prop = Propriedades_Doc_Atribui(doc->prop, doc->prop_usado, ind_pal, freq_pal);
 
     doc->prop_usado++;
 
-    return doc;
+    //return doc;
+}
+
+void Documentos_Atualiza(Documentos* doc, int ind) {
+    doc[ind]->qtd_palavras++;
+
+    //return doc;
 }

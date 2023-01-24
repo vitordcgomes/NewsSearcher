@@ -9,3 +9,4 @@ void Palavras_realoca (Indices indices);
 void Documentos_realoca (Indices indices);
 void Indices_Libera(Indices ind);
 void Documentos_Indexador(Indices ind);
+void Imprime_Tudo(Indices indices);

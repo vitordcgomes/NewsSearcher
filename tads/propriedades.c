@@ -31,7 +31,7 @@ void Propriedades_Libera(Propriedades* p, int qtd) {
 
 void Propriedades_Imprime (Propriedades* p, int qtd){
     
-    if (qtd > 1){
+    //if (qtd > 1){
 
     
     for (int i=0; i<qtd; i++){
@@ -39,7 +39,7 @@ void Propriedades_Imprime (Propriedades* p, int qtd){
     }
     
     printf ("\n\n");
-    }
+    //}
 
  }
 
@@ -70,8 +70,27 @@ int Propriedades_Retorna_Freq(Propriedades* p, int ind) {
 }
 
 Propriedades* Propriedades_Doc_Atribui(Propriedades* p, int ind_vet, int ind_pal, int freq_pal) {
+    //p[ind_vet] = Propriedades_cria(ind_vet);
     p[ind_vet]->indice = ind_pal;
     p[ind_vet]->frequencia = freq_pal;
+
+    printf("ind: %d; freq: %d\n", p[ind_vet]->indice, p[ind_vet]->frequencia);
+
+    return p;
+}
+
+void Propriedades_Documentos_Imprime(Propriedades* p, int qtd) {
+
+    for (int i = 0; i < qtd; i++) {
+        printf("ind_pal: %d; freq: %d\n", p[i]->indice, p[i]->frequencia);
+
+    }
+    
+    printf("\n\n");
+}
+
+Propriedades Documentos_Propriedade_Cria() {
+    Propriedades p = (Propriedades)calloc(1, sizeof(struct propriedades));
 
     return p;
 }
