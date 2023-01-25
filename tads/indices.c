@@ -83,6 +83,8 @@ Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv) {
                 ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
             
             ind->documentos_usados++;
+            ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
+            ind->documentos_usados++;
     }
 
     //Palavras_imprime (ind->palavras_ind, ind->palavras_usadas);
@@ -111,6 +113,8 @@ Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe,
     }
 
     FILE* file = fopen(caminho_completo, "r");
+
+    //printf("\n\n%s\n\n", caminho_completo);
     
 
     if (file == NULL) {
@@ -181,10 +185,12 @@ void Documentos_Indexador(Indices ind) {
             ind->documentos_ind[ind_doc] = Documentos_Atribui(ind->documentos_ind[ind_doc], i, freq_pal);
         }
     }
+    
 }
 
 void Imprime_Tudo(Indices indices) {
-    Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
+    //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
     Documentos_imprime(indices->documentos_usados, indices->documentos_ind);
+    Palavras_imprime_uma(indices->palavras_ind, 1157);
 }
 

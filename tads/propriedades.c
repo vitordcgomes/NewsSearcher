@@ -33,7 +33,7 @@ void Propriedades_Libera(Propriedades* p, int qtd) {
 void Propriedades_Imprime (Propriedades* p, int qtd){
     
     for (int i=0; i<qtd; i++){
-        printf ("Doc: %d; Freq: %d\n", p[i]->indice, p[i]->frequencia);
+        printf ("Doc: %d; Freq: %d\n\t", p[i]->indice, p[i]->frequencia);
     }
     
     printf ("\n\n");
@@ -63,6 +63,7 @@ int Propriedades_Retorna_Ind(Propriedades* p, int ind) {
 }
 
 int Propriedades_Retorna_Freq(Propriedades* p, int ind) {
+    return p[ind]->frequencia;
     return p[ind]->frequencia;
 }
 

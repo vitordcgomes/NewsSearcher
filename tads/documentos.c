@@ -44,11 +44,14 @@ void Documentos_imprime(int qtd, Documentos* docs){
 
     for (int i=0; i<qtd; i++){
         printf ("DOC: %d, NOME: %s, CLASSE: %s\n", i, docs[i]->nome, docs[i]->classe);
+        Propriedades_Documentos_Imprime(docs[i]->prop, docs[i]->prop_usado);
     }
 
     for (int i = 0; i < qtd; i++) {
         Propriedades_Documentos_Imprime(docs[i]->prop, docs[i]->prop_usado);
     }
+
+    
 }
 
 void Documentos_Propriedades_Realoca(Documentos doc) {
