@@ -4,6 +4,7 @@
 struct propriedades {
     int frequencia;
     int indice;
+    int tf_idf;
 };
 
 Propriedades* Propriedades_vetor_cria(){
@@ -31,15 +32,11 @@ void Propriedades_Libera(Propriedades* p, int qtd) {
 
 void Propriedades_Imprime (Propriedades* p, int qtd){
     
-    //if (qtd > 1){
-
-    
     for (int i=0; i<qtd; i++){
         printf ("Doc: %d; Freq: %d\n\t", p[i]->indice, p[i]->frequencia);
     }
     
     printf ("\n\n");
-    //}
 
  }
 
@@ -67,15 +64,13 @@ int Propriedades_Retorna_Ind(Propriedades* p, int ind) {
 
 int Propriedades_Retorna_Freq(Propriedades* p, int ind) {
     return p[ind]->frequencia;
+    return p[ind]->frequencia;
 }
 
 Propriedades Propriedades_Doc_Atribui(Propriedades p, int ind_vet, int ind_pal, int freq_pal) {
-    //p[ind_vet] = Propriedades_cria(ind_vet);
-    
+
     p->indice = ind_pal;
     p->frequencia = freq_pal;
-
-    //printf("ind: %d; freq: %d\n", p->indice, p->frequencia);
 
     return p;
 }
@@ -83,8 +78,7 @@ Propriedades Propriedades_Doc_Atribui(Propriedades p, int ind_vet, int ind_pal, 
 void Propriedades_Documentos_Imprime(Propriedades* p, int qtd) {
 
     for (int i = 0; i < qtd; i++) {
-        printf("ind_pal: %d; freq: %d\n", p[i]->indice, p[i]->frequencia);
-
+        printf("i: %d; ind_pal: %d; freq: %d\n",i, p[i]->indice, p[i]->frequencia);
     }
     
     printf("\n\n");

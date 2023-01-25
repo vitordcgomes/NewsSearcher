@@ -45,7 +45,6 @@ Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv) {
         exit(0);
     }
 
-    
     else if (argc == 2) {
         printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O nome do arquivo de saida nao foi informado.\n");
         printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
@@ -53,7 +52,6 @@ Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv) {
         exit(0);
     }
     
-
     else if (argc > 3) {
         printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O numero de entradas excedeu seu limite.\n");
         printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
@@ -62,7 +60,6 @@ Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv) {
     }
     
     FILE *file;
-
     file = fopen(argv[1], "r");
 
     if (file == NULL) {
@@ -70,31 +67,27 @@ Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv) {
         exit(0);
     }
 
-    printf("\nsucesso!\n\n");
-
     while(!feof(file)) {
 
         char caminho[50];
         char classe[4];
 
         fscanf(file, "%[^ ] ", caminho);
-        printf("\n%s\n", caminho);
-
         fscanf(file, "%[^\n]\n", classe);
-        //printf("\n%s\n", classe);
 
         //Indexador de documentos:
             Documentos_realoca(ind);
             ind->documentos_ind[ind->documentos_usados] = Documentos_cria (caminho, classe);
-            
 
             //Indexador de palavras:
+                ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
+            
+            ind->documentos_usados++;
             ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
             ind->documentos_usados++;
     }
 
-    printf ("\n\n\nQTD: %d\n\n\n", ind->documentos_usados);
-
+    //Palavras_imprime (ind->palavras_ind, ind->palavras_usadas);
     //Documentos_imprime (ind->documentos_usados, ind->documentos_ind);
 
     fclose(file);
@@ -113,10 +106,7 @@ Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe,
 
     for (i; i >= 0; i--) {
         if (caminho_completo[i] == '/') {
-
             sprintf(caminho_completo, "%s%s", caminho_completo, caminho);
-            //printf("\n\n%s\n\n", caminho_completo);
-            //printf("%s\n\n", argv[1]);
             break;
         }
         caminho_completo[i] = '\0';
@@ -138,12 +128,8 @@ Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe,
         Palavras_realoca (indices);
 
         int palavra_nova = Palavra_le (indices->palavras_ind, file, ind, indices->palavras_usadas);
-        if (palavra_nova){
-            //indices->documentos_ind = Documentos_Atualiza (indices->documentos_ind, ind);
-            //Documentos_Atualiza (indices->documentos_ind, ind);
-            indices->palavras_usadas++;
-        }
-        
+        if (palavra_nova)
+            indices->palavras_usadas++;    
     }
     
     //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
@@ -183,24 +169,20 @@ void Indices_Libera(Indices ind) {
 }
 
 void Documentos_Indexador(Indices ind) {
-    
+
     for (int i = 0; i < ind->palavras_usadas; i++) {
 
         // pega o indice do doc e a frequencia de cada palavra
-
+        
         int prop_usado = Palavras_Retorna_Prop_Usado(ind->palavras_ind[i]); //qtd de docs q a palavra se encontra
         int ind_doc;
         int freq_pal;
-
+        
         for (int j = 0; j < prop_usado; j++) {
 
             ind_doc = Palavras_Retorna_Ind(ind->palavras_ind[i], j);
-            freq_pal = Palavras_Retorna_Freq(ind->palavras_ind[i], j);
-            
-            //printf("\nj: %d\n", j);
-            // atribui essas informações dentro da struct documentos
-            //ind->documentos_ind[ind_doc[j]] = Documentos_Atribui(ind->documentos_ind[ind_doc[j]], i, freq_pal[j]);
-            Documentos_Atribui(ind->documentos_ind[ind_doc], i, freq_pal);
+            freq_pal = Palavras_Retorna_Freq(ind->palavras_ind[i], j);        
+            ind->documentos_ind[ind_doc] = Documentos_Atribui(ind->documentos_ind[ind_doc], i, freq_pal);
         }
     }
     
