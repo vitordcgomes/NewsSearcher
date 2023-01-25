@@ -93,10 +93,6 @@ Propriedades Documentos_Propriedade_Cria() {
 
 Propriedades Atribui_TF_IDF(double idf, Propriedades prop) {
 
-    //printf("idf: %.2lf\n", idf);
-    //printf("freq: %d\n", prop->frequencia);
-
-    //printf("freq * idf: %.2lf\n", prop->frequencia * idf);
     prop->tf_idf = prop->frequencia * idf;
 
     //printf("tf-idf: %.2lf\n", prop->tf_idf);
