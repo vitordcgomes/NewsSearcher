@@ -7,7 +7,6 @@ struct palavras {
 
     char nome[101];
     Propriedades* prop;
-    double tf_idf;
 
     int prop_alocado;
     int prop_usado;
@@ -65,7 +64,6 @@ Palavras* Palavras_vetor_cria (){
   pal[ind_palavra]->prop[pal[ind_palavra]->prop_usado] = Propriedades_cria (ind_doc);
   pal[ind_palavra]->prop_usado++;
   
-  
    return 1; //retornar 1 significa que foi criada uma palavra nova.
  }
 
@@ -79,7 +77,7 @@ Palavras* Palavras_vetor_cria (){
  void Palavras_imprime (Palavras* p, int qtd){
 
     for (int i=0; i<qtd; i++){
-        printf ("ind: %d; nome: %s ", i, p[i]->nome);
+        printf ("%s ", p[i]->nome);
         Propriedades_Imprime (p[i]->prop, p[i]->prop_usado);
     }
     
@@ -90,9 +88,7 @@ Palavras* Palavras_vetor_cria (){
 
     printf ("%s ", p[ind]->nome);
     Propriedades_Imprime (p[ind]->prop, p[ind]->prop_usado);
-    
-    
-    //printf ("\n\n");
+    printf ("\n\n");
  }
 
  void Palavras_Libera(Palavras pal) {
