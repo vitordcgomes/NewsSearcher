@@ -79,7 +79,7 @@ Palavras* Palavras_vetor_cria (){
  void Palavras_imprime (Palavras* p, int qtd){
 
     for (int i=0; i<qtd; i++){
-        printf ("ind: %d; nome: %s ", i, p[i]->nome);
+        printf ("ind: %d; %s; ", i, p[i]->nome);
         Propriedades_Imprime (p[i]->prop, p[i]->prop_usado);
     }
     
@@ -88,7 +88,7 @@ Palavras* Palavras_vetor_cria (){
 
   void Palavras_imprime_uma (Palavras* p, int ind){
 
-    printf ("%s ", p[ind]->nome);
+    printf ("ind: %d; %s; ", ind, p[ind]->nome);
     Propriedades_Imprime (p[ind]->prop, p[ind]->prop_usado);
     
     

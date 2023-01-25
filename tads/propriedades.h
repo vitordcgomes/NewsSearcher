@@ -13,6 +13,6 @@ int Propriedades_busca (Propriedades* p, int ind, int qtd_prop);
 void Propriedades_Imprime (Propriedades* p, int qtd);
 int Propriedades_Retorna_Ind(Propriedades* p, int ind);
 int Propriedades_Retorna_Freq(Propriedades* p, int ind);
-Propriedades* Propriedades_Doc_Atribui(Propriedades* p, int ind_vet, int ind_pal, int freq_pal);
+Propriedades Propriedades_Doc_Atribui(Propriedades p, int ind_vet, int ind_pal, int freq_pal);
 void Propriedades_Documentos_Imprime(Propriedades* p, int qtd);
 Propriedades Documentos_Propriedade_Cria();

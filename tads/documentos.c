@@ -49,11 +49,15 @@ void Documentos_imprime(int qtd, Documentos* docs){
 
     for (int i=0; i<qtd; i++){
         printf ("DOC: %d, NOME: %s, CLASSE: %s\n", i, docs[i]->nome, docs[i]->classe);
+        Propriedades_Documentos_Imprime(docs[i]->prop, docs[i]->prop_usado);
     }
 
     for (int i = 0; i < qtd; i++) {
         //Propriedades_Documentos_Imprime(docs[i]->prop, docs[i]->prop_usado);
+        //printf("prop_usado: %d", docs[i]->prop_usado);
     }
+
+    
 }
 
 void Documentos_Propriedades_Realoca(Documentos doc) {
@@ -67,12 +71,12 @@ void Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal) {
         Documentos_Propriedades_Realoca(doc);
     }
 
-    printf("\nprop_usado: %d\nprop_alocado: %d\nqtd_palavras: %d\n\n", doc->prop_usado, doc->prop_alocado, doc->qtd_palavras);
+    //printf("\nprop_usado: %d\nprop_alocado: %d\nqtd_palavras: %d\n\n", doc->prop_usado, doc->prop_alocado, doc->qtd_palavras);
     doc->prop[doc->prop_usado] = Documentos_Propriedade_Cria();
 
     //int i = 1;
     //printf("\n\nTESTE\n\n");
-    doc->prop = Propriedades_Doc_Atribui(doc->prop, doc->prop_usado, ind_pal, freq_pal);
+    doc->prop[doc->prop_usado] = Propriedades_Doc_Atribui(doc->prop[doc->prop_usado], doc->prop_usado, ind_pal, freq_pal);
 
     doc->prop_usado++;
 
