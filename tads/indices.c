@@ -209,6 +209,6 @@ void Documentos_Indexador(Indices ind) {
 void Imprime_Tudo(Indices indices) {
     //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
     Documentos_imprime(indices->documentos_usados, indices->documentos_ind);
-    Palavras_imprime_uma(indices->palavras_ind, 1157);
+    Palavras_imprime_uma(indices->palavras_ind, 0);
 }
 
