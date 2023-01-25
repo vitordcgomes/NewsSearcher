@@ -76,8 +76,8 @@ Palavras* Palavras_vetor_cria (){
 
  void Palavras_imprime (Palavras* p, int qtd){
 
-    for (int i=0; i<qtd; i++){
-        printf ("%s ", p[i]->nome);
+    for (int i=0; i<30; i++){
+        printf ("nome: %s; ", p[i]->nome);
         Propriedades_Imprime (p[i]->prop, p[i]->prop_usado);
     }
     
@@ -106,4 +106,29 @@ int Palavras_Retorna_Freq(Palavras p, int ind) {
 
 int Palavras_Retorna_Prop_Usado(Palavras p) {
   return p->prop_usado;
+}
+
+double Calcula_IDF(int tot_doc, Palavras pal) {
+  //pal->prop_usado;
+  
+  double idf;
+
+  double num = 0.0, denom = 0.0;
+
+  num = 1 + tot_doc;
+  denom = 1 + pal->prop_usado;
+
+  //printf("\nlog: %.2lf\n", log(num/denom));
+
+  idf = log(num/denom) + 1;
+
+  //printf("idf: %.2lf\n", idf);
+
+  return idf;
+}
+
+Palavras Calcula_TF_IDF(double idf, Palavras pal, int ind_prop) {
+  pal->prop[ind_prop] = Atribui_TF_IDF(idf, pal->prop[ind_prop]);
+
+  return pal;
 }

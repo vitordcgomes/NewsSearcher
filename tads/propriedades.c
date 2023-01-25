@@ -4,7 +4,7 @@
 struct propriedades {
     int frequencia;
     int indice;
-    int tf_idf;
+    double tf_idf;
 };
 
 Propriedades* Propriedades_vetor_cria(){
@@ -17,6 +17,7 @@ Propriedades Propriedades_cria (int ind){
     Propriedades p = (Propriedades)calloc(1, sizeof(struct propriedades));
     p->frequencia = 1;
     p->indice = ind;
+    p->tf_idf = 0;
 
  return p;
 }
@@ -33,7 +34,7 @@ void Propriedades_Libera(Propriedades* p, int qtd) {
 void Propriedades_Imprime (Propriedades* p, int qtd){
     
     for (int i=0; i<qtd; i++){
-        printf ("Doc: %d; Freq: %d\n\t", p[i]->indice, p[i]->frequencia);
+        printf ("Doc: %d; Freq: %d; tf-idf: %.2lf;\n\t", p[i]->indice, p[i]->frequencia, p[i]->tf_idf);
     }
     
     printf ("\n\n");
@@ -88,4 +89,17 @@ Propriedades Documentos_Propriedade_Cria() {
     Propriedades p = (Propriedades)calloc(1, sizeof(struct propriedades));
 
     return p;
+}
+
+Propriedades Atribui_TF_IDF(double idf, Propriedades prop) {
+
+    //printf("idf: %.2lf\n", idf);
+    //printf("freq: %d\n", prop->frequencia);
+
+    //printf("freq * idf: %.2lf\n", prop->frequencia * idf);
+    prop->tf_idf = prop->frequencia * idf;
+
+    //printf("tf-idf: %.2lf\n", prop->tf_idf);
+
+    return prop;
 }

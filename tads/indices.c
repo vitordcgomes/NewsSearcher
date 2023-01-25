@@ -176,20 +176,23 @@ void Documentos_Indexador(Indices ind) {
         int prop_usado = Palavras_Retorna_Prop_Usado(ind->palavras_ind[i]); //qtd de docs q a palavra se encontra
         int ind_doc;
         int freq_pal;
+
+        double idf = Calcula_IDF(ind->documentos_usados, ind->palavras_ind[i]);
         
         for (int j = 0; j < prop_usado; j++) {
+            ind->palavras_ind[i] = Calcula_TF_IDF(idf, ind->palavras_ind[i], j);
 
             ind_doc = Palavras_Retorna_Ind(ind->palavras_ind[i], j);
             freq_pal = Palavras_Retorna_Freq(ind->palavras_ind[i], j);        
             ind->documentos_ind[ind_doc] = Documentos_Atribui(ind->documentos_ind[ind_doc], i, freq_pal);
+
         }
     }
-    
 }
 
 void Imprime_Tudo(Indices indices) {
-    //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
-    Documentos_imprime(indices->documentos_usados, indices->documentos_ind);
-    Palavras_imprime_uma(indices->palavras_ind, 3);
+    Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
+    //Documentos_imprime(indices->documentos_usados, indices->documentos_ind);
+    //Palavras_imprime_uma(indices->palavras_ind, 3);
 }
 
