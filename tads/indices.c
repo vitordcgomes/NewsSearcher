@@ -80,9 +80,8 @@ Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv) {
             ind->documentos_ind[ind->documentos_usados] = Documentos_cria (caminho, classe);
 
             //Indexador de palavras:
-                ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
+            ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
             
-            ind->documentos_usados++;
             ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
             ind->documentos_usados++;
     }
@@ -191,6 +190,6 @@ void Documentos_Indexador(Indices ind) {
 void Imprime_Tudo(Indices indices) {
     //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
     Documentos_imprime(indices->documentos_usados, indices->documentos_ind);
-    Palavras_imprime_uma(indices->palavras_ind, 0);
+    Palavras_imprime_uma(indices->palavras_ind, 3);
 }
 

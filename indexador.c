@@ -11,6 +11,7 @@ int main(int argc, char** argv) {
     ind = Le_Arquivo_Principal(ind, argc, argv); //aqui esta o indexador de palavras e a estruturacao do indice de documentos
     Documentos_Indexador(ind); //aqui preenchemos o indice de documentos criado na funcao anterior
     //Imprime_Binario();
+    Imprime_Tudo(ind);
     Indices_Libera(ind);
 
     return 0;
