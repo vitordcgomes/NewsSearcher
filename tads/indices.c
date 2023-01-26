@@ -196,3 +196,18 @@ void Imprime_Tudo(Indices indices) {
     //Palavras_imprime_uma(indices->palavras_ind, 3);
 }
 
+void Imprime_Binario(Indices indices, char** argv) {
+    FILE* file = fopen(argv[2], "wb");
+
+    if (file == NULL) {
+        printf("\033[91mNao foi possivel criar o arquivo de conteudo binario pelo caminho '%s'\n\033[0m", argv[2]);
+        exit(0);
+    }
+
+    fwrite(indices->palavras_ind, sizeof(Palavras), indices->palavras_usadas, file); //imprime as palavras
+
+    fwrite(indices->documentos_ind, sizeof(Documentos), indices->documentos_usados, file); //imrprime os documentos
+
+    fclose(file);
+}
+
