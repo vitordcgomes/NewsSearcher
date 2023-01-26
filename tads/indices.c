@@ -169,6 +169,9 @@ void Indices_Libera(Indices ind) {
 
 void Documentos_Indexador(Indices ind) {
 
+        printf ("qtd: %d\n", ind->palavras_usadas);
+
+
     for (int i = 0; i < ind->palavras_usadas; i++) {
 
         // pega o indice do doc e a frequencia de cada palavra
@@ -198,7 +201,7 @@ void Imprime_Tudo(Indices indices) {
 
 void Imprime_Binario(Indices indices, char** argv) {
     FILE* file = fopen(argv[2], "wb");
-
+    
     if (file == NULL) {
         printf("\033[91mNao foi possivel criar o arquivo de conteudo binario pelo caminho '%s'\n\033[0m", argv[2]);
         exit(0);
