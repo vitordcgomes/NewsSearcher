@@ -204,10 +204,33 @@ void Imprime_Binario(Indices indices, char** argv) {
         exit(0);
     }
 
+    // grava o tamanho do indice de palavras
+    // for : acessa cada posicao
+    // grava todas as coisas que nao sao vetor
+    // para o que for um vetor
+    // grava o tamanho
+    // grava cada elemento
+
+    //se for gravar string, anota o tam da string e dps ela
+
+    fwrite(&indices->palavras_usadas, sizeof(int), indices->palavras_usadas, file);
+
+    /*
+    fwrite(string, sizeof(char), tamanho, file);
+    
+    for (int i = 0; i < indices->palavras_usadas; i++) {
+        fwrite(indices->palavras_ind[i], sizeof(Palavras), indices->palavras_usadas, file); //imprime as palavras
+    }
     fwrite(indices->palavras_ind, sizeof(Palavras), indices->palavras_usadas, file); //imprime as palavras
 
     fwrite(indices->documentos_ind, sizeof(Documentos), indices->documentos_usados, file); //imrprime os documentos
-
+    */
+   
     fclose(file);
 }
 
+
+//mostrar como fizemos
+//é necessario ordenar com qsort?
+//perguntar do binario
+//perguntar biblioteca

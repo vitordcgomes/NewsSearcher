@@ -4,6 +4,8 @@
 
 void Funcionalidades();
 void Imprime_Menu ();
+void Le_Binario(char* caminho);
+
 
 typedef enum {
     BUSCA = '1',
@@ -15,7 +17,7 @@ typedef enum {
 
 int main(int argc, char** argv) {
 
-    //Le_Binario();
+    Le_Binario(argv[1]);
     Funcionalidades();
     //Libera_Memoria();
     printf("\033[1m----Ate a proxima!----\033[0m\n\n");
@@ -86,4 +88,14 @@ void Imprime_Menu ()
     printf ("\n\t\033[91m0.\033[0m Encerrar programa\033[0m\n\n");
     printf ("Digite a operacao desejada:\033[96m ");
 
+}
+
+void Le_Binario(char* caminho){
+    FILE* file = fopen (caminho, "rb");
+    int inteiro;
+    
+    fread (&inteiro, sizeof(int), 1, file);
+    printf ("%d\n", inteiro);
+
+    fclose (file);
 }

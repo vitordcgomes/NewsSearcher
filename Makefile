@@ -6,7 +6,7 @@ all:
 run: 
 	make
 	./indexador datasets/tiny/test.txt binario.bin
-#	./principal caminho_binario K
+	./principal binario.bin 42
 
 clean:
 	rm -f indexador principal *.o
