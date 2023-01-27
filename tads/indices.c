@@ -196,8 +196,8 @@ void Documentos_Indexador(Indices ind) {
 }
 
 void Imprime_Tudo(Indices indices) {
-    Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
-    //Documentos_imprime(indices->documentos_usados, indices->documentos_ind);
+    //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
+    Documentos_imprime(indices->documentos_usados, indices->documentos_ind);
     //Palavras_imprime_uma(indices->palavras_ind, 3);
 }
 
@@ -213,6 +213,35 @@ void Imprime_Binario(Indices indices, char** argv) {
     printf("\npalavras_usadas: %ld\n", qtd_pal);
 
     fwrite(&qtd_pal, sizeof(long int), 1, file);
+
+    for (int i = 0; i < qtd_pal; i++) {
+        //escreve tam string nome da palavra
+        //escreve o nome em si
+        //escreve qtd de propriedades
+        int qtd_prop_pal = Palavras_Escreve_Binario(file, indices->palavras_ind[i]);
+
+        
+        for (int j = 0; j < qtd_prop_pal; j++) {
+            //escreve as propriedades
+            Palavras_Propriedades_Escreve_Binario(file, indices->palavras_ind[i], j);
+        }
+    }
+
+    int qtd_doc = indices->documentos_usados;
+    fwrite(&qtd_doc, sizeof(int), 1, file);
+
+    for (int i = 0; i < qtd_doc; i++) {
+        //escreve tam string nome do documento
+        //escreve o nome em si
+        //tam string da classe eh fixo, nao vamos escrever
+        //escreve a classe
+        int qtd_prop_doc = Documentos_Escreve_Binario(file, indices->documentos_ind[i]);
+
+        for (int j = 0; j < qtd_prop_doc; j++) {
+            //escreve as propriedades
+            Documentos_Propriedades_Escreve_Binario(file, indices->documentos_ind[i], j);
+        }
+    }
 
     fclose(file);
 

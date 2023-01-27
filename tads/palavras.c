@@ -142,3 +142,18 @@ Palavras* Palavras_Ordena(Palavras* pal, int qtd) {
 
   return pal;
 }
+
+int Palavras_Escreve_Binario(FILE* file, Palavras pal) {
+  int tam_nome = strlen(pal->nome) + 1; // +1 para incluir o '\0' da string
+
+  fwrite(&tam_nome, sizeof(int), 1, file);
+  fwrite(&pal->nome, sizeof(char), tam_nome, file);
+
+  fwrite(&pal->prop_usado, sizeof(int), 1, file);
+
+  return pal->prop_usado;
+}
+
+void Palavras_Propriedades_Escreve_Binario(FILE* file, Palavras pal, int ind_prop) {
+  Propriedades_Palavras_Escreve_Binario(file, pal->prop[ind_prop]);
+}

@@ -1,5 +1,9 @@
 #pragma once
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 typedef struct documentos* Documentos;
 
 Documentos* Documentos_vetor_cria();
@@ -9,3 +13,5 @@ void Documentos_imprime(int qtd, Documentos* docs);
 void Documentos_Propriedades_Realoca(Documentos doc);
 Documentos Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal);
 void Documentos_Atualiza(Documentos* doc, int ind);
+int Documentos_Escreve_Binario(FILE* file, Documentos doc);
+void Documentos_Propriedades_Escreve_Binario(FILE* file, Documentos doc, int ind_prop);
