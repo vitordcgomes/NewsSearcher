@@ -143,17 +143,25 @@ Palavras* Palavras_Ordena(Palavras* pal, int qtd) {
   return pal;
 }
 
-int Palavras_Escreve_Binario(FILE* file, Palavras pal) {
-  int tam_nome = strlen(pal->nome) + 1; // +1 para incluir o '\0' da string
+void Palavras_Escreve_Binario(FILE* file, Palavras* pal, int qtd_pal) {
 
-  fwrite(&tam_nome, sizeof(int), 1, file);
-  fwrite(&pal->nome, sizeof(char), tam_nome, file);
+  for (int i = 0; i < qtd_pal; i++) {
+    int tam_nome = strlen(pal[i]->nome) + 1; // +1 para incluir o '\0' da string
 
-  fwrite(&pal->prop_usado, sizeof(int), 1, file);
+    fwrite(&tam_nome, sizeof(int), 1, file);
+    fwrite(pal[i]->nome, tam_nome, 1, file);
 
-  return pal->prop_usado;
+    fwrite(&pal[i]->prop_usado, sizeof(int), 1, file);
+
+    for (int j = 0; j < pal[i]->prop_usado; j++) {
+      Propriedades_Palavras_Escreve_Binario(file, pal[i]->prop, pal[i]->prop_usado);
+    }
+  }
+  
+
+  //return pal->prop_usado;
 }
 
 void Palavras_Propriedades_Escreve_Binario(FILE* file, Palavras pal, int ind_prop) {
-  Propriedades_Palavras_Escreve_Binario(file, pal->prop[ind_prop]);
+  Propriedades_Palavras_Escreve_Binario(file, pal->prop, pal->prop_usado);
 }

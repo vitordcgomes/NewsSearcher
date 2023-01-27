@@ -94,11 +94,29 @@ void Imprime_Menu ()
 void Le_Binario(char* caminho){
     long int qtd_pal = 0;
 
+    
+
     FILE* file = fopen (caminho, "rb");
     
+    while(!feof(file)) {
+        fread (&qtd_pal, sizeof(long int), 1, file);
+        printf ("qtd_pal: %ld\n", qtd_pal);
+
+        char* vet_nomes[qtd_pal];
+        for (int i = 0; i < qtd_pal; i++) {
+            int tam_string = 0;
+            fread(&tam_string, sizeof(int), 1, file);
+
+            vet_nomes[i] = (char*)malloc(tam_string);
+            
+            fread(vet_nomes[i], tam_string, 1, file);
+            //printf("nome: %s\n", vet_nomes[i]);
+
+            int qtd_prop = 0;
+            fread(&qtd_prop, sizeof(int), 1, file);
+        }
+    }
     
-    fread (&qtd_pal, sizeof(long int), 1, file);
-    printf ("qtd_pal: %ld\n", qtd_pal);
 
     fclose (file);
 }

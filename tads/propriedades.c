@@ -100,12 +100,15 @@ Propriedades Atribui_TF_IDF(double idf, Propriedades prop) {
     return prop;
 }
 
-void Propriedades_Palavras_Escreve_Binario(FILE* file, Propriedades prop) {
-    fwrite(&prop->frequencia, sizeof(int), 1, file);
+void Propriedades_Palavras_Escreve_Binario(FILE* file, Propriedades* prop, int qtd_prop) {
 
-    fwrite(&prop->indice, sizeof(int), 1, file);
+    for (int i = 0; i < qtd_prop; i++) {
+        fwrite(&prop[i]->frequencia, sizeof(int), 1, file);
 
-    fwrite(&prop->tf_idf, sizeof(double), 1, file);
+        fwrite(&prop[i]->indice, sizeof(int), 1, file);
+
+        fwrite(&prop[i]->tf_idf, sizeof(double), 1, file);
+    }
 }
 
 void Propriedades_Documentos_Escreve_Binario(FILE* file, Propriedades prop) {

@@ -214,6 +214,9 @@ void Imprime_Binario(Indices indices, char** argv) {
 
     fwrite(&qtd_pal, sizeof(long int), 1, file);
 
+    Palavras_Escreve_Binario(file, indices->palavras_ind, qtd_pal);
+
+    /*
     for (int i = 0; i < qtd_pal; i++) {
         //escreve tam string nome da palavra
         //escreve o nome em si
@@ -226,6 +229,7 @@ void Imprime_Binario(Indices indices, char** argv) {
             Palavras_Propriedades_Escreve_Binario(file, indices->palavras_ind[i], j);
         }
     }
+    */
 
     int qtd_doc = indices->documentos_usados;
     fwrite(&qtd_doc, sizeof(int), 1, file);

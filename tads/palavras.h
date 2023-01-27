@@ -21,7 +21,7 @@ double Calcula_IDF(int tot_doc, Palavras pal);
 Palavras Calcula_TF_IDF(double idf, Palavras pal, int ind_prop);
 int String_Compara(const void *str1, const void *str2);
 Palavras* Palavras_Ordena(Palavras* pal, int qtd);
-int Palavras_Escreve_Binario(FILE* file, Palavras pal);
+void Palavras_Escreve_Binario(FILE* file, Palavras* pal, int qtd_pal);
 void Palavras_Propriedades_Escreve_Binario(FILE* file, Palavras pal, int ind_prop);
 
 
