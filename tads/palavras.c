@@ -153,15 +153,7 @@ void Palavras_Escreve_Binario(FILE* file, Palavras* pal, int qtd_pal) {
 
     fwrite(&pal[i]->prop_usado, sizeof(int), 1, file);
 
-    for (int j = 0; j < pal[i]->prop_usado; j++) {
-      Propriedades_Palavras_Escreve_Binario(file, pal[i]->prop, pal[i]->prop_usado);
-    }
+    Propriedades_Palavras_Escreve_Binario(file, pal[i]->prop, pal[i]->prop_usado);
+    
   }
-  
-
-  //return pal->prop_usado;
-}
-
-void Palavras_Propriedades_Escreve_Binario(FILE* file, Palavras pal, int ind_prop) {
-  Propriedades_Palavras_Escreve_Binario(file, pal->prop, pal->prop_usado);
 }

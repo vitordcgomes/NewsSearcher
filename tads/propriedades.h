@@ -18,4 +18,4 @@ void Propriedades_Documentos_Imprime(Propriedades* p, int qtd);
 Propriedades Documentos_Propriedade_Cria();
 Propriedades Atribui_TF_IDF(double idf, Propriedades prop);
 void Propriedades_Palavras_Escreve_Binario(FILE* file, Propriedades* prop, int qtd_prop);
-void Propriedades_Documentos_Escreve_Binario(FILE* file, Propriedades prop);
+void Propriedades_Documentos_Escreve_Binario(FILE* file, Propriedades* prop, int qtd_prop);

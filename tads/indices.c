@@ -210,68 +210,18 @@ void Imprime_Binario(Indices indices, char** argv) {
     }
     
     long int qtd_pal = indices->palavras_usadas;
-    printf("\npalavras_usadas: %ld\n", qtd_pal);
+    //printf("\npalavras_usadas: %ld\n", qtd_pal);
 
     fwrite(&qtd_pal, sizeof(long int), 1, file);
 
     Palavras_Escreve_Binario(file, indices->palavras_ind, qtd_pal);
 
-    /*
-    for (int i = 0; i < qtd_pal; i++) {
-        //escreve tam string nome da palavra
-        //escreve o nome em si
-        //escreve qtd de propriedades
-        int qtd_prop_pal = Palavras_Escreve_Binario(file, indices->palavras_ind[i]);
-
-        
-        for (int j = 0; j < qtd_prop_pal; j++) {
-            //escreve as propriedades
-            Palavras_Propriedades_Escreve_Binario(file, indices->palavras_ind[i], j);
-        }
-    }
-    */
-
     int qtd_doc = indices->documentos_usados;
     fwrite(&qtd_doc, sizeof(int), 1, file);
 
-    for (int i = 0; i < qtd_doc; i++) {
-        //escreve tam string nome do documento
-        //escreve o nome em si
-        //tam string da classe eh fixo, nao vamos escrever
-        //escreve a classe
-        int qtd_prop_doc = Documentos_Escreve_Binario(file, indices->documentos_ind[i]);
-
-        for (int j = 0; j < qtd_prop_doc; j++) {
-            //escreve as propriedades
-            Documentos_Propriedades_Escreve_Binario(file, indices->documentos_ind[i], j);
-        }
-    }
-
-    fclose(file);
-
-    // grava o tamanho do indice de palavras
-    // for : acessa cada posicao
-    // grava todas as coisas que nao sao vetor
-    // para o que for um vetor
-    // grava o tamanho
-    // grava cada elemento
-
-    //se for gravar string, anota o tam da string e dps ela
-
-    /*
-    fwrite(string, sizeof(char), tamanho, file);
+    Documentos_Escreve_Binario(file, indices->documentos_ind, qtd_doc);
     
-    for (int i = 0; i < indices->palavras_usadas; i++) {
-        fwrite(indices->palavras_ind[i], sizeof(Palavras), indices->palavras_usadas, file); //imprime as palavras
-    }
-    fwrite(indices->palavras_ind, sizeof(Palavras), indices->palavras_usadas, file); //imprime as palavras
-
-    fwrite(indices->documentos_ind, sizeof(Documentos), indices->documentos_usados, file); //imrprime os documentos
-    */
+    fclose(file);
 }
 
-
-//mostrar como fizemos
-//é necessario ordenar com qsort?
-//perguntar do binario
-//perguntar biblioteca
+//perguntar biblioteca - [esquecemos :)]

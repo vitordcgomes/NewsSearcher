@@ -92,30 +92,89 @@ void Imprime_Menu ()
 }
 
 void Le_Binario(char* caminho){
-    long int qtd_pal = 0;
-
     
-
     FILE* file = fopen (caminho, "rb");
     
-    while(!feof(file)) {
-        fread (&qtd_pal, sizeof(long int), 1, file);
-        printf ("qtd_pal: %ld\n", qtd_pal);
+    
+    //leitura de palavras
 
-        char* vet_nomes[qtd_pal];
-        for (int i = 0; i < qtd_pal; i++) {
-            int tam_string = 0;
-            fread(&tam_string, sizeof(int), 1, file);
+    
+    long int qtd_pal = 0;
+    fread (&qtd_pal, sizeof(long int), 1, file);
+    //printf ("qtd_pal: %ld\n", qtd_pal);
 
-            vet_nomes[i] = (char*)malloc(tam_string);
+    char* vet_nomes[qtd_pal];
+
+    for (int i = 0; i < qtd_pal; i++) {
+        int tam_string = 0;
+        fread(&tam_string, sizeof(int), 1, file);
+
+        vet_nomes[i] = (char*)malloc(tam_string);
             
-            fread(vet_nomes[i], tam_string, 1, file);
-            //printf("nome: %s\n", vet_nomes[i]);
+        fread(vet_nomes[i], tam_string, 1, file);
+        printf("nome: %s\n", vet_nomes[i]);
 
-            int qtd_prop = 0;
-            fread(&qtd_prop, sizeof(int), 1, file);
+        int qtd_prop = 0;
+        fread(&qtd_prop, sizeof(int), 1, file);
+        int pal_freq[qtd_prop];
+        int pal_ind[qtd_prop];
+        double pal_tf_idf[qtd_prop];
+
+        
+        for (int j = 0; j < qtd_prop; j++) {
+
+            fread(&pal_freq[j], sizeof(int), 1, file);
+            printf("freq: %d; ", pal_freq[j]);
+
+            fread(&pal_ind[j], sizeof(int), 1, file);
+            printf("ind: %d; ", pal_ind[j]);
+
+            fread(&pal_tf_idf[j], sizeof(double), 1, file);
+            printf("tf-idf: %.2lf;\n", pal_tf_idf[j]);
+        }
+        
+
+    }
+
+/*******************************************************************/
+
+    //leitura documentos
+
+    int qtd_doc = 0;
+    fread (&qtd_doc, sizeof(long int), 1, file);
+    //printf ("qtd_doc: %d\n", qtd_doc);
+
+    char* vet_nomes_doc[qtd_doc];
+    char* vet_classe_doc[qtd_doc];
+
+    for (int i = 0; i < qtd_doc; i++) {
+        int tam_string_doc = 0;
+        fread(&tam_string_doc, sizeof(int), 1, file);
+
+        vet_nomes_doc[i] = (char*)malloc(tam_string_doc);
+            
+        fread(vet_nomes_doc[i], tam_string_doc, 1, file);
+        printf("nome_doc: %s; ", vet_nomes_doc[i]);
+
+        vet_classe_doc[i] = (char*)malloc(4); //tamanho da string classe eh fixo e == 4
+
+        fread(vet_classe_doc[i], 4, 1, file);
+        printf("classe: %s;\n", vet_classe_doc[i]);
+
+        int qtd_prop_doc = 0;
+        fread(&qtd_prop_doc, sizeof(int), 1, file);
+        int doc_freq[qtd_prop_doc];
+        int doc_ind[qtd_prop_doc];
+
+        for (int j = 0; j < qtd_prop_doc; j++) {
+            fread(&doc_freq[j], sizeof(int), 1, file);
+            printf("freq: %d; ", doc_freq[j]);
+
+            fread(&doc_ind[j], sizeof(int), 1, file);
+            printf("ind: %d;\n", doc_ind[j]);
         }
     }
+
     
 
     fclose (file);

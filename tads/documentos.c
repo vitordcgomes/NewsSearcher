@@ -75,19 +75,16 @@ Documentos Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal) {
     return doc;
 }
 
-int Documentos_Escreve_Binario(FILE* file, Documentos doc) {
-    int tam_nome = strlen(doc->nome) + 1; // +1 para incluir o '\0' da string
+void Documentos_Escreve_Binario(FILE* file, Documentos* doc, int qtd_doc) {
+    for (int i = 0; i < qtd_doc; i++) {
+        int tam_nome = strlen(doc[i]->nome) + 1; // +1 para incluir o '\0' da string
 
-    fwrite(&tam_nome, sizeof(int), 1, file);
-    
-    fwrite(&doc->nome, sizeof(char), tam_nome, file);
-    fwrite(&doc->classe, sizeof(char), 4, file);
+        fwrite(&tam_nome, sizeof(int), 1, file);
+        fwrite(doc[i]->nome, tam_nome, 1, file);
+        fwrite(doc[i]->classe, 4, 1, file);
 
-    fwrite(&doc->prop_usado, sizeof(int), 1, file);
+        fwrite(&doc[i]->prop_usado, sizeof(int), 1, file);
 
-    return doc->prop_usado;
-}
-
-void Documentos_Propriedades_Escreve_Binario(FILE* file, Documentos doc, int ind_prop) {
-    Propriedades_Documentos_Escreve_Binario(file, doc->prop[ind_prop]);
+        Propriedades_Documentos_Escreve_Binario(file, doc[i]->prop, doc[i]->prop_usado);
+    }
 }

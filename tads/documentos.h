@@ -13,5 +13,4 @@ void Documentos_imprime(int qtd, Documentos* docs);
 void Documentos_Propriedades_Realoca(Documentos doc);
 Documentos Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal);
 void Documentos_Atualiza(Documentos* doc, int ind);
-int Documentos_Escreve_Binario(FILE* file, Documentos doc);
-void Documentos_Propriedades_Escreve_Binario(FILE* file, Documentos doc, int ind_prop);
+void Documentos_Escreve_Binario(FILE* file, Documentos* doc, int qtd_doc);
