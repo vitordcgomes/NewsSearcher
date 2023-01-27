@@ -21,6 +21,7 @@ int main(int argc, char** argv) {
     Funcionalidades();
     //Libera_Memoria();
     printf("\033[1m----Ate a proxima!----\033[0m\n\n");
+    //Deleta_Binario();
 
     return 0;
 }
@@ -91,11 +92,13 @@ void Imprime_Menu ()
 }
 
 void Le_Binario(char* caminho){
+    long int qtd_pal = 0;
+
     FILE* file = fopen (caminho, "rb");
-    int inteiro;
     
-    fread (&inteiro, sizeof(int), 1, file);
-    printf ("%d\n", inteiro);
+    
+    fread (&qtd_pal, sizeof(long int), 1, file);
+    printf ("qtd_pal: %ld\n", qtd_pal);
 
     fclose (file);
 }

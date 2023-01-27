@@ -14,11 +14,11 @@ struct indices {
     Palavras* palavras_ind;
     Documentos* documentos_ind;
 
-    int palavras_usadas;
-    int palavras_alocadas;
+    long int palavras_usadas;
+    long int palavras_alocadas;
 
-    int documentos_usados;
-    int documentos_alocados;
+    long int documentos_usados;
+    long int documentos_alocados;
 };
 
 // ----------------------------------------------------------------------------------------------
@@ -101,9 +101,9 @@ Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe,
     //modificando caminho
     char caminho_completo[1000];
     strcpy(caminho_completo, argv[1]);
-    int i = strlen(caminho_completo);
+    int tam_caminho = strlen(caminho_completo);
 
-    for (i; i >= 0; i--) {
+    for (int i = tam_caminho; i >= 0; i--) {
         if (caminho_completo[i] == '/') {
             sprintf(caminho_completo, "%s%s", caminho_completo, caminho);
             break;
@@ -133,7 +133,7 @@ Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe,
     
     //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
     fclose(file);
-    
+
     return indices;
 }
 
@@ -169,7 +169,7 @@ void Indices_Libera(Indices ind) {
 
 void Documentos_Indexador(Indices ind) {
 
-        printf ("qtd: %d\n", ind->palavras_usadas);
+    //printf ("qtd: %d\n", ind->palavras_usadas);
 
 
     for (int i = 0; i < ind->palavras_usadas; i++) {
@@ -191,11 +191,13 @@ void Documentos_Indexador(Indices ind) {
 
         }
     }
+
+    ind->palavras_ind = Palavras_Ordena(ind->palavras_ind, ind->palavras_usadas);
 }
 
 void Imprime_Tudo(Indices indices) {
-    //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
-    Documentos_imprime(indices->documentos_usados, indices->documentos_ind);
+    Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
+    //Documentos_imprime(indices->documentos_usados, indices->documentos_ind);
     //Palavras_imprime_uma(indices->palavras_ind, 3);
 }
 
@@ -206,6 +208,13 @@ void Imprime_Binario(Indices indices, char** argv) {
         printf("\033[91mNao foi possivel criar o arquivo de conteudo binario pelo caminho '%s'\n\033[0m", argv[2]);
         exit(0);
     }
+    
+    long int qtd_pal = indices->palavras_usadas;
+    printf("\npalavras_usadas: %ld\n", qtd_pal);
+
+    fwrite(&qtd_pal, sizeof(long int), 1, file);
+
+    fclose(file);
 
     // grava o tamanho do indice de palavras
     // for : acessa cada posicao
@@ -215,8 +224,6 @@ void Imprime_Binario(Indices indices, char** argv) {
     // grava cada elemento
 
     //se for gravar string, anota o tam da string e dps ela
-
-    fwrite(&indices->palavras_usadas, sizeof(int), indices->palavras_usadas, file);
 
     /*
     fwrite(string, sizeof(char), tamanho, file);
@@ -228,8 +235,6 @@ void Imprime_Binario(Indices indices, char** argv) {
 
     fwrite(indices->documentos_ind, sizeof(Documentos), indices->documentos_usados, file); //imrprime os documentos
     */
-   
-    fclose(file);
 }
 
 

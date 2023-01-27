@@ -127,3 +127,18 @@ Palavras Calcula_TF_IDF(double idf, Palavras pal, int ind_prop) {
 
   return pal;
 }
+
+int String_Compara(const void *str1, const void *str2) {
+  //return strcmp(((Palavras)str1)->nome,((Palavras)str2)->nome);
+  return strcmp(*(char **)str1, *(char **)str2);
+}
+
+Palavras* Palavras_Ordena(Palavras* pal, int qtd) {
+  //int n = sizeof(pal) / sizeof(pal[0]);
+
+  qsort(pal, qtd, sizeof(char*), String_Compara);
+
+  //Palavras_imprime(pal, qtd);
+
+  return pal;
+}

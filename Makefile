@@ -1,3 +1,5 @@
+FLAGS = -c -Wall
+
 all: 
 	make indexador
 	make principal
@@ -5,7 +7,7 @@ all:
 
 run: 
 	make
-	./indexador datasets/medium-small/train.txt binario.bin
+	./indexador datasets/tiny/test.txt binario.bin
 	./principal binario.bin 42
 
 clean:
@@ -19,20 +21,20 @@ valgrind:
 
 gdb:
 	make
-	gdb ./indexador datasets/tiny/test.txt binario.bin 
+	gdb ./indexador datasets/medium-small/train.txt binario.bin 
 
 indexador: indexador.c tads/palavras.c tads/palavras.h tads/documentos.c tads/documentos.h tads/propriedades.c tads/propriedades.h tads/indices.c tads/indices.h 
-	gcc -c indexador.c
-	gcc -c tads/palavras.c 
-	gcc -c tads/documentos.c
-	gcc -c tads/propriedades.c
-	gcc -c tads/indices.c
+	gcc $(FLAGS) indexador.c
+	gcc $(FLAGS) tads/palavras.c 
+	gcc $(FLAGS) tads/documentos.c
+	gcc $(FLAGS) tads/propriedades.c
+	gcc $(FLAGS) tads/indices.c
 	gcc -o indexador indexador.o palavras.o documentos.o propriedades.o indices.o -lm
 
 #./indexador datasets/tiny/test.txt binario.bin
 
 principal: principal.c
-	gcc -c principal.c
+	gcc $(FLAGS) principal.c
 	gcc -o principal principal.o
 
 #./principal caminho_binario K
