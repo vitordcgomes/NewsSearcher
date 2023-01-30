@@ -41,6 +41,7 @@ void Funcionalidades(){
         switch (op)
         {
             case BUSCA:
+            //BuscaNoticias();
             break;
 
             case CLASSIFICA:

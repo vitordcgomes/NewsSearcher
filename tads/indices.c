@@ -96,8 +96,6 @@ Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv) {
 
 
 Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe, int ind) {
-    
-
     //modificando caminho
     char caminho_completo[1000];
     strcpy(caminho_completo, argv[1]);
@@ -112,9 +110,6 @@ Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe,
     }
 
     FILE* file = fopen(caminho_completo, "r");
-
-    //printf("\n\n%s\n\n", caminho_completo);
-    
 
     if (file == NULL) {
         printf("\033[91mNao foi possivel abrir o arquivo de conteudo pelo caminho '%s'\n\033[0m", caminho_completo);
@@ -168,9 +163,6 @@ void Indices_Libera(Indices ind) {
 }
 
 void Documentos_Indexador(Indices ind) {
-
-    //printf ("qtd: %d\n", ind->palavras_usadas);
-
 
     for (int i = 0; i < ind->palavras_usadas; i++) {
 
@@ -238,10 +230,8 @@ Indices Le_Binario(Indices ind, char* caminho){
     
     FILE* file = fopen (caminho, "rb");
     
-    
     //leitura de palavras
     
-
     fread (&ind->palavras_usadas, sizeof(long int), 1, file);
     printf ("qtd_pal: %ld\n", ind->palavras_usadas);
 

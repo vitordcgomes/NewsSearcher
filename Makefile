@@ -7,7 +7,7 @@ all:
 
 run: 
 	make
-#	./indexador datasets/large_train/train.txt binario.bin
+	./indexador datasets/tiny/test.txt binario.bin
 	./principal binario.bin 42
 
 clean:
@@ -39,7 +39,7 @@ principal: principal.c
 	gcc $(FLAGS) tads/propriedades.c
 	gcc $(FLAGS) tads/indices.c
 	gcc $(FLAGS) principal.c
-	gcc -o principal principal.o palavras.o documentos.o propriedades.o indices.o
+	gcc -o principal principal.o palavras.o documentos.o propriedades.o indices.o -lm
 
 #./principal caminho_binario K
 
