@@ -103,7 +103,8 @@ Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe,
 
     for (int i = tam_caminho; i >= 0; i--) {
         if (caminho_completo[i] == '/') {
-            sprintf(caminho_completo, "%s%s", caminho_completo, caminho);
+            //sprintf(caminho_completo, "%s%s", caminho_completo, caminho);
+            strcat(caminho_completo, caminho);
             break;
         }
         caminho_completo[i] = '\0';
@@ -213,8 +214,9 @@ void Imprime_Binario(Indices indices, char** argv) {
     Palavras_Escreve_Binario(file, indices->palavras_ind, qtd_pal);
 
     
-    int qtd_doc = indices->documentos_usados;
-    fwrite(&qtd_doc, sizeof(int), 1, file);
+    long int qtd_doc = indices->documentos_usados;
+    fwrite(&qtd_doc, sizeof(long int), 1, file);
+    //printf("\nqtd_doc_antes: %ld", qtd_doc);
 
     Documentos_Escreve_Binario(file, indices->documentos_ind, qtd_doc);
     

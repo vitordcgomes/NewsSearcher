@@ -12,7 +12,7 @@ run:
 
 clean:
 	rm -f indexador principal *.o
-#	rm binario.bin
+	rm binario.bin
 	clear
 
 valgrind:
@@ -21,7 +21,7 @@ valgrind:
 
 gdb:
 	make
-	gdb ./indexador datasets/medium-small/train.txt binario.bin 
+	gdb ./indexador datasets/tiny/test.txt binario.bin 
 
 indexador: indexador.c tads/palavras.c tads/palavras.h tads/documentos.c tads/documentos.h tads/propriedades.c tads/propriedades.h tads/indices.c tads/indices.h 
 	gcc $(FLAGS) indexador.c

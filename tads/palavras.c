@@ -182,7 +182,7 @@ void Palavras_Le_Binario(FILE* file, Palavras* pal, int qtd_pal) {
 
       fread(&pal[i]->prop_usado, sizeof(int), 1, file);
 
-      //printf("nome: %s; prop_usado: %d;\n", pal[i]->nome, pal[i]->prop_usado);
+      printf("[%d] - nome: %s; prop_usado: %d;\n", i, pal[i]->nome, pal[i]->prop_usado);
       
       pal[i]->prop = (Propriedades*)realloc(pal[i]->prop, pal[i]->prop_usado* sizeof(Propriedades));
 

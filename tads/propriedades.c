@@ -135,16 +135,16 @@ void Propriedades_Palavras_Le_Binario(FILE* file, Propriedades* prop, int qtd_pr
         prop[i] = Propriedades_cria(0);
 
         fread(&prop[i]->frequencia, sizeof(int), 1, file);
-        //printf("\tfreq: %d; ", prop[i]->frequencia);
+        printf("\tfreq: %d; ", prop[i]->frequencia);
 
         fread(&prop[i]->indice, sizeof(int), 1, file);
-        //printf("ind: %d; ", prop[i]->indice);
+        printf("ind: %d; ", prop[i]->indice);
 
         fread(&prop[i]->tf_idf, sizeof(double), 1, file);
-        //printf("tf-idf: %.2lf;\n", prop[i]->tf_idf);
+        printf("tf-idf: %.2lf;\n", prop[i]->tf_idf);
     }
 
-    //printf("\n\n");
+    printf("\n\n");
 }
 
 void Propriedades_Documentos_Le_Binario(FILE* file, Propriedades* prop, int qtd_prop) {
