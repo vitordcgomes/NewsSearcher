@@ -7,7 +7,7 @@ all:
 
 run: 
 	make
-	./indexador datasets/large/train.txt binario.bin
+#	./indexador datasets/large_train/train.txt binario.bin
 	./principal binario.bin 42
 
 clean:
