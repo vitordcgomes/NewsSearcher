@@ -11,3 +11,6 @@ void Indices_Libera(Indices ind);
 void Documentos_Indexador(Indices ind);
 void Imprime_Tudo(Indices indices);
 void Imprime_Binario(Indices indices, char** argv);
+
+
+Indices Le_Binario(Indices ind, char* caminho);

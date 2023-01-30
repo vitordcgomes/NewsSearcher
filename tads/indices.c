@@ -179,6 +179,7 @@ void Documentos_Indexador(Indices ind) {
         int prop_usado = Palavras_Retorna_Prop_Usado(ind->palavras_ind[i]); //qtd de docs q a palavra se encontra
         int ind_doc;
         int freq_pal;
+        double tf_idf_pal;
 
         double idf = Calcula_IDF(ind->documentos_usados, ind->palavras_ind[i]);
         
@@ -186,8 +187,11 @@ void Documentos_Indexador(Indices ind) {
             ind->palavras_ind[i] = Calcula_TF_IDF(idf, ind->palavras_ind[i], j);
 
             ind_doc = Palavras_Retorna_Ind(ind->palavras_ind[i], j);
-            freq_pal = Palavras_Retorna_Freq(ind->palavras_ind[i], j);        
-            ind->documentos_ind[ind_doc] = Documentos_Atribui(ind->documentos_ind[ind_doc], i, freq_pal);
+            freq_pal = Palavras_Retorna_Freq(ind->palavras_ind[i], j);
+            tf_idf_pal = Palavras_Retorna_tf_idf(ind->palavras_ind[i], j);
+            //printf("%.2lf\n", tf_idf_pal);
+
+            ind->documentos_ind[ind_doc] = Documentos_Atribui(ind->documentos_ind[ind_doc], i, freq_pal, tf_idf_pal);
 
         }
     }
@@ -216,12 +220,49 @@ void Imprime_Binario(Indices indices, char** argv) {
 
     Palavras_Escreve_Binario(file, indices->palavras_ind, qtd_pal);
 
+    
     int qtd_doc = indices->documentos_usados;
     fwrite(&qtd_doc, sizeof(int), 1, file);
 
     Documentos_Escreve_Binario(file, indices->documentos_ind, qtd_doc);
     
     fclose(file);
+}
+
+
+
+
+/*************************ARQ2************************/
+
+Indices Le_Binario(Indices ind, char* caminho){
+    
+    FILE* file = fopen (caminho, "rb");
+    
+    
+    //leitura de palavras
+    
+
+    fread (&ind->palavras_usadas, sizeof(long int), 1, file);
+    printf ("qtd_pal: %ld\n", ind->palavras_usadas);
+
+    ind->palavras_ind = (Palavras*)realloc(ind->palavras_ind, ind->palavras_usadas* sizeof(Palavras));
+        
+    Palavras_Le_Binario(file, ind->palavras_ind, ind->palavras_usadas);
+       
+/*******************************************************************/
+
+    //leitura documentos
+
+    fread (&ind->documentos_usados, sizeof(long int), 1, file);
+    printf ("qtd_doc: %ld\n", ind->documentos_usados);
+
+    ind->documentos_ind = (Documentos*)realloc(ind->documentos_ind, ind->documentos_usados * sizeof(Documentos));
+
+    Documentos_Le_Binario(file, ind->documentos_ind, ind->documentos_usados);
+
+    fclose (file);
+
+    return ind;
 }
 
 //perguntar biblioteca - [esquecemos :)]

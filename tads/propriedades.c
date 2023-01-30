@@ -65,13 +65,17 @@ int Propriedades_Retorna_Ind(Propriedades* p, int ind) {
 
 int Propriedades_Retorna_Freq(Propriedades* p, int ind) {
     return p[ind]->frequencia;
-    return p[ind]->frequencia;
 }
 
-Propriedades Propriedades_Doc_Atribui(Propriedades p, int ind_vet, int ind_pal, int freq_pal) {
+double Propriedades_Retorna_tf_idf(Propriedades* p, int ind) {
+    return p[ind]->tf_idf;
+}
+
+Propriedades Propriedades_Doc_Atribui(Propriedades p, int ind_vet, int ind_pal, int freq_pal, double tf_idf_pal) {
 
     p->indice = ind_pal;
     p->frequencia = freq_pal;
+    p->tf_idf = tf_idf_pal;
 
     return p;
 }
@@ -116,5 +120,52 @@ void Propriedades_Documentos_Escreve_Binario(FILE* file, Propriedades* prop, int
         fwrite(&prop[i]->frequencia, sizeof(int), 1, file);
 
         fwrite(&prop[i]->indice, sizeof(int), 1, file);
+
+        fwrite(&prop[i]->tf_idf, sizeof(double), 1, file);
+        //printf("tf-idf: %.2lf\n", prop[i]->tf_idf);
     }
+}
+
+
+/*****************ARQ2*********************/
+
+void Propriedades_Palavras_Le_Binario(FILE* file, Propriedades* prop, int qtd_prop) {
+    for (int i = 0; i < qtd_prop; i++) {
+
+        prop[i] = Propriedades_cria(0);
+
+        fread(&prop[i]->frequencia, sizeof(int), 1, file);
+        //printf("\tfreq: %d; ", prop[i]->frequencia);
+
+        fread(&prop[i]->indice, sizeof(int), 1, file);
+        //printf("ind: %d; ", prop[i]->indice);
+
+        fread(&prop[i]->tf_idf, sizeof(double), 1, file);
+        //printf("tf-idf: %.2lf;\n", prop[i]->tf_idf);
+    }
+
+    //printf("\n\n");
+}
+
+void Propriedades_Documentos_Le_Binario(FILE* file, Propriedades* prop, int qtd_prop) {
+    for (int i = 0; i < qtd_prop; i++) {
+
+        prop[i] = Propriedades_cria(0);
+
+        fread(&prop[i]->frequencia, sizeof(int), 1, file);
+        
+
+        fread(&prop[i]->indice, sizeof(int), 1, file);
+
+
+        fread(&prop[i]->tf_idf, sizeof(double), 1, file);
+
+
+        //printf("ind: %d; ", prop[i]->indice);
+        //printf("freq: %d; ", prop[i]->frequencia);
+        //printf("tf_idf: %.2lf;\n", prop[i]->tf_idf);
+        
+    }
+
+    //printf("\n\n");
 }

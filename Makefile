@@ -7,12 +7,12 @@ all:
 
 run: 
 	make
-	./indexador datasets/tiny/test.txt binario.bin
+	./indexador datasets/large/train.txt binario.bin
 	./principal binario.bin 42
 
 clean:
 	rm -f indexador principal *.o
-	rm binario.bin
+#	rm binario.bin
 	clear
 
 valgrind:
@@ -34,8 +34,12 @@ indexador: indexador.c tads/palavras.c tads/palavras.h tads/documentos.c tads/do
 #./indexador datasets/tiny/test.txt binario.bin
 
 principal: principal.c
+	gcc $(FLAGS) tads/palavras.c 
+	gcc $(FLAGS) tads/documentos.c
+	gcc $(FLAGS) tads/propriedades.c
+	gcc $(FLAGS) tads/indices.c
 	gcc $(FLAGS) principal.c
-	gcc -o principal principal.o
+	gcc -o principal principal.o palavras.o documentos.o propriedades.o indices.o
 
 #./principal caminho_binario K
 

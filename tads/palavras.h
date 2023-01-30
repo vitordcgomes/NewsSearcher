@@ -16,11 +16,14 @@ void Palavras_Libera(Palavras pal);
 void Propriedades_realoca (Palavras p);
 int Palavras_Retorna_Ind(Palavras p, int ind);
 int Palavras_Retorna_Freq(Palavras p, int ind);
+double Palavras_Retorna_tf_idf(Palavras p, int ind);
 int Palavras_Retorna_Prop_Usado(Palavras p);
 double Calcula_IDF(int tot_doc, Palavras pal);
 Palavras Calcula_TF_IDF(double idf, Palavras pal, int ind_prop);
 int String_Compara(const void *str1, const void *str2);
 Palavras* Palavras_Ordena(Palavras* pal, int qtd);
 void Palavras_Escreve_Binario(FILE* file, Palavras* pal, int qtd_pal);
+
+void Palavras_Le_Binario(FILE* file, Palavras* pal, int qtd_pal);
 
 

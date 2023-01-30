@@ -104,6 +104,10 @@ int Palavras_Retorna_Freq(Palavras p, int ind) {
   return Propriedades_Retorna_Freq(p->prop, ind);
 }
 
+double Palavras_Retorna_tf_idf(Palavras p, int ind) {
+  return Propriedades_Retorna_tf_idf(p->prop, ind);
+}
+
 int Palavras_Retorna_Prop_Usado(Palavras p) {
   return p->prop_usado;
 }
@@ -157,3 +161,32 @@ void Palavras_Escreve_Binario(FILE* file, Palavras* pal, int qtd_pal) {
     
   }
 }
+
+
+
+/********************ARQ2***********************/
+
+void Palavras_Le_Binario(FILE* file, Palavras* pal, int qtd_pal) {
+
+  for (int i = 0; i < qtd_pal; i++) {
+
+    pal[i] = Palavra_cria();
+
+    int tam_string = 0;
+      fread(&tam_string, sizeof(int), 1, file);
+
+      //pal[i]->nome = (char*)malloc(tam_string);
+            
+      fread(pal[i]->nome, tam_string, 1, file);
+      
+
+      fread(&pal[i]->prop_usado, sizeof(int), 1, file);
+
+      //printf("nome: %s; prop_usado: %d;\n", pal[i]->nome, pal[i]->prop_usado);
+      
+      pal[i]->prop = (Propriedades*)realloc(pal[i]->prop, pal[i]->prop_usado* sizeof(Propriedades));
+
+      Propriedades_Palavras_Le_Binario(file, pal[i]->prop, pal[i]->prop_usado);
+  }
+  
+} 

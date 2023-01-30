@@ -61,13 +61,13 @@ void Documentos_Propriedades_Realoca(Documentos doc) {
     doc->prop = (Propriedades*)realloc(doc->prop, doc->prop_alocado* sizeof(Propriedades));
 }
 
-Documentos Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal) {
+Documentos Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal, double tf_idf_pal) {
 
     if(doc->prop_usado == doc->prop_alocado) 
         Documentos_Propriedades_Realoca(doc);
     
     doc->prop[doc->prop_usado] = Documentos_Propriedade_Cria();
-    doc->prop[doc->prop_usado] = Propriedades_Doc_Atribui(doc->prop[doc->prop_usado], doc->prop_usado, ind_pal, freq_pal);
+    doc->prop[doc->prop_usado] = Propriedades_Doc_Atribui(doc->prop[doc->prop_usado], doc->prop_usado, ind_pal, freq_pal, tf_idf_pal);
     doc->prop_usado++;
     
     //Propriedades_Documentos_Imprime (doc->prop, doc->prop_usado);
@@ -86,5 +86,38 @@ void Documentos_Escreve_Binario(FILE* file, Documentos* doc, int qtd_doc) {
         fwrite(&doc[i]->prop_usado, sizeof(int), 1, file);
 
         Propriedades_Documentos_Escreve_Binario(file, doc[i]->prop, doc[i]->prop_usado);
+    }
+}
+
+
+/******************ARQ2***********************/
+
+void Documentos_Le_Binario(FILE* file, Documentos* doc, int qtd_doc) {
+    for (int i = 0; i < qtd_doc; i++) {
+
+        int tam_string_doc = 0;
+        fread(&tam_string_doc, sizeof(int), 1, file);
+
+        //vet_nomes_doc[i] = (char*)malloc(tam_string_doc);
+        
+        char nome[tam_string_doc];
+        fread(nome, tam_string_doc, 1, file);
+        
+
+        //vet_classe_doc[i] = (char*)malloc(4); //tamanho da string classe eh fixo e == 4
+
+        char classe[4];
+        fread(classe, 4, 1, file);
+
+        doc[i] = Documentos_cria(nome, classe);
+
+        //printf("nome_doc: %s; ", doc[i]->nome);
+        //printf("classe: %s;\n", doc[i]->classe);
+
+        fread(&doc[i]->prop_usado, sizeof(int), 1, file);
+
+        doc[i]->prop = (Propriedades*)realloc(doc[i]->prop, doc[i]->prop_usado* sizeof(Propriedades));
+
+        Propriedades_Documentos_Le_Binario(file, doc[i]->prop, doc[i]->prop_usado);
     }
 }
