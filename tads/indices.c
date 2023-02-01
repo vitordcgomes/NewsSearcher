@@ -21,7 +21,7 @@ struct indices {
     long int documentos_alocados;
 };
 
-// ----------------------------------------------------------------------------------------------
+// ---------------- MEMORIA ----------------
 
 Indices Indices_cria (){
 
@@ -34,118 +34,6 @@ Indices Indices_cria (){
     indice->documentos_alocados = QTD_INICIAL;
 
     return indice;
-}
-
-
-Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv) {
-    
-    if (argc <= 1) {
-        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O diretorio de arquivos de configuracao nao foi informado.\n");
-        printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
-        exit(0);
-    }
-
-    else if (argc == 2) {
-        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O nome do arquivo de saida nao foi informado.\n");
-        printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
-
-        exit(0);
-    }
-    
-    else if (argc > 3) {
-        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O numero de entradas excedeu seu limite.\n");
-        printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
-
-        exit(0);
-    }
-    
-    FILE *file;
-    file = fopen(argv[1], "r");
-
-    if (file == NULL) {
-        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m Nao foi possivel abrir o arquivo pelo caminho '%s'\n", argv[1]);
-        exit(0);
-    }
-
-    while(!feof(file)) {
-
-        char caminho[50];
-        char classe[4];
-
-        fscanf(file, "%[^ ] ", caminho);
-        fscanf(file, "%[^\n]\n", classe);
-
-        //Indexador de documentos:
-            Documentos_realoca(ind);
-            ind->documentos_ind[ind->documentos_usados] = Documentos_cria (caminho, classe);
-
-            //Indexador de palavras:
-            ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
-            
-            ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
-            ind->documentos_usados++;
-    }
-
-    //Palavras_imprime (ind->palavras_ind, ind->palavras_usadas);
-    //Documentos_imprime (ind->documentos_usados, ind->documentos_ind);
-
-    fclose(file);
-
-    return ind;
-}
-
-
-Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe, int ind) {
-    //modificando caminho
-    char caminho_completo[1000];
-    strcpy(caminho_completo, argv[1]);
-    int tam_caminho = strlen(caminho_completo);
-
-    for (int i = tam_caminho; i >= 0; i--) {
-        if (caminho_completo[i] == '/') {
-            //sprintf(caminho_completo, "%s%s", caminho_completo, caminho);
-            strcat(caminho_completo, caminho);
-            break;
-        }
-        caminho_completo[i] = '\0';
-    }
-
-    FILE* file = fopen(caminho_completo, "r");
-
-    if (file == NULL) {
-        printf("\033[91mNao foi possivel abrir o arquivo de conteudo pelo caminho '%s'\n\033[0m", caminho_completo);
-        exit(0);
-    }
-
-    while(!feof(file)) {
-        
-        //Indexador de palavras:
-        Palavras_realoca (indices);
-
-        int palavra_nova = Palavra_le (indices->palavras_ind, file, ind, indices->palavras_usadas);
-        if (palavra_nova)
-            indices->palavras_usadas++;    
-    }
-    
-    //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
-    fclose(file);
-
-    return indices;
-}
-
-
-void Palavras_realoca (Indices indices){
-    if (indices->palavras_usadas == indices->palavras_alocadas){
-        indices->palavras_alocadas*=2;
-        indices->palavras_ind = (Palavras*)realloc(indices->palavras_ind, indices->palavras_alocadas* sizeof(Palavras));
-    }
-}
-
-void Documentos_realoca (Indices indices){
-    if (indices->documentos_usados == indices->documentos_alocados){
-        indices->documentos_alocados*=2;
-        indices->documentos_ind = (Documentos*)realloc(indices->documentos_ind, indices->documentos_alocados* sizeof(Documentos));
-    }
 }
 
 void Indices_Libera(Indices ind) {
@@ -162,6 +50,23 @@ void Indices_Libera(Indices ind) {
     free(ind->palavras_ind);
     free(ind);
 }
+
+void Palavras_realoca (Indices indices){
+    if (indices->palavras_usadas == indices->palavras_alocadas){
+        indices->palavras_alocadas*=2;
+        indices->palavras_ind = (Palavras*)realloc(indices->palavras_ind, indices->palavras_alocadas* sizeof(Palavras));
+    }
+}
+
+void Documentos_realoca (Indices indices){
+    if (indices->documentos_usados == indices->documentos_alocados){
+        indices->documentos_alocados*=2;
+        indices->documentos_ind = (Documentos*)realloc(indices->documentos_ind, indices->documentos_alocados* sizeof(Documentos));
+    }
+}
+
+
+// ---------------- INDEXADORES ----------------
 
 void Documentos_Indexador(Indices ind) {
 
@@ -190,12 +95,125 @@ void Documentos_Indexador(Indices ind) {
     }
 
     ind->palavras_ind = Palavras_Ordena(ind->palavras_ind, ind->palavras_usadas);
+    
+    printf ("\nINDEXADOR:\n");
+    printf ("\n\033[95mQuantidade de palavras distintas: \033[96m%ld\n", ind->palavras_usadas);
+    printf ("\033[95mQuantidade de documentos distintos: \033[96m%ld\n\n\033[0m", ind->documentos_usados);
 }
 
-void Imprime_Tudo(Indices indices) {
+Indices Le_Arquivo_Principal(Indices ind, char** argv) {
+    
+    FILE *file;
+    file = fopen(argv[1], "r");
+
+    if (file == NULL) {
+        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m Nao foi possivel abrir o arquivo pelo caminho '%s'\n", argv[1]);
+        Indices_Libera(ind);
+        exit(0);
+    }
+
+    while(!feof(file)) {
+
+        char caminho[50];
+        char classe[4];
+
+        fscanf(file, "%[^ ] ", caminho);
+        fscanf(file, "%[^\n]\n", classe);
+
+        //Indexador de documentos:
+            Documentos_realoca(ind);
+            ind->documentos_ind[ind->documentos_usados] = Documentos_cria (caminho, classe);
+
+            //Indexador de palavras:          
+                ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
+        
+            ind->documentos_usados++;
+    }
+
+    //Palavras_imprime (ind->palavras_ind, ind->palavras_usadas);
+    //Documentos_imprime (ind->documentos_usados, ind->documentos_ind);
+
+    fclose(file);
+
+    return ind;
+}
+
+Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe, int ind) {
+
+    char caminho_completo[1000];
+    strcpy(caminho_completo, argv[1]);
+    int tam_caminho = strlen(caminho_completo);
+
+    // gerando caminho do subarquivo
+    for (int i = tam_caminho; i >= 0; i--) {
+        if (caminho_completo[i] == '/') {
+            strcat(caminho_completo, caminho);
+            break;
+        }
+        caminho_completo[i] = '\0';
+    }
+
+    FILE* file = fopen(caminho_completo, "r");
+
+    if (file == NULL) {
+        printf("\033[91mERRO: Nao foi possivel abrir o arquivo de conteudo pelo caminho '%s'\n\033[0m", caminho_completo);
+        Indices_Libera(indices);
+        exit(0);
+    }
+
+    while(!feof(file)) {
+        
+        //Indexador de palavras:
+            Palavras_realoca (indices);
+
+            int palavra_nova = Palavra_le (indices->palavras_ind, file, ind, indices->palavras_usadas);
+            if (palavra_nova)
+                indices->palavras_usadas++;    
+    }
+    
     //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
-    Documentos_imprime(indices->documentos_usados, indices->documentos_ind);
-    //Palavras_imprime_uma(indices->palavras_ind, 3);
+    fclose(file);
+
+    return indices;
+}
+
+
+// ---------------- BINARIO ----------------
+
+Indices Le_Binario(Indices ind, char* caminho){
+    
+    FILE* file = fopen (caminho, "rb");
+    
+    if (file == NULL) {
+        printf("\033[91mERRO: Nao foi possivel abrir o arquivo de conteudo binario pelo caminho '%s'\n\033[0m", caminho);
+        Indices_Libera(ind);
+        exit(0);
+    }
+
+    //leitura de palavras
+        fread (&ind->palavras_usadas, sizeof(long int), 1, file);
+        //printf ("qtd_pal: %ld\n", ind->palavras_usadas);
+
+        ind->palavras_ind = (Palavras*)realloc(ind->palavras_ind, ind->palavras_usadas* sizeof(Palavras));
+            
+        Palavras_Le_Binario(file, ind->palavras_ind, ind->palavras_usadas);
+       
+
+    //leitura documentos
+        fread (&ind->documentos_usados, sizeof(long int), 1, file);
+        //printf ("quantidade de documentos distintos: %ld\n", ind->documentos_usados);
+
+        ind->documentos_ind = (Documentos*)realloc(ind->documentos_ind, ind->documentos_usados * sizeof(Documentos));
+
+        Documentos_Le_Binario(file, ind->documentos_ind, ind->documentos_usados);
+
+    printf ("\nPRINCIPAL:\n");
+    printf ("\n\033[95mQuantidade de palavras distintas: \033[96m%ld\n", ind->palavras_usadas);
+    printf ("\033[95mQuantidade de documentos distintos: \033[96m%ld\n\n\033[0m", ind->documentos_usados);
+
+    fclose (file);
+
+    return ind;
 }
 
 void Imprime_Binario(Indices indices, char** argv) {
@@ -210,60 +228,36 @@ void Imprime_Binario(Indices indices, char** argv) {
     //printf("\npalavras_usadas: %ld\n", qtd_pal);
 
     fwrite(&qtd_pal, sizeof(long int), 1, file);
-
     Palavras_Escreve_Binario(file, indices->palavras_ind, qtd_pal);
 
-    
     long int qtd_doc = indices->documentos_usados;
-    fwrite(&qtd_doc, sizeof(long int), 1, file);
     //printf("\nqtd_doc_antes: %ld", qtd_doc);
 
+    fwrite(&qtd_doc, sizeof(long int), 1, file);
     Documentos_Escreve_Binario(file, indices->documentos_ind, qtd_doc);
     
     fclose(file);
 }
 
-
-
-
-/*************************ARQ2************************/
-
-Indices Le_Binario(Indices ind, char* caminho){
-    
-    FILE* file = fopen (caminho, "rb");
-    
-    //leitura de palavras
-    
-    fread (&ind->palavras_usadas, sizeof(long int), 1, file);
-    printf ("qtd_pal: %ld\n", ind->palavras_usadas);
-
-    ind->palavras_ind = (Palavras*)realloc(ind->palavras_ind, ind->palavras_usadas* sizeof(Palavras));
-        
-    Palavras_Le_Binario(file, ind->palavras_ind, ind->palavras_usadas);
-       
-/*******************************************************************/
-
-    //leitura documentos
-
-    fread (&ind->documentos_usados, sizeof(long int), 1, file);
-    printf ("quantidade de documentos distintos: %ld\n", ind->documentos_usados);
-
-    ind->documentos_ind = (Documentos*)realloc(ind->documentos_ind, ind->documentos_usados * sizeof(Documentos));
-
-    Documentos_Le_Binario(file, ind->documentos_ind, ind->documentos_usados);
-
-    fclose (file);
-
-    return ind;
-}
-
-//perguntar biblioteca - [esquecemos :)]
+// ---------------- FUNCIONALIDADES (menu) ----------------
 
 void Texto_Busca(Indices ind){
 
     char str [1000];
+
+    printf ("Digite o que deseja buscar: \033[96m");
     scanf ("%[^\n]%*c", str);
+    printf ("\n\033[0m");
+
     //printf ("%s\n", str);
 
     Palavras_busca (ind->palavras_ind, ind->palavras_usadas, str);
+}
+
+// ---------------- AUXILIARES ----------------
+
+void Imprime_Tudo(Indices indices) {
+    //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
+    Documentos_imprime(indices->documentos_usados, indices->documentos_ind);
+    //Palavras_imprime_uma(indices->palavras_ind, 3);
 }
