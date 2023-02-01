@@ -6,8 +6,11 @@
 // no final do documento, calcular o tf-idf;
 //liberar memoria dos indices em caso de erro
 //perguntar biblioteca - [esquecemos :)]
+<<<<<<< HEAD
 
 void Erros_Entrada_Indexador(int argc);
+=======
+>>>>>>> 0b64b0d95d2f50d6b205465321562490f5961c55
 
 int main(int argc, char** argv) {
 

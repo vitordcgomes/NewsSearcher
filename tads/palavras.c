@@ -164,6 +164,7 @@ void Palavras_busca (Palavras* pal, int qtd, char* str){
 
     if (endereco != NULL) {
       int indice = endereco - pal;
+<<<<<<< HEAD
 
       Propriedades_Algo(pal[indice]->prop, pal[indice]->prop_usado);
       /*
@@ -172,6 +173,14 @@ void Palavras_busca (Palavras* pal, int qtd, char* str){
         *endereco - pal = diferenca de "casas" do vetor entre os endereços
       */
 
+=======
+      /*
+        *pal = endereco da primeira casa (indice 0) do vetor
+        *endereco = endereco da palavra encontrada no vetor
+        *endereco - pal = diferenca de "casas" do vetor entre os endereços
+      */
+
+>>>>>>> 0b64b0d95d2f50d6b205465321562490f5961c55
       printf("Palavra '%s' encontrada no indice %d.\n", token, indice);
       //acessar o indice de cada palavras para calcular os atributos
     } 

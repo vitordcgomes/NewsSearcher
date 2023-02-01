@@ -2,7 +2,10 @@
 #include <stdlib.h>
 #include "tads/indices.h"
 
+<<<<<<< HEAD
 void Erros_Entrada_Principal (int argc);
+=======
+>>>>>>> 0b64b0d95d2f50d6b205465321562490f5961c55
 void Menu_Funcionalidades();
 void Imprime_Menu ();
 
