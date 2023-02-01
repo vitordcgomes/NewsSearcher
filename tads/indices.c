@@ -103,13 +103,7 @@ void Documentos_Indexador(Indices ind) {
     printf ("\033[95mQuantidade de documentos distintos: \033[96m%ld\n\n\033[0m", ind->documentos_usados);
 }
 
-<<<<<<< HEAD
 Indices Le_Arquivo_Principal(Indices ind, char** argv) {
-=======
-Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv) {
-    
-    Erros_Entrada (argc, ind);
->>>>>>> 0b64b0d95d2f50d6b205465321562490f5961c55
     
     FILE *file;
     file = fopen(argv[1], "r");
@@ -164,11 +158,7 @@ Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe,
     FILE* file = fopen(caminho_completo, "r");
 
     if (file == NULL) {
-<<<<<<< HEAD
         printf("\033[91mERRO: Nao foi possivel abrir o arquivo de conteudo pelo caminho '%s'\n\033[0m", caminho_completo);
-=======
-        printf("\033[91mNao foi possivel abrir o arquivo de conteudo pelo caminho '%s'\n\033[0m", caminho_completo);
->>>>>>> 0b64b0d95d2f50d6b205465321562490f5961c55
         Indices_Libera(indices);
         exit(0);
     }
@@ -196,15 +186,12 @@ Indices Le_Binario(Indices ind, char* caminho){
     
     FILE* file = fopen (caminho, "rb");
     
-<<<<<<< HEAD
     if (file == NULL) {
         printf("\033[91mERRO: Nao foi possivel abrir o arquivo de conteudo binario pelo caminho '%s'\n\033[0m", caminho);
         Indices_Libera(ind);
         exit(0);
     }
 
-=======
->>>>>>> 0b64b0d95d2f50d6b205465321562490f5961c55
     //leitura de palavras
         fread (&ind->palavras_usadas, sizeof(long int), 1, file);
         //printf ("qtd_pal: %ld\n", ind->palavras_usadas);
@@ -275,34 +262,4 @@ void Imprime_Tudo(Indices indices) {
     //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
     Documentos_imprime(indices->documentos_usados, indices->documentos_ind);
     //Palavras_imprime_uma(indices->palavras_ind, 3);
-<<<<<<< HEAD
-=======
-}
-
-
-// ---------------- FUNCOES LOCAIS ----------------
-
-void Erros_Entrada (int argc, Indices ind){
-
-    if (argc <= 1) {
-        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O diretorio de arquivos de configuracao nao foi informado.\n");
-        printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
-        Indices_Libera(ind);
-        exit(0);
-    }
-
-    else if (argc == 2) {
-        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O nome do arquivo de saida nao foi informado.\n");
-        printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
-        Indices_Libera(ind);
-        exit(0);
-    }
-    
-    else if (argc > 3) {
-        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O numero de entradas excedeu seu limite.\n");
-        printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
-        Indices_Libera(ind);
-        exit(0);
-    }
->>>>>>> 0b64b0d95d2f50d6b205465321562490f5961c55
 }

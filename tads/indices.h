@@ -10,11 +10,7 @@ void Documentos_realoca (Indices indices);
 
 // ---------------- INDEXADORES ----------------
 void Documentos_Indexador(Indices ind);
-<<<<<<< HEAD
 Indices Le_Arquivo_Principal(Indices ind, char** argv);
-=======
-Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv);
->>>>>>> 0b64b0d95d2f50d6b205465321562490f5961c55
 Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe, int ind);
 
 // ---------------- BINARIO ----------------
