@@ -5,6 +5,7 @@
 // ler as infos de um arquivo .txt e salva-las em um arquivo .bin;
 // no final do documento, calcular o tf-idf;
 //liberar memoria dos indices em caso de erro
+//perguntar biblioteca - [esquecemos :)]
 
 int main(int argc, char** argv) {
 
