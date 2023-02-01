@@ -14,10 +14,22 @@ struct documentos {
     int prop_usado;
 };
 
+// ---------------- MEMORIA ----------------
+
 Documentos* Documentos_vetor_cria(){
 
     Documentos* documento = (Documentos*)calloc(QTD_INICIAL, sizeof(Documentos));
     return documento;
+}
+
+void Documentos_Libera(Documentos doc) {
+    Propriedades_Libera(doc->prop, doc->prop_usado);
+    free(doc);
+}
+
+void Documentos_Propriedades_Realoca(Documentos doc) {
+    doc->prop_alocado*= 2;
+    doc->prop = (Propriedades*)realloc(doc->prop, doc->prop_alocado* sizeof(Propriedades));
 }
 
  Documentos Documentos_cria (char* caminho, char* classe){
@@ -35,31 +47,8 @@ Documentos* Documentos_vetor_cria(){
     return doc;
  }
 
-void Documentos_Libera(Documentos doc) {
-    Propriedades_Libera(doc->prop, doc->prop_usado);
-    free(doc);
-}
 
-void Documentos_imprime(int qtd, Documentos* docs){
-
-    for (int i=0; i<qtd; i++){
-        printf ("DOC: %d, NOME: %s, CLASSE: %s\n", i, docs[i]->nome, docs[i]->classe);
-        Propriedades_Documentos_Imprime(docs[i]->prop, docs[i]->prop_usado);
-    }
-
-    /*
-    for (int i = 0; i < qtd; i++) {
-        Propriedades_Documentos_Imprime(docs[i]->prop, docs[i]->prop_usado);
-    }
-    */
-
-    
-}
-
-void Documentos_Propriedades_Realoca(Documentos doc) {
-    doc->prop_alocado*= 2;
-    doc->prop = (Propriedades*)realloc(doc->prop, doc->prop_alocado* sizeof(Propriedades));
-}
+// ---------------- INDEXADORES ----------------
 
 Documentos Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal, double tf_idf_pal) {
 
@@ -75,6 +64,9 @@ Documentos Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal, double 
     return doc;
 }
 
+
+// ---------------- BINARIO ----------------
+
 void Documentos_Escreve_Binario(FILE* file, Documentos* doc, int qtd_doc) {
     for (int i = 0; i < qtd_doc; i++) {
         int tam_nome = strlen(doc[i]->nome) + 1; // +1 para incluir o '\0' da string
@@ -88,9 +80,6 @@ void Documentos_Escreve_Binario(FILE* file, Documentos* doc, int qtd_doc) {
         Propriedades_Documentos_Escreve_Binario(file, doc[i]->prop, doc[i]->prop_usado);
     }
 }
-
-
-/******************ARQ2***********************/
 
 void Documentos_Le_Binario(FILE* file, Documentos* doc, int qtd_doc) {
     for (int i = 0; i < qtd_doc; i++) {
@@ -120,4 +109,21 @@ void Documentos_Le_Binario(FILE* file, Documentos* doc, int qtd_doc) {
 
         Propriedades_Documentos_Le_Binario(file, doc[i]->prop, doc[i]->prop_usado);
     }
+}
+
+
+// ---------------- AUXILIARES ----------------
+
+void Documentos_imprime(int qtd, Documentos* docs){
+
+    for (int i=0; i<qtd; i++){
+        printf ("DOC: %d, NOME: %s, CLASSE: %s\n", i, docs[i]->nome, docs[i]->classe);
+        Propriedades_Documentos_Imprime(docs[i]->prop, docs[i]->prop_usado);
+    }
+
+    /*
+    for (int i = 0; i < qtd; i++) {
+        Propriedades_Documentos_Imprime(docs[i]->prop, docs[i]->prop_usado);
+    }
+    */
 }

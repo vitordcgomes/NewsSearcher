@@ -7,6 +7,8 @@ struct propriedades {
     double tf_idf;
 };
 
+// ---------------- MEMORIA ----------------
+
 Propriedades* Propriedades_vetor_cria(){
     Propriedades* p = (Propriedades*)calloc(QTD_INICIAL, sizeof(Propriedades));
     return p;
@@ -22,6 +24,11 @@ Propriedades Propriedades_cria (int ind){
  return p;
 }
 
+Propriedades Documentos_Propriedade_Cria() {
+    Propriedades p = (Propriedades)calloc(1, sizeof(struct propriedades));
+
+    return p;
+}
 
 void Propriedades_Libera(Propriedades* p, int qtd) {
     for (int i=0; i<qtd; i++){
@@ -31,44 +38,20 @@ void Propriedades_Libera(Propriedades* p, int qtd) {
     free(p);
 }
 
-void Propriedades_Imprime (Propriedades* p, int qtd){
-    
-    for (int i=0; i<qtd; i++){
-        printf ("Doc: %d; Freq: %d; tf-idf: %.2lf;\n\t", p[i]->indice, p[i]->frequencia, p[i]->tf_idf);
-    }
-    
-    printf ("\n\n");
 
- }
+// ---------------- INDEXADORES ----------------
 
-int Propriedades_busca (Propriedades* p, int ind_doc, int qtd_prop){
+Propriedades Atribui_TF_IDF(double idf, Propriedades prop) {
 
+    prop->tf_idf = prop->frequencia * idf;
 
-    for (int i=0; i<qtd_prop; i++){
+    //printf("tf-idf: %.2lf\n", prop->tf_idf);
 
-        if (p[i]->indice == ind_doc){
-            p[i]->frequencia++;
-            return i;
-        }
-    }
-
-    return -1;
+    return prop;
 }
 
 void Propriedade_Atualiza_Freq (Propriedades* p, int indice){
     p[indice]->frequencia++;
-}
-
-int Propriedades_Retorna_Ind(Propriedades* p, int ind) {
-    return p[ind]->indice;
-}
-
-int Propriedades_Retorna_Freq(Propriedades* p, int ind) {
-    return p[ind]->frequencia;
-}
-
-double Propriedades_Retorna_tf_idf(Propriedades* p, int ind) {
-    return p[ind]->tf_idf;
 }
 
 Propriedades Propriedades_Doc_Atribui(Propriedades p, int ind_vet, int ind_pal, int freq_pal, double tf_idf_pal) {
@@ -80,29 +63,8 @@ Propriedades Propriedades_Doc_Atribui(Propriedades p, int ind_vet, int ind_pal, 
     return p;
 }
 
-void Propriedades_Documentos_Imprime(Propriedades* p, int qtd) {
 
-    for (int i = 0; i < qtd; i++) {
-        printf("i: %d; ind_pal: %d; freq: %d\n",i, p[i]->indice, p[i]->frequencia);
-    }
-    
-    printf("\n\n");
-}
-
-Propriedades Documentos_Propriedade_Cria() {
-    Propriedades p = (Propriedades)calloc(1, sizeof(struct propriedades));
-
-    return p;
-}
-
-Propriedades Atribui_TF_IDF(double idf, Propriedades prop) {
-
-    prop->tf_idf = prop->frequencia * idf;
-
-    //printf("tf-idf: %.2lf\n", prop->tf_idf);
-
-    return prop;
-}
+// ---------------- BINARIO ----------------
 
 void Propriedades_Palavras_Escreve_Binario(FILE* file, Propriedades* prop, int qtd_prop) {
 
@@ -125,9 +87,6 @@ void Propriedades_Documentos_Escreve_Binario(FILE* file, Propriedades* prop, int
         //printf("tf-idf: %.2lf\n", prop[i]->tf_idf);
     }
 }
-
-
-/*****************ARQ2*********************/
 
 void Propriedades_Palavras_Le_Binario(FILE* file, Propriedades* prop, int qtd_prop) {
     for (int i = 0; i < qtd_prop; i++) {
@@ -154,12 +113,9 @@ void Propriedades_Documentos_Le_Binario(FILE* file, Propriedades* prop, int qtd_
 
         fread(&prop[i]->frequencia, sizeof(int), 1, file);
         
-
         fread(&prop[i]->indice, sizeof(int), 1, file);
 
-
         fread(&prop[i]->tf_idf, sizeof(double), 1, file);
-
 
         //printf("ind: %d; ", prop[i]->indice);
         //printf("freq: %d; ", prop[i]->frequencia);
@@ -168,4 +124,52 @@ void Propriedades_Documentos_Le_Binario(FILE* file, Propriedades* prop, int qtd_
     }
 
     //printf("\n\n");
+}
+
+
+// ---------------- AUXILIARES ----------------
+
+void Propriedades_Imprime (Propriedades* p, int qtd){
+    
+    for (int i=0; i<qtd; i++){
+        printf ("Doc: %d; Freq: %d; tf-idf: %.2lf;\n\t", p[i]->indice, p[i]->frequencia, p[i]->tf_idf);
+    }
+    
+    printf ("\n\n");
+
+ }
+
+int Propriedades_Retorna_Ind(Propriedades* p, int ind) {
+    return p[ind]->indice;
+}
+
+int Propriedades_Retorna_Freq(Propriedades* p, int ind) {
+    return p[ind]->frequencia;
+}
+
+double Propriedades_Retorna_tf_idf(Propriedades* p, int ind) {
+    return p[ind]->tf_idf;
+}
+
+ void Propriedades_Documentos_Imprime(Propriedades* p, int qtd) {
+
+    for (int i = 0; i < qtd; i++) {
+        printf("i: %d; ind_pal: %d; freq: %d\n",i, p[i]->indice, p[i]->frequencia);
+    }
+    
+    printf("\n\n");
+}
+
+int Propriedades_busca (Propriedades* p, int ind_doc, int qtd_prop){
+
+
+    for (int i=0; i<qtd_prop; i++){
+
+        if (p[i]->indice == ind_doc){
+            p[i]->frequencia++;
+            return i;
+        }
+    }
+
+    return -1;
 }
