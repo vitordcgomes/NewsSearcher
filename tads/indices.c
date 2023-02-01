@@ -9,6 +9,8 @@
 
 #define QTD_INICIAL 100
 
+void Erros_Entrada (int argc, Indices ind);
+
 struct indices {
 
     Palavras* palavras_ind;
@@ -95,35 +97,22 @@ void Documentos_Indexador(Indices ind) {
     }
 
     ind->palavras_ind = Palavras_Ordena(ind->palavras_ind, ind->palavras_usadas);
+    
+    printf ("\nINDEXADOR:\n");
+    printf ("\n\033[95mQuantidade de palavras distintas: \033[96m%ld\n", ind->palavras_usadas);
+    printf ("\033[95mQuantidade de documentos distintos: \033[96m%ld\n\n\033[0m", ind->documentos_usados);
 }
 
 Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv) {
     
-    if (argc <= 1) {
-        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O diretorio de arquivos de configuracao nao foi informado.\n");
-        printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
-        exit(0);
-    }
-
-    else if (argc == 2) {
-        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O nome do arquivo de saida nao foi informado.\n");
-        printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
-
-        exit(0);
-    }
-    
-    else if (argc > 3) {
-        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O numero de entradas excedeu seu limite.\n");
-        printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
-
-        exit(0);
-    }
+    Erros_Entrada (argc, ind);
     
     FILE *file;
     file = fopen(argv[1], "r");
 
     if (file == NULL) {
         printf("\033[91m\033[1m\nERRO:\033[0m\033[91m Nao foi possivel abrir o arquivo pelo caminho '%s'\n", argv[1]);
+        Indices_Libera(ind);
         exit(0);
     }
 
@@ -139,10 +128,9 @@ Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv) {
             Documentos_realoca(ind);
             ind->documentos_ind[ind->documentos_usados] = Documentos_cria (caminho, classe);
 
-            //Indexador de palavras:
-            ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
-            
-            ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
+            //Indexador de palavras:          
+                ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
+        
             ind->documentos_usados++;
     }
 
@@ -155,14 +143,14 @@ Indices Le_Arquivo_Principal(Indices ind, int argc, char** argv) {
 }
 
 Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe, int ind) {
-    //modificando caminho
+
     char caminho_completo[1000];
     strcpy(caminho_completo, argv[1]);
     int tam_caminho = strlen(caminho_completo);
 
+    // gerando caminho do subarquivo
     for (int i = tam_caminho; i >= 0; i--) {
         if (caminho_completo[i] == '/') {
-            //sprintf(caminho_completo, "%s%s", caminho_completo, caminho);
             strcat(caminho_completo, caminho);
             break;
         }
@@ -173,17 +161,18 @@ Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe,
 
     if (file == NULL) {
         printf("\033[91mNao foi possivel abrir o arquivo de conteudo pelo caminho '%s'\n\033[0m", caminho_completo);
+        Indices_Libera(indices);
         exit(0);
     }
 
     while(!feof(file)) {
         
         //Indexador de palavras:
-        Palavras_realoca (indices);
+            Palavras_realoca (indices);
 
-        int palavra_nova = Palavra_le (indices->palavras_ind, file, ind, indices->palavras_usadas);
-        if (palavra_nova)
-            indices->palavras_usadas++;    
+            int palavra_nova = Palavra_le (indices->palavras_ind, file, ind, indices->palavras_usadas);
+            if (palavra_nova)
+                indices->palavras_usadas++;    
     }
     
     //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
@@ -201,7 +190,7 @@ Indices Le_Binario(Indices ind, char* caminho){
     
     //leitura de palavras
         fread (&ind->palavras_usadas, sizeof(long int), 1, file);
-        printf ("qtd_pal: %ld\n", ind->palavras_usadas);
+        //printf ("qtd_pal: %ld\n", ind->palavras_usadas);
 
         ind->palavras_ind = (Palavras*)realloc(ind->palavras_ind, ind->palavras_usadas* sizeof(Palavras));
             
@@ -210,11 +199,15 @@ Indices Le_Binario(Indices ind, char* caminho){
 
     //leitura documentos
         fread (&ind->documentos_usados, sizeof(long int), 1, file);
-        printf ("quantidade de documentos distintos: %ld\n", ind->documentos_usados);
+        //printf ("quantidade de documentos distintos: %ld\n", ind->documentos_usados);
 
         ind->documentos_ind = (Documentos*)realloc(ind->documentos_ind, ind->documentos_usados * sizeof(Documentos));
 
         Documentos_Le_Binario(file, ind->documentos_ind, ind->documentos_usados);
+
+    printf ("\nPRINCIPAL:\n");
+    printf ("\n\033[95mQuantidade de palavras distintas: \033[96m%ld\n", ind->palavras_usadas);
+    printf ("\033[95mQuantidade de documentos distintos: \033[96m%ld\n\n\033[0m", ind->documentos_usados);
 
     fclose (file);
 
@@ -233,33 +226,63 @@ void Imprime_Binario(Indices indices, char** argv) {
     //printf("\npalavras_usadas: %ld\n", qtd_pal);
 
     fwrite(&qtd_pal, sizeof(long int), 1, file);
-
     Palavras_Escreve_Binario(file, indices->palavras_ind, qtd_pal);
 
-    
     long int qtd_doc = indices->documentos_usados;
-    fwrite(&qtd_doc, sizeof(long int), 1, file);
     //printf("\nqtd_doc_antes: %ld", qtd_doc);
 
+    fwrite(&qtd_doc, sizeof(long int), 1, file);
     Documentos_Escreve_Binario(file, indices->documentos_ind, qtd_doc);
     
     fclose(file);
 }
 
-
-// ---------------- AUXILIARES ----------------
+// ---------------- FUNCIONALIDADES (menu) ----------------
 
 void Texto_Busca(Indices ind){
 
     char str [1000];
+
+    printf ("Digite o que deseja buscar: \033[96m");
     scanf ("%[^\n]%*c", str);
+    printf ("\n\033[0m");
+
     //printf ("%s\n", str);
 
     Palavras_busca (ind->palavras_ind, ind->palavras_usadas, str);
 }
 
+// ---------------- AUXILIARES ----------------
+
 void Imprime_Tudo(Indices indices) {
     //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
     Documentos_imprime(indices->documentos_usados, indices->documentos_ind);
     //Palavras_imprime_uma(indices->palavras_ind, 3);
+}
+
+
+// ---------------- FUNCOES LOCAIS ----------------
+
+void Erros_Entrada (int argc, Indices ind){
+
+    if (argc <= 1) {
+        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O diretorio de arquivos de configuracao nao foi informado.\n");
+        printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
+        Indices_Libera(ind);
+        exit(0);
+    }
+
+    else if (argc == 2) {
+        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O nome do arquivo de saida nao foi informado.\n");
+        printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
+        Indices_Libera(ind);
+        exit(0);
+    }
+    
+    else if (argc > 3) {
+        printf("\033[91m\033[1m\nERRO:\033[0m\033[91m O numero de entradas excedeu seu limite.\n");
+        printf ("Favor fornecer entrada do tipo:\n\n\t./\033[3mnome_do_executavel caminho_do_diretorio arquivo_de_saida\033[0m\n\n");
+        Indices_Libera(ind);
+        exit(0);
+    }
 }

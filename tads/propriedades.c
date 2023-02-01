@@ -38,7 +38,6 @@ void Propriedades_Libera(Propriedades* p, int qtd) {
     free(p);
 }
 
-
 // ---------------- INDEXADORES ----------------
 
 Propriedades Atribui_TF_IDF(double idf, Propriedades prop) {
@@ -66,7 +65,7 @@ Propriedades Propriedades_Doc_Atribui(Propriedades p, int ind_vet, int ind_pal, 
 
 // ---------------- BINARIO ----------------
 
-void Propriedades_Palavras_Escreve_Binario(FILE* file, Propriedades* prop, int qtd_prop) {
+void Propriedades_Escreve_Binario(FILE* file, Propriedades* prop, int qtd_prop) {
 
     for (int i = 0; i < qtd_prop; i++) {
         fwrite(&prop[i]->frequencia, sizeof(int), 1, file);
@@ -77,18 +76,7 @@ void Propriedades_Palavras_Escreve_Binario(FILE* file, Propriedades* prop, int q
     }
 }
 
-void Propriedades_Documentos_Escreve_Binario(FILE* file, Propriedades* prop, int qtd_prop) {
-    for(int i = 0; i < qtd_prop; i++) {
-        fwrite(&prop[i]->frequencia, sizeof(int), 1, file);
-
-        fwrite(&prop[i]->indice, sizeof(int), 1, file);
-
-        fwrite(&prop[i]->tf_idf, sizeof(double), 1, file);
-        //printf("tf-idf: %.2lf\n", prop[i]->tf_idf);
-    }
-}
-
-void Propriedades_Palavras_Le_Binario(FILE* file, Propriedades* prop, int qtd_prop) {
+void Propriedades_Le_Binario(FILE* file, Propriedades* prop, int qtd_prop) {
     for (int i = 0; i < qtd_prop; i++) {
 
         prop[i] = Propriedades_cria(0);
@@ -101,26 +89,6 @@ void Propriedades_Palavras_Le_Binario(FILE* file, Propriedades* prop, int qtd_pr
 
         fread(&prop[i]->tf_idf, sizeof(double), 1, file);
         //printf("tf-idf: %.2lf;\n", prop[i]->tf_idf);
-    }
-
-    //printf("\n\n");
-}
-
-void Propriedades_Documentos_Le_Binario(FILE* file, Propriedades* prop, int qtd_prop) {
-    for (int i = 0; i < qtd_prop; i++) {
-
-        prop[i] = Propriedades_cria(0);
-
-        fread(&prop[i]->frequencia, sizeof(int), 1, file);
-        
-        fread(&prop[i]->indice, sizeof(int), 1, file);
-
-        fread(&prop[i]->tf_idf, sizeof(double), 1, file);
-
-        //printf("ind: %d; ", prop[i]->indice);
-        //printf("freq: %d; ", prop[i]->frequencia);
-        //printf("tf_idf: %.2lf;\n", prop[i]->tf_idf);
-        
     }
 
     //printf("\n\n");

@@ -67,20 +67,6 @@ Documentos Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal, double 
 
 // ---------------- BINARIO ----------------
 
-void Documentos_Escreve_Binario(FILE* file, Documentos* doc, int qtd_doc) {
-    for (int i = 0; i < qtd_doc; i++) {
-        int tam_nome = strlen(doc[i]->nome) + 1; // +1 para incluir o '\0' da string
-
-        fwrite(&tam_nome, sizeof(int), 1, file);
-        fwrite(doc[i]->nome, tam_nome, 1, file);
-        fwrite(doc[i]->classe, 4, 1, file);
-
-        fwrite(&doc[i]->prop_usado, sizeof(int), 1, file);
-
-        Propriedades_Documentos_Escreve_Binario(file, doc[i]->prop, doc[i]->prop_usado);
-    }
-}
-
 void Documentos_Le_Binario(FILE* file, Documentos* doc, int qtd_doc) {
     for (int i = 0; i < qtd_doc; i++) {
 
@@ -107,7 +93,21 @@ void Documentos_Le_Binario(FILE* file, Documentos* doc, int qtd_doc) {
 
         doc[i]->prop = (Propriedades*)realloc(doc[i]->prop, doc[i]->prop_usado* sizeof(Propriedades));
 
-        Propriedades_Documentos_Le_Binario(file, doc[i]->prop, doc[i]->prop_usado);
+        Propriedades_Le_Binario(file, doc[i]->prop, doc[i]->prop_usado);
+    }
+}
+
+void Documentos_Escreve_Binario(FILE* file, Documentos* doc, int qtd_doc) {
+    for (int i = 0; i < qtd_doc; i++) {
+        int tam_nome = strlen(doc[i]->nome) + 1; // +1 para incluir o '\0' da string
+
+        fwrite(&tam_nome, sizeof(int), 1, file);
+        fwrite(doc[i]->nome, tam_nome, 1, file);
+        fwrite(doc[i]->classe, 4, 1, file);
+
+        fwrite(&doc[i]->prop_usado, sizeof(int), 1, file);
+
+        Propriedades_Escreve_Binario(file, doc[i]->prop, doc[i]->prop_usado);
     }
 }
 

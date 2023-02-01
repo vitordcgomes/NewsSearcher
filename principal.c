@@ -2,10 +2,8 @@
 #include <stdlib.h>
 #include "tads/indices.h"
 
-void Funcionalidades();
+void Menu_Funcionalidades();
 void Imprime_Menu ();
-
-
 
 typedef enum {
     BUSCA = '1',
@@ -19,17 +17,18 @@ int main(int argc, char** argv) {
 
     Indices ind = Indices_cria();
     ind = Le_Binario(ind, argv[1]);
-    Funcionalidades(ind);
+    Menu_Funcionalidades(ind);
     Indices_Libera(ind);
     printf("\033[1m----Ate a proxima!----\033[0m\n\n");
 
     return 0;
 }
 
-void Funcionalidades(Indices ind){
+// ---------------- FUNCOES LOCAIS ----------------
+
+void Menu_Funcionalidades(Indices ind){
 
     char op;
-    int flag_erros = 0;
     int flag_encerra = 0;
 
     while(1){
@@ -41,7 +40,7 @@ void Funcionalidades(Indices ind){
         switch (op)
         {
             case BUSCA:
-            Texto_Busca(ind);
+                Texto_Busca(ind);
             break;
 
             case CLASSIFICA:
@@ -54,34 +53,26 @@ void Funcionalidades(Indices ind){
             break;
 
             case ENCERRA:
-                printf ("\n\033[3m\033[91mEncerrando \033[1m# NewsSearcher #\033[0m\n\n");
                 flag_encerra = 1;
             break;
 
             default:
-                printf ("\n\033[91m\033[3mEssa entrada nao eh valida!\033[0m\033[91m\nFavor digitar um dos numeros presentes no menu.\n\n\033[0m");
-                flag_erros++; 
-
-                if (flag_erros>3){
-                    printf ("\033[91mVoce esgotou suas tentativas! Favor reiniciar o programa.\n");
-                    printf ("\n\033[3m\033[91mEncerrando \033[1m# NewsSearcher #\033[0m\n\n");
-                    flag_encerra = 1;
-                }
-                else {
-                    printf ("\033[91mVoce tem \033[1m%d\033[0m\033[91m tentativa(s) restante(s)!\033[0m\n", 4-flag_erros);
-
-                }
+                printf ("\n\033[91mFavor digitar apenas \033[1mnumeros\033[0m\033[91m correspondentes as opcoes do menu.\n");
+                flag_encerra = 1;
             break;
                 
         }
 
-        if (flag_encerra) break;
-    }
+        if (flag_encerra) {
+            printf ("\n\033[3m\033[91mEncerrando \033[1m# NewsSearcher #\033[0m\n\n");
+            break;
+        }
 
+    }
 }
 
-void Imprime_Menu ()
-{
+void Imprime_Menu (){
+
     printf ("\n\033[95m\033[1m # \033[96mNewsSearcher\033[95m #\n\033[0m");
     printf ("\n\t\033[95m1.\033[0m Buscar noticias");
     printf ("\n\t\033[95m2.\033[0m Classificar noticias");

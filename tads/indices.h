@@ -17,6 +17,8 @@ Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe,
 Indices Le_Binario(Indices ind, char* caminho);
 void Imprime_Binario(Indices indices, char** argv);
 
-// ---------------- AUXILIARES ----------------
+// ---------------- FUNCIONALIDADES (menu) ----------------
 void Texto_Busca(Indices ind);
+
+// ---------------- AUXILIARES ----------------
 void Imprime_Tudo(Indices indices);

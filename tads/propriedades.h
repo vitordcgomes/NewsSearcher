@@ -19,12 +19,8 @@ Propriedades Propriedades_Doc_Atribui(Propriedades p, int ind_vet, int ind_pal, 
 
 
 // ---------------- BINARIO ----------------
-void Propriedades_Palavras_Escreve_Binario(FILE* file, Propriedades* prop, int qtd_prop);
-void Propriedades_Documentos_Escreve_Binario(FILE* file, Propriedades* prop, int qtd_prop);
-
-void Propriedades_Palavras_Le_Binario(FILE* file, Propriedades* prop, int qtd_prop);
-void Propriedades_Documentos_Le_Binario(FILE* file, Propriedades* prop, int qtd_prop);
-
+void Propriedades_Le_Binario(FILE* file, Propriedades* prop, int qtd_prop);
+void Propriedades_Escreve_Binario(FILE* file, Propriedades* prop, int qtd_prop);
 
 // ---------------- AUXILIARES ----------------
 void Propriedades_Imprime (Propriedades* p, int qtd);

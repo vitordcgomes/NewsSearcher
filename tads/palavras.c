@@ -56,7 +56,7 @@ int Palavra_le (Palavras* pal, FILE* f, int ind_doc, int ind_palavra){
     if (!strcmp(nome, pal[i]->nome)){
       
       //busca o indice no vetor de propriedades do documento de indice = ind
-      indice_vetor = Propriedades_busca(pal[i]->prop, ind_doc, pal[i]->prop_usado);
+      indice_vetor = Propriedades_busca(pal[i]->prop, ind_doc, pal[i]->prop_usado); //bsearch?
       
       //se o indice do documento não existir no vetor de propriedades, ou seja, a função retornar <0, criamos outra "casinha" para o novo indice
       if (indice_vetor < 0){
@@ -112,20 +112,15 @@ void Palavras_Le_Binario(FILE* file, Palavras* pal, int qtd_pal) {
     pal[i] = Palavra_cria();
 
     int tam_string = 0;
-      fread(&tam_string, sizeof(int), 1, file);
+    fread(&tam_string, sizeof(int), 1, file);            
+    fread(pal[i]->nome, tam_string, 1, file);
+    fread(&pal[i]->prop_usado, sizeof(int), 1, file);
 
-      //pal[i]->nome = (char*)malloc(tam_string);
-            
-      fread(pal[i]->nome, tam_string, 1, file);
+    //printf("[%d] - nome: %s; prop_usado: %d;\n", i, pal[i]->nome, pal[i]->prop_usado);
       
+    pal[i]->prop = (Propriedades*)realloc(pal[i]->prop, pal[i]->prop_usado* sizeof(Propriedades));
 
-      fread(&pal[i]->prop_usado, sizeof(int), 1, file);
-
-      //printf("[%d] - nome: %s; prop_usado: %d;\n", i, pal[i]->nome, pal[i]->prop_usado);
-      
-      pal[i]->prop = (Propriedades*)realloc(pal[i]->prop, pal[i]->prop_usado* sizeof(Propriedades));
-
-      Propriedades_Palavras_Le_Binario(file, pal[i]->prop, pal[i]->prop_usado);
+    Propriedades_Le_Binario(file, pal[i]->prop, pal[i]->prop_usado);
   }
   
 } 
@@ -140,8 +135,51 @@ void Palavras_Escreve_Binario(FILE* file, Palavras* pal, int qtd_pal) {
 
     fwrite(&pal[i]->prop_usado, sizeof(int), 1, file);
 
-    Propriedades_Palavras_Escreve_Binario(file, pal[i]->prop, pal[i]->prop_usado);
+    Propriedades_Escreve_Binario(file, pal[i]->prop, pal[i]->prop_usado);
     
+  }
+}
+
+// ---------------- FUNCIONALIDADES (menu) ----------------
+
+void Palavras_busca (Palavras* pal, int qtd, char* str){
+  
+  //quebrar 'str' na quantidade de palavras q tiverem sido escritas
+
+  const char separador[] = " ";
+  char* token;
+
+  //retira o primeiro 'token'
+  token = strtok(str, separador);
+
+  while (token != NULL)
+  {
+    //printf("token: %s\n", token);
+
+    Palavras busca = (Palavras)calloc(1, sizeof(struct palavras));
+
+    strcpy(busca->nome, token);
+
+    Palavras* endereco = bsearch(&busca, pal, qtd, sizeof(Palavras), String_Compara);
+
+    if (endereco != NULL) {
+      int indice = endereco - pal;
+      /*
+        *pal = endereco da primeira casa (indice 0) do vetor
+        *endereco = endereco da palavra encontrada no vetor
+        *endereco - pal = diferenca de "casas" do vetor entre os endereços
+      */
+
+      printf("Palavra '%s' encontrada no indice %d.\n", token, indice);
+      //acessar o indice de cada palavras para calcular os atributos
+    } 
+    
+    else {
+      printf("Palavra '%s' nao encontrada.\n", token);
+    }
+
+    free(busca); 
+    token = strtok(NULL, separador);
   }
 }
 
@@ -194,48 +232,4 @@ double Palavras_Retorna_tf_idf(Palavras p, int ind) {
 int String_Compara(const void *str1, const void *str2) {
   //return strcmp(((Palavras)str1)->nome,((Palavras)str2)->nome);
   return strcmp(*(char **)str1, *(char **)str2);
-}
-
-void Palavras_busca (Palavras* pal, int qtd, char* str){
-  
-  //quebrar 'str' na quantidade de palavras q tiverem sido escritas
-
-  int cont_pal = 1;
-  for (int i = 0; i < 1000; i++) { //1000 eh o tamanho da string 'str'
-    if (str[i] == ' ') {
-      cont_pal+=1;
-    }
-  }
-
-  const char separador[] = " ";
-  char* token;
-
-  //retira o primeiro 'token'
-  token = strtok(str, separador);
-
-  while (token != NULL)
-  {
-    //printf("token: %s\n", token);
-
-    Palavras busca = Palavra_cria();
-    strcpy(busca->nome, token);
-
-    Palavras* endereco = bsearch(&busca, pal, qtd, sizeof(Palavras), String_Compara);
-
-    if (endereco != NULL) {
-      int indice = endereco - pal;
-      printf("%s encontrada no indice %d.\n", token, indice);
-
-      //acessar o indice de cada palavras para calcular os atributos
-    } 
-    
-    else {
-      printf("%s nao encontrada.\n", token);
-    }
-
-    //lembrar de limpar a memoria da variavel 'busca'
-    free(busca); //acho que seria somente assim (?)
-
-    token = strtok(NULL, separador);
-  }
 }
