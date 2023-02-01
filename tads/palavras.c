@@ -182,7 +182,7 @@ void Palavras_Le_Binario(FILE* file, Palavras* pal, int qtd_pal) {
 
       fread(&pal[i]->prop_usado, sizeof(int), 1, file);
 
-      printf("[%d] - nome: %s; prop_usado: %d;\n", i, pal[i]->nome, pal[i]->prop_usado);
+      //printf("[%d] - nome: %s; prop_usado: %d;\n", i, pal[i]->nome, pal[i]->prop_usado);
       
       pal[i]->prop = (Propriedades*)realloc(pal[i]->prop, pal[i]->prop_usado* sizeof(Propriedades));
 
@@ -190,3 +190,47 @@ void Palavras_Le_Binario(FILE* file, Palavras* pal, int qtd_pal) {
   }
   
 } 
+
+void Palavras_busca (Palavras* pal, int qtd, char* str){
+  
+  //quebrar 'str' na quantidade de palavras q tiverem sido escritas
+
+  int cont_pal = 1;
+  for (int i = 0; i < 1000; i++) { //1000 eh o tamanho da string 'str'
+    if (str[i] == ' ') {
+      cont_pal+=1;
+    }
+  }
+
+  const char separador[] = " ";
+  char* token;
+
+  //retira o primeiro 'token'
+  token = strtok(str, separador);
+
+  while (token != NULL)
+  {
+    //printf("token: %s\n", token);
+
+    Palavras busca = Palavra_cria();
+    strcpy(busca->nome, token);
+
+    Palavras* endereco = bsearch(&busca, pal, qtd, sizeof(Palavras), String_Compara);
+
+    if (endereco != NULL) {
+      int indice = endereco - pal;
+      printf("%s encontrada no indice %d.\n", token, indice);
+
+      //acessar o indice de cada palavras para calcular os atributos
+    } 
+    
+    else {
+      printf("%s nao encontrada.\n", token);
+    }
+
+    //lembrar de limpar a memoria da variavel 'busca'
+    free(busca); //acho que seria somente assim (?)
+
+    token = strtok(NULL, separador);
+  }
+}

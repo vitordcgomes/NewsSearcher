@@ -25,5 +25,6 @@ Palavras* Palavras_Ordena(Palavras* pal, int qtd);
 void Palavras_Escreve_Binario(FILE* file, Palavras* pal, int qtd_pal);
 
 void Palavras_Le_Binario(FILE* file, Palavras* pal, int qtd_pal);
+void Palavras_busca (Palavras* pal, int qtd, char* str);
 
 

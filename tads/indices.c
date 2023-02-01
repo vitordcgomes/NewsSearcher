@@ -246,7 +246,7 @@ Indices Le_Binario(Indices ind, char* caminho){
     //leitura documentos
 
     fread (&ind->documentos_usados, sizeof(long int), 1, file);
-    printf ("qtd_doc: %ld\n", ind->documentos_usados);
+    printf ("quantidade de documentos distintos: %ld\n", ind->documentos_usados);
 
     ind->documentos_ind = (Documentos*)realloc(ind->documentos_ind, ind->documentos_usados * sizeof(Documentos));
 
@@ -258,3 +258,12 @@ Indices Le_Binario(Indices ind, char* caminho){
 }
 
 //perguntar biblioteca - [esquecemos :)]
+
+void Texto_Busca(Indices ind){
+
+    char str [1000];
+    scanf ("%[^\n]%*c", str);
+    //printf ("%s\n", str);
+
+    Palavras_busca (ind->palavras_ind, ind->palavras_usadas, str);
+}

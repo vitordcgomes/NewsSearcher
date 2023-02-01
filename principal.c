@@ -19,14 +19,14 @@ int main(int argc, char** argv) {
 
     Indices ind = Indices_cria();
     ind = Le_Binario(ind, argv[1]);
-    Funcionalidades();
-    //Libera_Memoria();
+    Funcionalidades(ind);
+    Indices_Libera(ind);
     printf("\033[1m----Ate a proxima!----\033[0m\n\n");
 
     return 0;
 }
 
-void Funcionalidades(){
+void Funcionalidades(Indices ind){
 
     char op;
     int flag_erros = 0;
@@ -41,7 +41,7 @@ void Funcionalidades(){
         switch (op)
         {
             case BUSCA:
-            //BuscaNoticias();
+            Texto_Busca(ind);
             break;
 
             case CLASSIFICA:
@@ -91,4 +91,3 @@ void Imprime_Menu ()
     printf ("Digite a operacao desejada:\033[96m ");
 
 }
-

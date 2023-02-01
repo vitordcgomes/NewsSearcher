@@ -14,3 +14,4 @@ void Imprime_Binario(Indices indices, char** argv);
 
 
 Indices Le_Binario(Indices ind, char* caminho);
+void Texto_Busca(Indices ind);
