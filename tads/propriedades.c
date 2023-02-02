@@ -181,18 +181,38 @@ int Compara_prop (const void *a, const void *b){
 }
 
 
-void Frequencia_por_classe (Propriedades* prop, int qtd){
-
+void Verifica_classe (Propriedades* prop, int qtd){
+/*
     int qtd_impressao = 10;
+    char classe [4];
+
+    for (int i=0; i<qtd; i++){
+
+        int freq_classe = 0;
+        if (!strcmp (Retorna_Classe(prop, i), classe)){
+            continue;
+        }
+        else strcpy (classe, Retorna_Classe(prop, i));
+
+        for (int j=i+1; j<qtd; j++){
+            if (!strcmp (classe, Retorna_Classe(prop, j))){
+                freq_classe += Retorna_Freq(prop, i);
+            }
+        }
+
+    printf ("Classe: %s, freq: %d;\n", classe, freq_classe);
+    }
+    
+
 
     if (qtd_impressao > qtd){
         qtd_impressao = qtd;
     }
 
-    
-
     for (int i=0; i<qtd_impressao; i++){
         printf ("\t\033[96m[\033[0m%d\033[96m]\033[0m - %d vez(es);\n\n", prop[i]->indice, prop[i]->frequencia);
 
     }
+*/
+
 }

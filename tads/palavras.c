@@ -248,7 +248,7 @@ void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet) {
 }
 
 
-void Relat_Palavras_Imprime (char* str, Palavras* p, int qtd_palavras){
+int Relat_Palavras_Imprime (char* str, Palavras* p, int qtd_palavras){
 
   int indice = -1;
 
@@ -269,13 +269,16 @@ void Relat_Palavras_Imprime (char* str, Palavras* p, int qtd_palavras){
       Propriedades_Ordena (p[indice]->prop, p[indice]->prop_usado);
       printf ("\n\033[93m  ->\033[0m Frequencia por classe:\n\n");
 
+      //Verifica_classe (p[indice]->prop, p[indice]->prop_usado);
+
+
     }
   }
     else {
       printf ("\033[91mA palavra '%s' nao foi encontrada. Tente novamente!\033[0m\n\n", str);
     }
   
-
+  return indice;
 }
 
 
@@ -295,12 +298,12 @@ void Palavras_imprime (Palavras* p, int qtd){
     printf ("\n\n");
  }
 
-int Palavras_Retorna_Ind(Palavras p, int ind) {
-  return Propriedades_Retorna_Ind(p->prop, ind);
+int Palavras_Retorna_Ind(Palavras p, int ind_doc) {
+  return Propriedades_Retorna_Ind(p->prop, ind_doc);
 }
 
-int Palavras_Retorna_Freq(Palavras p, int ind) {
-  return Propriedades_Retorna_Freq(p->prop, ind);
+int Palavras_Retorna_Freq(Palavras p, int ind_doc) {
+  return Propriedades_Retorna_Freq(p->prop, ind_doc);
 }
 
 void Palavras_imprime_uma (Palavras* p, int ind){
