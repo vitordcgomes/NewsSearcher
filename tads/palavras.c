@@ -37,15 +37,15 @@ void Propriedades_realoca (Palavras p){
     
 }
 
-void Palavras_Libera(Palavras pal) {
-   Propriedades_Libera(pal->prop, pal->prop_usado);
-   free(pal);
+void Palavras_Libera(Palavras p) {
+   Propriedades_Libera(p->prop, p->prop_usado);
+   free(p);
  }
 
 
 // ---------------- INDEXADORES ----------------
 
-int Palavra_le (Palavras* pal, FILE* f, int ind_doc, int ind_palavra){
+int Palavra_le (Palavras* p, FILE* f, int ind_doc, int ind_palavra){
 
   char nome[100];
   fscanf(f, "%[^ ] ", nome);
@@ -53,19 +53,19 @@ int Palavra_le (Palavras* pal, FILE* f, int ind_doc, int ind_palavra){
   int indice_vetor = 0;
 
   for (int i=ind_palavra-1; i>=0; i--){
-    if (!strcmp(nome, pal[i]->nome)){
+    if (!strcmp(nome, p[i]->nome)){
       
       //busca o indice no vetor de propriedades do documento de indice = ind
-      indice_vetor = Propriedades_busca(pal[i]->prop, ind_doc, pal[i]->prop_usado); //bsearch?
+      indice_vetor = Propriedades_busca(p[i]->prop, ind_doc, p[i]->prop_usado); //bsearch?
       
       //se o indice do documento não existir no vetor de propriedades, ou seja, a função retornar <0, criamos outra "casinha" para o novo indice
       if (indice_vetor < 0){
-        if (pal[i]->prop_alocado == pal[i]->prop_usado) {
-          Propriedades_realoca (pal[i]);
+        if (p[i]->prop_alocado == p[i]->prop_usado) {
+          Propriedades_realoca (p[i]);
         }
           
-        pal[i]->prop[pal[i]->prop_usado] = Propriedades_cria (ind_doc);
-        pal[i]->prop_usado++;
+        p[i]->prop[p[i]->prop_usado] = Propriedades_cria (ind_doc);
+        p[i]->prop_usado++;
       }  
 
       return 0; //retornar 0 indica que a palavra lida já existia no vetor.
@@ -74,78 +74,77 @@ int Palavra_le (Palavras* pal, FILE* f, int ind_doc, int ind_palavra){
   }
 
   //se a palavra for nova, criamos outra posição para ela ocupar
-  pal[ind_palavra] = Palavra_cria();
-  strcpy(pal[ind_palavra]->nome, nome);
-  pal[ind_palavra]->prop[pal[ind_palavra]->prop_usado] = Propriedades_cria (ind_doc);
-  pal[ind_palavra]->prop_usado++;
+  p[ind_palavra] = Palavra_cria();
+  strcpy(p[ind_palavra]->nome, nome);
+  p[ind_palavra]->prop[p[ind_palavra]->prop_usado] = Propriedades_cria (ind_doc);
+  p[ind_palavra]->prop_usado++;
   
    return 1; //retornar 1 significa que foi criada uma palavra nova.
  }
 
-double Calcula_IDF(int tot_doc, Palavras pal) {
+double Calcula_IDF(int tot_doc, Palavras p) {
   
   double idf;
 
   double num = 0.0, denom = 0.0;
 
   num = 1 + tot_doc;
-  denom = 1 + pal->prop_usado;
+  denom = 1 + p->prop_usado;
 
   idf = log(num/denom) + 1;
 
   return idf;
 }
 
-Palavras Calcula_TF_IDF(double idf, Palavras pal, int ind_prop) {
-  pal->prop[ind_prop] = Atribui_TF_IDF(idf, pal->prop[ind_prop]);
+Palavras Calcula_TF_IDF(double idf, Palavras p, int ind_prop) {
 
-  return pal;
+  p->prop[ind_prop] = Atribui_TF_IDF(idf, p->prop[ind_prop]);
+  return p;
 }
 
 
 // ---------------- BINARIO ----------------
 
-void Palavras_Le_Binario(FILE* file, Palavras* pal, int qtd_pal) {
+void Palavras_Le_Binario(FILE* file, Palavras* p, int qtd_palavras) {
 
-  for (int i = 0; i < qtd_pal; i++) {
+  for (int i = 0; i < qtd_palavras; i++) {
 
-    pal[i] = Palavra_cria();
+    p[i] = Palavra_cria();
 
     int tam_string = 0;
     fread(&tam_string, sizeof(int), 1, file);            
-    fread(pal[i]->nome, tam_string, 1, file);
-    fread(&pal[i]->prop_usado, sizeof(int), 1, file);
+    fread(p[i]->nome, tam_string, 1, file);
+    fread(&p[i]->prop_usado, sizeof(int), 1, file);
 
-    //printf("[%d] - nome: %s; prop_usado: %d;\n", i, pal[i]->nome, pal[i]->prop_usado);
+    //printf("[%d] - nome: %s; prop_usado: %d;\n", i, p[i]->nome, p[i]->prop_usado);
       
-    pal[i]->prop = (Propriedades*)realloc(pal[i]->prop, pal[i]->prop_usado* sizeof(Propriedades));
+    p[i]->prop = (Propriedades*)realloc(p[i]->prop, p[i]->prop_usado* sizeof(Propriedades));
 
-    Propriedades_Le_Binario(file, pal[i]->prop, pal[i]->prop_usado);
+    Propriedades_Le_Binario(file, p[i]->prop, p[i]->prop_usado);
   }
   
 } 
 
-void Palavras_Escreve_Binario(FILE* file, Palavras* pal, int qtd_pal) {
+void Palavras_Escreve_Binario(FILE* file, Palavras* p, int qtd_palavras) {
 
-  for (int i = 0; i < qtd_pal; i++) {
-    int tam_nome = strlen(pal[i]->nome) + 1; // +1 para incluir o '\0' da string
+  for (int i = 0; i < qtd_palavras; i++) {
+    int tam_nome = strlen(p[i]->nome) + 1; // +1 para incluir o '\0' da string
 
     fwrite(&tam_nome, sizeof(int), 1, file);
-    fwrite(pal[i]->nome, tam_nome, 1, file);
+    fwrite(p[i]->nome, tam_nome, 1, file);
 
-    fwrite(&pal[i]->prop_usado, sizeof(int), 1, file);
+    fwrite(&p[i]->prop_usado, sizeof(int), 1, file);
 
-    Propriedades_Escreve_Binario(file, pal[i]->prop, pal[i]->prop_usado);
+    Propriedades_Escreve_Binario(file, p[i]->prop, p[i]->prop_usado);
     
   }
 }
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
-void Palavras_busca (Palavras* pal, int qtd, char* str){
+void Palavras_busca (Palavras* palavras, int qtd, char* str){
   
   //quebrar 'str' na quantidade de palavras q tiverem sido escritas
-
   const char separador[] = " ";
   char* token;
 
@@ -160,19 +159,21 @@ void Palavras_busca (Palavras* pal, int qtd, char* str){
 
     strcpy(busca->nome, token);
 
-    Palavras* endereco = bsearch(&busca, pal, qtd, sizeof(Palavras), String_Compara);
+    //int indice = Palavras_bsearch (palavras, qtd, str,);
+
+    Palavras* endereco = bsearch(&busca, palavras, qtd, sizeof(Palavras), String_Compara);
 
     if (endereco != NULL) {
-      int indice = endereco - pal;
 
-      //Propriedades_Algo(pal[indice]->prop, pal[indice]->prop_usado);
+      int indice = endereco - palavras;
+      printf("Palavra '%s' encontrada no indice %d.\n", token, indice);
+
       /*
-        *pal = endereco da primeira casa (indice 0) do vetor
+        *palavras = endereco da primeira casa (indice 0) do vetor
         *endereco = endereco da palavra encontrada no vetor
-        *endereco - pal = diferenca de "casas" do vetor entre os endereços
+        *endereco - palavras = diferenca de "casas" do vetor entre os endereços
       */
 
-      printf("Palavra '%s' encontrada no indice %d.\n", token, indice);
       //acessar o indice de cada palavras para calcular os atributos
     } 
     
@@ -183,6 +184,38 @@ void Palavras_busca (Palavras* pal, int qtd, char* str){
     free(busca); 
     token = strtok(NULL, separador);
   }
+}
+
+void Relat_Palavras_Imprime (char* str, Palavras* p, int qtd_palavras){
+
+  int indice = -1;
+
+  Palavras* endereco = bsearch(&str, p, qtd_palavras, sizeof(Palavras), String_Compara);
+    
+  if (endereco != NULL) 
+    indice = endereco - p;
+    
+  if (indice > -1){
+
+    printf ("\n\n\n\033[1m========= RELATORIO DE PALAVRA =========\033[0m\n");
+    printf ("\nPalavra: \033[93m'%s'\n\033[0m", str);
+
+    printf ("\n\033[93m  ->\033[0m Possui indice \033[93m%d\033[0m.\n", indice);
+    printf ("\n\033[93m  ->\033[0m Aparece em \033[93m%d\033[0m documento(s).\n", p[indice]->prop_usado);
+    printf ("\n\033[93m  ->\033[0m Aparece com maior frequencia nos documentos:\n\n");
+
+    //qsort e for, decrescente
+
+    printf ("\n\033[93m  ->\033[0m Frequencia por classe:\n\n");
+
+    //qsort e for, decrescente
+    //freq por classe (???????????????????????????????)
+  }
+
+  else {
+    printf ("\033[91mA palavra '%s' nao foi encontrada. Tente novamente!\033[0m\n\n", str);
+  }
+
 }
 
 
@@ -217,14 +250,14 @@ void Palavras_imprime_uma (Palavras* p, int ind){
     printf ("\n\n");
  }
 
-Palavras* Palavras_Ordena(Palavras* pal, int qtd) {
+Palavras* Palavras_Ordena(Palavras* p, int qtd) {
   //int n = sizeof(pal) / sizeof(pal[0]);
 
-  qsort(pal, qtd, sizeof(char*), String_Compara);
+  qsort(p, qtd, sizeof(char*), String_Compara);
 
   //Palavras_imprime(pal, qtd);
 
-  return pal;
+  return p;
 }
 
 double Palavras_Retorna_tf_idf(Palavras p, int ind) {

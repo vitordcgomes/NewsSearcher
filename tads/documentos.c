@@ -87,7 +87,7 @@ void Relat_Documentos_Imprime (Documentos* d, int qtd){
         strcpy(docs[i]->nome, d[i]->nome);
     }
 
-    printf ("\n\n\n\033[1m========= RELATORIO DE DOCUMENTOS =========\033[0m\n");
+    printf ("\n\n\n\033[1m========= RELATORIO DE DOCUMENTO =========\033[0m\n");
     printf ("\n\033[93mMaiores documentos (ordem decrescente):\033[0m\n\n");
 
     qsort(docs, qtd, sizeof(Documentos), Decrescente);

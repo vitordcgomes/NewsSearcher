@@ -264,7 +264,17 @@ void Relatorio_Docs (Indices ind){
     Relat_Documentos_Imprime (ind->documentos_ind, ind->documentos_usados);
 }
 
-//void Relatorio_Pals (Indices ind);
+void Relatorio_Pals (Indices ind){
+
+    char str [1000];
+
+    printf ("Digite a palavra desejada: \033[96m");
+    scanf ("%[^\n]%*c", str);
+    printf ("\n\033[0m");
+
+    Relat_Palavras_Imprime (str, ind->palavras_ind, ind->palavras_usadas);
+
+}
 
 
 // ---------------- AUXILIARES ----------------
