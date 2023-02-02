@@ -15,6 +15,10 @@ Documentos Documentos_cria (char* caminho, char* classe);
 
 // ---------------- INDEXADORES ----------------
 Documentos Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal, double tf_idf_pal);
+Documentos Documentos_Atualiza (Documentos d);
+
+// ---------------- FUNCIONALIDADES (menu) ----------------
+void Relat_Documentos_Imprime (Documentos* d, int qtd);
 
 // ---------------- BINARIO ----------------
 void Documentos_Le_Binario(FILE* file, Documentos* doc, int qtd_doc);
@@ -22,3 +26,6 @@ void Documentos_Escreve_Binario(FILE* file, Documentos* doc, int qtd_doc);
 
 // ---------------- AUXILIARES ----------------
 void Documentos_imprime(int qtd, Documentos* docs);
+int Crescente (const void *fst, const void *scnd);
+int Decrescente (const void *fst, const void *scnd);
+void Modelo_Impressao_Docs (Documentos* docs, int qtd_impressao, int qtd_docs);

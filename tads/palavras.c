@@ -165,7 +165,7 @@ void Palavras_busca (Palavras* pal, int qtd, char* str){
     if (endereco != NULL) {
       int indice = endereco - pal;
 
-      Propriedades_Algo(pal[indice]->prop, pal[indice]->prop_usado);
+      //Propriedades_Algo(pal[indice]->prop, pal[indice]->prop_usado);
       /*
         *pal = endereco da primeira casa (indice 0) do vetor
         *endereco = endereco da palavra encontrada no vetor
