@@ -2,10 +2,15 @@
 #include <stdlib.h>
 #include "tads/indices.h"
 
-// ler as infos de um arquivo .txt e salva-las em um arquivo .bin;
-// no final do documento, calcular o tf-idf;
 //liberar memoria dos indices em caso de erro
 //perguntar biblioteca - [esquecemos :)]
+//PASTAS - .O - MAKEFILE?
+//relatorios - .txt ou terminal?
+//relat palavras -> freq por classe (???????????????????????????????) YURI
+
+
+// CONFERIR: Devem ser usadas as funções qsort e bsearch sempre que for necessário ordenar vetores ou buscar itens em vetores ordenados.
+
 
 void Erros_Entrada_Indexador(int argc);
 

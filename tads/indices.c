@@ -170,7 +170,9 @@ Indices Le_Subarquivo(Indices indices, char** argv, char* caminho, char* classe,
 
             int palavra_nova = Palavra_le (indices->palavras_ind, file, ind, indices->palavras_usadas);
             if (palavra_nova)
-                indices->palavras_usadas++;    
+                indices->palavras_usadas++;
+            
+            indices->documentos_ind[ind] = Documentos_Atualiza (indices->documentos_ind[ind]);
     }
     
     //Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
@@ -241,6 +243,7 @@ void Imprime_Binario(Indices indices, char** argv) {
     fclose(file);
 }
 
+
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
 void Texto_Busca(Indices ind){
@@ -256,6 +259,24 @@ void Texto_Busca(Indices ind){
     Palavras_busca (ind->palavras_ind, ind->palavras_usadas, str);
 }
 
+void Relatorio_Docs (Indices ind){
+
+    Relat_Documentos_Imprime (ind->documentos_ind, ind->documentos_usados);
+}
+
+void Relatorio_Pals (Indices ind){
+
+    char str [1000];
+
+    printf ("Digite a palavra desejada: \033[96m");
+    scanf ("%[^\n]%*c", str);
+    printf ("\n\033[0m");
+
+    Relat_Palavras_Imprime (str, ind->palavras_ind, ind->palavras_usadas);
+
+}
+
+
 // ---------------- AUXILIARES ----------------
 
 void Imprime_Tudo(Indices indices) {
@@ -263,3 +284,4 @@ void Imprime_Tudo(Indices indices) {
     Documentos_imprime(indices->documentos_usados, indices->documentos_ind);
     //Palavras_imprime_uma(indices->palavras_ind, 3);
 }
+

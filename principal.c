@@ -50,9 +50,11 @@ void Menu_Funcionalidades(Indices ind){
             break;
 
             case RELAT_PAL:
+                Relatorio_Pals (ind);
             break;
 
             case RELAT_DOC:
+                Relatorio_Docs (ind);
             break;
 
             case ENCERRA:

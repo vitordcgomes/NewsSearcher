@@ -15,17 +15,18 @@ void Palavras_Libera(Palavras pal);
 
 
 // ---------------- INDEXADORES ----------------
-int Palavra_le (Palavras* pal, FILE* f, int ind, int qtd);
-double Calcula_IDF(int tot_doc, Palavras pal);
-Palavras Calcula_TF_IDF(double idf, Palavras pal, int ind_prop);
+int Palavra_le (Palavras* p, FILE* f, int ind, int qtd);
+double Calcula_IDF(int tot_doc, Palavras p);
+Palavras Calcula_TF_IDF(double idf, Palavras p, int ind_prop);
 
 
 // ---------------- BINARIO ----------------
-void Palavras_Le_Binario(FILE* file, Palavras* pal, int qtd_pal);
-void Palavras_Escreve_Binario(FILE* file, Palavras* pal, int qtd_pal);
+void Palavras_Le_Binario(FILE* file, Palavras* p, int qtd_palavras);
+void Palavras_Escreve_Binario(FILE* file, Palavras* p, int qtd_palavras);
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
-void Palavras_busca (Palavras* pal, int qtd, char* str);
+void Palavras_busca (Palavras* palavras, int qtd, char* str);
+void Relat_Palavras_Imprime (char* str, Palavras* p, int qtd_palavras);
 
 // ---------------- AUXILIARES ----------------
 int Palavras_Retorna_Prop_Usado(Palavras p);
@@ -33,6 +34,7 @@ void Palavras_imprime (Palavras* p, int qtd);
 int Palavras_Retorna_Ind(Palavras p, int ind);
 int Palavras_Retorna_Freq(Palavras p, int ind);
 void Palavras_imprime_uma (Palavras* p, int ind);
-Palavras* Palavras_Ordena(Palavras* pal, int qtd);
+Palavras* Palavras_Ordena(Palavras* p, int qtd);
 double Palavras_Retorna_tf_idf(Palavras p, int ind);
 int String_Compara(const void *str1, const void *str2);
+//int Palavras_bsearch (Palavras* palavras, int qtd, char*str);

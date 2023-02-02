@@ -7,7 +7,7 @@ all:
 
 run: 
 	make
-	./indexador datasets/tiny/test.txt binario.bin
+	./indexador datasets/medium-small/test.txt binario.bin
 	./principal binario.bin 42
 
 clean:
