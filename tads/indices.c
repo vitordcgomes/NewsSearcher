@@ -8,6 +8,7 @@
 #include "palavras.h"
 
 #define QTD_INICIAL 100
+#define QTD_CLASSES 21
 
 void Erros_Entrada (int argc, Indices ind);
 
@@ -280,7 +281,58 @@ int Relatorio_Palavras (Indices ind){
         }
     }
     
-    Relat_Palavras_Imprime (str, ind->palavras_ind, ind->palavras_usadas);
+    int ind_palavra = Relat_Palavras_Imprime (str, ind->palavras_ind, ind->palavras_usadas);
+    int qtd_docs = Palavras_Retorna_Prop_Usado (ind->palavras_ind[ind_palavra]);
+    
+    char* classe;
+    int qtd_classes = 0;
+
+    char** classes_usadas = (char**)calloc(QTD_CLASSES, sizeof(char*));
+
+    for (int i=0; i< qtd_docs; i++){
+
+        int flag_igual = 0;
+        int freq_classe = 0;
+        char* classe_doc;
+
+        //retorna um indice de um documento
+        int ind_doc = Palavras_Retorna_Ind (ind->palavras_ind[ind_palavra], i);
+        classe = Retorna_Classe (ind->documentos_ind[ind_doc]);
+        printf ("ind doc = %d\n", ind_doc);
+
+        //analisa se ja vimos essa classe anteriormente, se sim, pula o resto dessa iteracao
+        for (int j = 0; j< qtd_classes; j++){
+            if (!strcmp(classe, classes_usadas[j])){
+                flag_igual = 1;
+                break;
+            }
+        }
+
+        if (flag_igual) continue;
+
+        for (int k = i+1; k < qtd_docs; k++){
+
+            int ind_doc2 = Palavras_Retorna_Ind (ind->palavras_ind[ind_palavra], k);
+            classe_doc = Retorna_Classe (ind->documentos_ind[ind_doc]);
+            printf ("indice d2: %d, classe d2: %s\n", ind_doc2, classe_doc);
+            if (!strcmp(classe, classe_doc)){
+                freq_classe += Palavras_Retorna_Freq (ind->palavras_ind[ind_palavra], ind_doc2);
+                printf ("sou igual! freq = %d\n\n", freq_classe);
+            }
+        }
+
+        printf ("acabei\n");
+        classes_usadas[qtd_classes] = strdup (classe);
+        printf ("classe: %s, freq_classe: %d\n", classes_usadas[qtd_classes], freq_classe);
+        qtd_classes++;
+
+
+
+        //freq_classe += Frequencia_por_classe (classe, ind->documentos_ind, ind->documentos_usados, ind_doc);
+        //preciso passar pelos outros documentos, ver se tem a mesma classe e, se tiver, soma a frequencia, senao pula o arquivo e segue
+    }
+    
+
     return 0;
 }
 

@@ -33,4 +33,4 @@ void Propriedades_Documentos_Imprime(Propriedades* p, int qtd);
 int Propriedades_busca (Propriedades* p, int ind, int qtd_prop);
 void Propriedades_Ordena (Propriedades* prop, int qtd);
 int Compara_prop (const void *str1, const void *str2);
-void Frequencia_por_classe (Propriedades* prop, int qtd);
+void Verifica_classe (Propriedades* prop, int qtd);
