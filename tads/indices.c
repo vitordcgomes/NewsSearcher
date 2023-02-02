@@ -260,20 +260,28 @@ void Texto_Busca(Indices ind){
 }
 
 void Relatorio_Docs (Indices ind){
-
     Relat_Documentos_Imprime (ind->documentos_ind, ind->documentos_usados);
 }
 
-void Relatorio_Pals (Indices ind){
+int Relatorio_Pals (Indices ind){
 
     char str [1000];
 
-    printf ("Digite a palavra desejada: \033[96m");
+    printf ("Digite a palavra (tema) do relatorio: \033[96m");
     scanf ("%[^\n]%*c", str);
     printf ("\n\033[0m");
 
-    Relat_Palavras_Imprime (str, ind->palavras_ind, ind->palavras_usadas);
+    int tam_string = strlen(str);
 
+    for (int i = 0; i < tam_string; i++) {
+        if (str[i] == ' ') {
+            printf ("\033[91m\033[1mERRO:\033[0m\033[91m Numero de palavras excedido. Favor digitar \033[1m1\033[0m\033[91m palavra.\n");
+            return 1;
+        }
+    }
+    
+    Relat_Palavras_Imprime (str, ind->palavras_ind, ind->palavras_usadas);
+    return 0;
 }
 
 

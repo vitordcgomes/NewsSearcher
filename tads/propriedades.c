@@ -144,7 +144,6 @@ double Propriedades_Retorna_tf_idf(Propriedades* p, int ind) {
 
 int Propriedades_busca (Propriedades* p, int ind_doc, int qtd_prop){
 
-
     for (int i=0; i<qtd_prop; i++){
 
         if (p[i]->indice == ind_doc){
@@ -154,4 +153,44 @@ int Propriedades_busca (Propriedades* p, int ind_doc, int qtd_prop){
     }
 
     return -1;
+}
+
+void Propriedades_Ordena (Propriedades* prop, int qtd){
+
+    int qtd_impressao = 10;
+
+    qsort (prop, qtd, sizeof(Propriedades), Compara_prop);
+
+    if (qtd_impressao > qtd){
+        qtd_impressao = qtd;
+    }
+    
+    for (int i=0; i< qtd_impressao; i++){
+        printf ("\t\033[96m[\033[0m%d\033[96m]\033[0m - %d vez(es);\n\n", prop[i]->indice, prop[i]->frequencia);
+    }
+
+
+}
+
+int Compara_prop (const void *a, const void *b){
+
+    Propriedades p1 = *(Propriedades *)a;
+    Propriedades p2 = *(Propriedades *)b;
+
+    return (p2->frequencia - p1->frequencia);
+}
+
+
+void Frequencia_por_classe (Propriedades* prop, int qtd){
+
+    int qtd_impressao = 10;
+
+    if (qtd_impressao > qtd){
+        qtd_impressao = qtd;
+    }
+
+    for (int i=0; i<qtd_impressao; i++){
+        printf ("\t\033[96m[\033[0m%d\033[96m]\033[0m - %d vez(es);\n\n", prop[i]->indice, prop[i]->frequencia);
+
+    }
 }

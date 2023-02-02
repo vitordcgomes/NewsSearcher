@@ -142,10 +142,10 @@ void Palavras_Escreve_Binario(FILE* file, Palavras* p, int qtd_palavras) {
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
-void Palavras_busca (Palavras* pal, int qtd, char* str){
+void Palavras_busca (Palavras* palavras, int qtd, char* str){
   
   //quebrar 'str' na quantidade de palavras q tiverem sido escritas
-  int cont_pal = 0;
+  int cont_palavras = 0;
 
   int* vet_ind = (int*)calloc(1, sizeof(int));
 
@@ -164,17 +164,15 @@ void Palavras_busca (Palavras* pal, int qtd, char* str){
 
     strcpy(busca->nome, token);
 
-    Palavras* endereco = bsearch(&busca, pal, qtd, sizeof(Palavras), String_Compara);
+    Palavras* endereco = bsearch(&busca, palavras, qtd, sizeof(Palavras), String_Compara);
 
     if (endereco != NULL) {
-      cont_pal+=1;
-      vet_ind = (int*)realloc(vet_ind, (cont_pal+1)*sizeof(int));
-      int indice = endereco - pal;
+      cont_palavras+=1;
+      vet_ind = (int*)realloc(vet_ind, (cont_palavras+1)*sizeof(int));
+      int indice = endereco - palavras;
 
       vet_ind[aux] = indice;
       aux++;
-
-      //Propriedades_Algo(pal[indice]->prop, pal[indice]->prop_usado);
       /*
         *pal = endereco da primeira casa (indice 0) do vetor
         *endereco = endereco da palavra encontrada no vetor
@@ -194,8 +192,8 @@ void Palavras_busca (Palavras* pal, int qtd, char* str){
   }
 
 
-  qsort(vet_ind, cont_pal, sizeof(int), Ordena_Inteiro); //ordena vet_ind em ordem crescente
-  Palavras_Indices_Buscados(pal, vet_ind, cont_pal);
+  qsort(vet_ind, cont_palavras, sizeof(int), Ordena_Inteiro); //ordena vet_ind em ordem crescente
+  Palavras_Indices_Buscados(palavras, vet_ind, cont_palavras);
 
   /*
   for (int i = 0; i < cont_pal; i++) {
@@ -206,6 +204,7 @@ void Palavras_busca (Palavras* pal, int qtd, char* str){
 }
 
 void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet) {
+
   Palavras* buscadas = (Palavras*)calloc(tam_vet, sizeof(Palavras));
 
   for (int i = 0; i < tam_vet; i++) {
@@ -222,6 +221,17 @@ void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet) {
     //Propriedades_Imprime(buscadas[i]->prop, buscadas[i]->prop_usado);
   }
 
+
+
+  /*for (int i = 0; i < qtd_docs; i++) {
+    for (int j = 0; j < buscadas[i]->prop_usado; j++) {
+      //soma
+   }
+
+   //atribui
+
+  }
+  */
   
   printf("\ncont_pal = %d", tam_vet);
   printf("\nind: ");
@@ -237,35 +247,35 @@ void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet) {
   
 }
 
+
 void Relat_Palavras_Imprime (char* str, Palavras* p, int qtd_palavras){
 
   int indice = -1;
 
   Palavras* endereco = bsearch(&str, p, qtd_palavras, sizeof(Palavras), String_Compara);
     
-  if (endereco != NULL) 
+  if (endereco != NULL){
     indice = endereco - p;
     
-  if (indice > -1){
+    if (indice > -1){
 
-    printf ("\n\n\n\033[1m========= RELATORIO DE PALAVRA =========\033[0m\n");
-    printf ("\nPalavra: \033[93m'%s'\n\033[0m", str);
+      printf ("\n\n\n\033[1m========= RELATORIO DE PALAVRA =========\033[0m\n");
+      printf ("\nPalavra: \033[93m'%s'\n\033[0m", str);
 
-    printf ("\n\033[93m  ->\033[0m Possui indice \033[93m%d\033[0m.\n", indice);
-    printf ("\n\033[93m  ->\033[0m Aparece em \033[93m%d\033[0m documento(s).\n", p[indice]->prop_usado);
-    printf ("\n\033[93m  ->\033[0m Aparece com maior frequencia nos documentos:\n\n");
+      printf ("\n\033[93m  ->\033[0m Encontrada no indice \033[93m%d\033[0m.\n", indice);
+      printf ("\n\033[93m  ->\033[0m Aparece em \033[93m%d\033[0m documento(s).\n", p[indice]->prop_usado);
+      printf ("\n\033[93m  ->\033[0m Aparece com maior frequencia no(s) documento(s):\n\n");
 
-    //qsort e for, decrescente
+      Propriedades_Ordena (p[indice]->prop, p[indice]->prop_usado);
+      printf ("\n\033[93m  ->\033[0m Frequencia por classe:\n\n");
 
-    printf ("\n\033[93m  ->\033[0m Frequencia por classe:\n\n");
-
-    //qsort e for, decrescente
-    //freq por classe (???????????????????????????????)
+      Frequencia_por_classe (p[indice]->prop, p[indice]->prop_usado);
+    }
   }
-
-  else {
-    printf ("\033[91mA palavra '%s' nao foi encontrada. Tente novamente!\033[0m\n\n", str);
-  }
+    else {
+      printf ("\033[91mA palavra '%s' nao foi encontrada. Tente novamente!\033[0m\n\n", str);
+    }
+  
 
 }
 

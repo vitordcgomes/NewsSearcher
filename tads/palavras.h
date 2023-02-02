@@ -39,4 +39,3 @@ Palavras* Palavras_Ordena(Palavras* p, int qtd);
 double Palavras_Retorna_tf_idf(Palavras p, int ind);
 int String_Compara(const void *str1, const void *str2);
 int Ordena_Inteiro(const void *a, const void *b);
-//int Palavras_bsearch (Palavras* palavras, int qtd, char*str);

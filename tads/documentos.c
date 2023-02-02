@@ -189,15 +189,12 @@ int Decrescente (const void *fst, const void *scnd){
 
 void Modelo_Impressao_Docs (Documentos* docs, int qtd_impressao, int qtd_docs){
 
-    if (qtd_impressao < qtd_docs){
+    if (qtd_impressao > qtd_docs){
+        qtd_impressao = qtd_docs;
+    }
+
         for (int i=0; i<qtd_impressao; i++){
             printf ("  \033[96m[\033[0m%d\033[96m]\033[0m - %s, %d palavra(s), classe %s;\n\n", i+1, docs[i]->nome, docs[i]->qtd_palavras, docs[i]->classe);
         }
-    }
-    else {
-        for (int i=0; i<qtd_docs; i++){
-            printf ("  \033[96m[\033[0m%d\033[96m]\033[0m - %s, %d palavra(s), classe %s;\n\n", i+1, docs[i]->nome, docs[i]->qtd_palavras, docs[i]->classe);
-        }
-    }
 
 }

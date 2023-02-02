@@ -21,7 +21,7 @@ void Imprime_Binario(Indices indices, char** argv);
 // ---------------- FUNCIONALIDADES (menu) ----------------
 void Texto_Busca(Indices ind);
 void Relatorio_Docs (Indices ind);
-void Relatorio_Pals (Indices ind);
+int Relatorio_Pals (Indices ind);
 
 // ---------------- AUXILIARES ----------------
 void Imprime_Tudo(Indices indices);
