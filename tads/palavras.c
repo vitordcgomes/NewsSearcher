@@ -142,7 +142,7 @@ void Palavras_Escreve_Binario(FILE* file, Palavras* p, int qtd_palavras) {
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
-void Palavras_busca (Palavras* palavras, int qtd, char* str){
+void Palavras_busca (Palavras* palavras, int qtd, char* str, int qtd_tot_docs){
   
   //quebrar 'str' na quantidade de palavras q tiverem sido escritas
   int cont_palavras = 0;
@@ -193,7 +193,7 @@ void Palavras_busca (Palavras* palavras, int qtd, char* str){
 
 
   qsort(vet_ind, cont_palavras, sizeof(int), Ordena_Inteiro); //ordena vet_ind em ordem crescente
-  Palavras_Indices_Buscados(palavras, vet_ind, cont_palavras);
+  Palavras_Indices_Buscados(palavras, vet_ind, cont_palavras, qtd_tot_docs);
 
   /*
   for (int i = 0; i < cont_pal; i++) {
@@ -203,9 +203,11 @@ void Palavras_busca (Palavras* palavras, int qtd, char* str){
   */
 }
 
-void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet) {
+void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet, int qtd_tot_docs) {
 
   Palavras* buscadas = (Palavras*)calloc(tam_vet, sizeof(Palavras));
+  Palavras aux = (Palavras)calloc(1, sizeof(struct palavras));
+  aux->prop = Propriedades_Vet_Cria(qtd_tot_docs);
 
   for (int i = 0; i < tam_vet; i++) {
     buscadas[i] = (Palavras)calloc(1, sizeof(struct palavras));
@@ -221,7 +223,9 @@ void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet) {
     //Propriedades_Imprime(buscadas[i]->prop, buscadas[i]->prop_usado);
   }
 
-
+  for (int i = 0; i < tam_vet; i++) {
+    aux->prop = Busca_Indices_Docs(buscadas[i]->prop, buscadas[i]->prop_usado, aux->prop);
+  }
 
   /*for (int i = 0; i < qtd_docs; i++) {
     for (int j = 0; j < buscadas[i]->prop_usado; j++) {

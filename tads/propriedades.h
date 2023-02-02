@@ -34,3 +34,4 @@ int Propriedades_busca (Propriedades* p, int ind, int qtd_prop);
 void Propriedades_Ordena (Propriedades* prop, int qtd);
 int Compara_prop (const void *str1, const void *str2);
 void Verifica_classe (Propriedades* prop, int qtd);
+Propriedades* Busca_Indices_Docs(Propriedades* prop, int qtd, Propriedades* prop_aux);

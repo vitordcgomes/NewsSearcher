@@ -257,7 +257,7 @@ void Texto_Busca(Indices ind){
 
     //printf ("%s\n", str);
 
-    Palavras_busca (ind->palavras_ind, ind->palavras_usadas, str);
+    Palavras_busca (ind->palavras_ind, ind->palavras_usadas, str, ind->documentos_usados);
 }
 
 void Relatorio_Docs (Indices ind){

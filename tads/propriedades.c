@@ -216,3 +216,11 @@ void Verifica_classe (Propriedades* prop, int qtd){
 */
 
 }
+
+Propriedades* Busca_Indices_Docs(Propriedades* prop, int qtd, Propriedades* prop_aux) {
+    for (int i = 0; i < qtd; i++) {
+        //n sei
+    }
+
+    return prop_aux;
+}

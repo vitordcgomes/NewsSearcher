@@ -25,9 +25,9 @@ void Palavras_Le_Binario(FILE* file, Palavras* p, int qtd_palavras);
 void Palavras_Escreve_Binario(FILE* file, Palavras* p, int qtd_palavras);
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
-void Palavras_busca (Palavras* palavras, int qtd, char* str);
+void Palavras_busca (Palavras* palavras, int qtd, char* str, int qtd_tot_docs);
 int Relat_Palavras_Imprime (char* str, Palavras* p, int qtd_palavras);
-void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet);
+void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet, int qtd_tot_docs);
 
 // ---------------- AUXILIARES ----------------
 int Palavras_Retorna_Prop_Usado(Palavras p);
