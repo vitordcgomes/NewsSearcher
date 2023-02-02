@@ -29,3 +29,4 @@ void Documentos_imprime(int qtd, Documentos* docs);
 int Crescente (const void *fst, const void *scnd);
 int Decrescente (const void *fst, const void *scnd);
 void Modelo_Impressao_Docs (Documentos* docs, int qtd_impressao, int qtd_docs);
+void Verifica_classe (Documentos* d, int qtd_docs);

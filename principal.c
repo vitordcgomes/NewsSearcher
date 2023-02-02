@@ -50,7 +50,7 @@ void Menu_Funcionalidades(Indices ind){
             break;
 
             case RELAT_PAL:
-                flag_encerra = Relatorio_Pals (ind);
+                flag_encerra = Relatorio_Palavras (ind);
             break;
 
             case RELAT_DOC:

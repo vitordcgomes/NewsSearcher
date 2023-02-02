@@ -6,8 +6,7 @@
 //perguntar biblioteca - [esquecemos :)]
 //PASTAS - .O - MAKEFILE?
 //relatorios - .txt ou terminal?
-//relat palavras -> freq por classe (???????????????????????????????) YURI
-
+//temos todas as classes? e a qtd de classes?
 
 // CONFERIR: Devem ser usadas as funções qsort e bsearch sempre que for necessário ordenar vetores ou buscar itens em vetores ordenados.
 

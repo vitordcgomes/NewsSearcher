@@ -269,7 +269,6 @@ void Relat_Palavras_Imprime (char* str, Palavras* p, int qtd_palavras){
       Propriedades_Ordena (p[indice]->prop, p[indice]->prop_usado);
       printf ("\n\033[93m  ->\033[0m Frequencia por classe:\n\n");
 
-      Frequencia_por_classe (p[indice]->prop, p[indice]->prop_usado);
     }
   }
     else {

@@ -198,3 +198,4 @@ void Modelo_Impressao_Docs (Documentos* docs, int qtd_impressao, int qtd_docs){
         }
 
 }
+

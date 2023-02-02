@@ -263,7 +263,7 @@ void Relatorio_Docs (Indices ind){
     Relat_Documentos_Imprime (ind->documentos_ind, ind->documentos_usados);
 }
 
-int Relatorio_Pals (Indices ind){
+int Relatorio_Palavras (Indices ind){
 
     char str [1000];
 

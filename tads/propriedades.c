@@ -189,6 +189,8 @@ void Frequencia_por_classe (Propriedades* prop, int qtd){
         qtd_impressao = qtd;
     }
 
+    
+
     for (int i=0; i<qtd_impressao; i++){
         printf ("\t\033[96m[\033[0m%d\033[96m]\033[0m - %d vez(es);\n\n", prop[i]->indice, prop[i]->frequencia);
 
