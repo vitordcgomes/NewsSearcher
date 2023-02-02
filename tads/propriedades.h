@@ -7,6 +7,7 @@ typedef struct propriedades* Propriedades;
 
 // ---------------- MEMORIA ----------------
 Propriedades* Propriedades_vetor_cria();
+Propriedades* Propriedades_Vet_Cria(int qtd);
 Propriedades Propriedades_cria (int ind);
 Propriedades Documentos_Propriedade_Cria();
 void Propriedades_Libera(Propriedades* p, int qtd);
@@ -16,6 +17,7 @@ void Propriedades_Libera(Propriedades* p, int qtd);
 Propriedades Atribui_TF_IDF(double idf, Propriedades prop);
 void Propriedade_Atualiza_Freq (Propriedades* p, int indice);
 Propriedades Propriedades_Doc_Atribui(Propriedades p, int ind_vet, int ind_pal, int freq_pal, double tf_idf_pal);
+Propriedades Atribui_Auxiliar(Propriedades destino, Propriedades origem);
 
 
 // ---------------- BINARIO ----------------

@@ -14,6 +14,11 @@ Propriedades* Propriedades_vetor_cria(){
     return p;
 }
 
+Propriedades* Propriedades_Vet_Cria(int qtd) {
+    Propriedades* p = (Propriedades*)calloc(qtd, sizeof(Propriedades));
+    return p;
+}
+
 Propriedades Propriedades_cria (int ind){
 
     Propriedades p = (Propriedades)calloc(1, sizeof(struct propriedades));
@@ -62,6 +67,14 @@ Propriedades Propriedades_Doc_Atribui(Propriedades p, int ind_vet, int ind_pal, 
     return p;
 }
 
+Propriedades Atribui_Auxiliar(Propriedades destino, Propriedades origem) {
+    destino->indice = origem->indice;
+    destino->frequencia = origem->frequencia;
+    destino->tf_idf = origem->tf_idf;
+
+    return destino;
+}
+
 
 // ---------------- BINARIO ----------------
 
@@ -99,8 +112,9 @@ void Propriedades_Le_Binario(FILE* file, Propriedades* prop, int qtd_prop) {
 
 void Propriedades_Imprime (Propriedades* p, int qtd){
     
+    printf("\n");
     for (int i=0; i<qtd; i++){
-        printf ("Doc: %d; Freq: %d; tf-idf: %.2lf;\n\t", p[i]->indice, p[i]->frequencia, p[i]->tf_idf);
+        printf ("\tDoc: %d; Freq: %d; tf-idf: %.2lf;\n", p[i]->indice, p[i]->frequencia, p[i]->tf_idf);
     }
     
     printf ("\n\n");
