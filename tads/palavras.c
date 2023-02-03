@@ -146,24 +146,19 @@ void Palavras_busca (Palavras* palavras, int qtd, char* str, int qtd_tot_docs){
   
   //quebrar 'str' na quantidade de palavras q tiverem sido escritas
   int cont_palavras = 0;
-
   int* vet_ind = (int*)calloc(1, sizeof(int));
-
   const char separador[] = " ";
   char* token;
 
   //retira o primeiro 'token'
   token = strtok(str, separador);
-
   int aux = 0;
   while (token != NULL)
   {
     //printf("token: %s\n", token);
 
     Palavras busca = (Palavras)calloc(1, sizeof(struct palavras));
-
     strcpy(busca->nome, token);
-
     Palavras* endereco = bsearch(&busca, palavras, qtd, sizeof(Palavras), String_Compara);
 
     if (endereco != NULL) {
@@ -191,16 +186,11 @@ void Palavras_busca (Palavras* palavras, int qtd, char* str, int qtd_tot_docs){
     token = strtok(NULL, separador);
   }
 
-
   qsort(vet_ind, cont_palavras, sizeof(int), Crescente_Inteiro); //ordena vet_ind em ordem crescente
   Palavras_Indices_Buscados(palavras, vet_ind, cont_palavras, qtd_tot_docs);
 
-  /*
-  for (int i = 0; i < cont_pal; i++) {
-    free(vet_ind[i]);
-  }
   free(vet_ind);
-  */
+  
 }
 
 void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet, int qtd_tot_docs) {
@@ -216,15 +206,19 @@ void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet, int qtd
 
     for (int j = 0; j < buscadas[i]->prop_usado; j++) {
       buscadas[i]->prop[j] = Documentos_Propriedade_Cria();
-      buscadas[i]->prop[j] = Atribui_Auxiliar(buscadas[i]->prop[j], pal[vet_ind[i]]->prop[j]);
-      
+      buscadas[i]->prop[j] = Atribui_Auxiliar(buscadas[i]->prop[j], pal[vet_ind[i]]->prop[j]); 
     }
 
     //Propriedades_Imprime(buscadas[i]->prop, buscadas[i]->prop_usado);
   }
 
+  int tam_aloc = 20;
+  int qtd_docs = 0;
+  int* vet_ind_doc = (int*)calloc(tam_aloc, sizeof(int));
+
+  // vet_ind = vetor de indices das palavras digitadas
   for (int i = 0; i < tam_vet; i++) {
-    aux->prop = Busca_Indices_Docs(buscadas[i]->prop, buscadas[i]->prop_usado, aux->prop);
+    qtd_docs += Busca_Indices_Docs(buscadas[i]->prop, buscadas[i]->prop_usado, vet_ind_doc, tam_aloc);
   }
 
   /*for (int i = 0; i < qtd_docs; i++) {

@@ -110,12 +110,32 @@ void Propriedades_Le_Binario(FILE* file, Propriedades* prop, int qtd_prop) {
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
-Propriedades* Busca_Indices_Docs(Propriedades* prop, int qtd, Propriedades* prop_aux) {
-    for (int i = 0; i < qtd; i++) {
-        //n sei
-    }
+int Busca_Indices_Docs(Propriedades* prop, int qtd, int* vet_docs, int tam_aloc, Propriedades* prop_aux){
 
-    return prop_aux;
+    int qtd_docs = 0;
+
+    for (int i = 0; i < qtd; i++) {
+        
+        for (int j = 0; j < qtd_docs; j++){
+            if (prop[i]->indice == vet_docs[j]) {
+                //soma tf_idf no prop_aux;
+                break;
+            }
+
+            else {
+
+                if (qtd_docs == tam_aloc){
+                    tam_aloc *=2;
+                    (int*)realloc(vet_docs, tam_aloc * sizeof(int));
+                }
+                vet_docs[qtd_docs] = prop[i]->indice;
+                qtd_docs++;
+            }
+        }
+    }
+    
+
+    return qtd_docs;
 }
 
 
