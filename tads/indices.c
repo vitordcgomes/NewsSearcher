@@ -370,13 +370,18 @@ int Relatorio_Palavras(Indices ind)
         if (str[i] == ' ')
         {
             printf("\033[91m\033[1mERRO:\033[0m\033[91m Numero de palavras excedido. Favor digitar \033[1m1\033[0m\033[91m palavra.\n");
-            return 1;
+            free(classes_usadas);
+            return 0;
         }
     }
 
     int ind_palavra = Relat_Palavras_Imprime(str, ind->palavras_ind, ind->palavras_usadas);
-    if (ind_palavra < 0)
-        return 1;
+
+    if (ind_palavra < 0) {
+        free(classes_usadas);
+        return 0;
+    }
+        
 
     int qtd_docs = Palavras_Retorna_Prop_Usado(ind->palavras_ind[ind_palavra]);
 
@@ -415,6 +420,7 @@ int Relatorio_Palavras(Indices ind)
         classes_usadas[qtd_classes] = strdup(classe);
         frequencias[qtd_classes] = freq_classe;
         qtd_classes++;
+
 
         // freq_classe += Frequencia_por_classe (classe, ind->documentos_ind, ind->documentos_usados, ind_doc);
         // preciso passar pelos outros documentos, ver se tem a mesma classe e, se tiver, soma a frequencia, senao pula o arquivo e segue
