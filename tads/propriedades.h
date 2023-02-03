@@ -24,14 +24,16 @@ Propriedades Atribui_Auxiliar(Propriedades destino, Propriedades origem);
 void Propriedades_Le_Binario(FILE* file, Propriedades* prop, int qtd_prop);
 void Propriedades_Escreve_Binario(FILE* file, Propriedades* prop, int qtd_prop);
 
+// ---------------- FUNCIONALIDADES (menu) ----------------
+
+int Busca_Indices_Docs(Propriedades* prop, int qtd, int* vet_docs, int tam_aloc);
+
 // ---------------- AUXILIARES ----------------
 void Propriedades_Imprime (Propriedades* p, int qtd);
+int Compara_prop (const void *str1, const void *str2);
 int Propriedades_Retorna_Ind(Propriedades* p, int ind);
+void Propriedades_Ordena (Propriedades* prop, int qtd);
 int Propriedades_Retorna_Freq(Propriedades* p, int ind);
 double Propriedades_Retorna_tf_idf(Propriedades* p, int ind);
 void Propriedades_Documentos_Imprime(Propriedades* p, int qtd);
 int Propriedades_busca (Propriedades* p, int ind, int qtd_prop);
-void Propriedades_Ordena (Propriedades* prop, int qtd);
-int Compara_prop (const void *str1, const void *str2);
-void Verifica_classe (Propriedades* prop, int qtd);
-Propriedades* Busca_Indices_Docs(Propriedades* prop, int qtd, Propriedades* prop_aux);
