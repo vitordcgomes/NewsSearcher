@@ -199,12 +199,6 @@ void Modelo_Impressao_Docs (Documentos* docs, int qtd_impressao, int qtd_docs){
 
 }
 
-
-void Frequencia_por_classe (char* str, Documentos* d, int qtd_docs){
-
-
-}
-
 char* Retorna_Classe (Documentos d){
     return d->classe;
 }

@@ -192,7 +192,7 @@ void Palavras_busca (Palavras* palavras, int qtd, char* str, int qtd_tot_docs){
   }
 
 
-  qsort(vet_ind, cont_palavras, sizeof(int), Ordena_Inteiro); //ordena vet_ind em ordem crescente
+  qsort(vet_ind, cont_palavras, sizeof(int), Crescente_Inteiro); //ordena vet_ind em ordem crescente
   Palavras_Indices_Buscados(palavras, vet_ind, cont_palavras, qtd_tot_docs);
 
   /*
@@ -251,7 +251,6 @@ void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet, int qtd
   
 }
 
-
 int Relat_Palavras_Imprime (char* str, Palavras* p, int qtd_palavras){
 
   int indice = -1;
@@ -271,11 +270,6 @@ int Relat_Palavras_Imprime (char* str, Palavras* p, int qtd_palavras){
       printf ("\n\033[93m  ->\033[0m Aparece com maior frequencia no(s) documento(s):\n\n");
 
       Propriedades_Ordena (p[indice]->prop, p[indice]->prop_usado);
-      printf ("\n\033[93m  ->\033[0m Frequencia por classe:\n\n");
-
-      //Verifica_classe (p[indice]->prop, p[indice]->prop_usado);
-
-
     }
   }
     else {
@@ -302,21 +296,6 @@ void Palavras_imprime (Palavras* p, int qtd){
     printf ("\n\n");
  }
 
-int Palavras_Retorna_Ind(Palavras p, int ind_doc) {
-  return Propriedades_Retorna_Ind(p->prop, ind_doc);
-}
-
-int Palavras_Retorna_Freq(Palavras p, int ind_doc) {
-  return Propriedades_Retorna_Freq(p->prop, ind_doc);
-}
-
-void Palavras_imprime_uma (Palavras* p, int ind){
-
-    printf ("ind: %d; %s; ", ind, p[ind]->nome);
-    Propriedades_Imprime (p[ind]->prop, p[ind]->prop_usado);
-    printf ("\n\n");
- }
-
 Palavras* Palavras_Ordena(Palavras* p, int qtd) {
   //int n = sizeof(pal) / sizeof(pal[0]);
 
@@ -327,18 +306,33 @@ Palavras* Palavras_Ordena(Palavras* p, int qtd) {
   return p;
 }
 
+void Palavras_imprime_uma (Palavras* p, int ind){
+
+    printf ("ind: %d; %s; ", ind, p[ind]->nome);
+    Propriedades_Imprime (p[ind]->prop, p[ind]->prop_usado);
+    printf ("\n\n");
+ }
+
+int Palavras_Retorna_Ind(Palavras p, int ind_doc) {
+  return Propriedades_Retorna_Ind(p->prop, ind_doc);
+}
+
+int Palavras_Retorna_Freq(Palavras p, int ind_doc) {
+  return Propriedades_Retorna_Freq(p->prop, ind_doc);
+}
+
 double Palavras_Retorna_tf_idf(Palavras p, int ind) {
   return Propriedades_Retorna_tf_idf(p->prop, ind);
+}
+
+int Crescente_Inteiro(const void *a, const void *b) {
+    int x = *(int*)a;
+    int y = *(int*)b;
+
+    return (x > y) - (x < y);
 }
 
 int String_Compara(const void *str1, const void *str2) {
   //return strcmp(((Palavras)str1)->nome,((Palavras)str2)->nome);
   return strcmp(*(char **)str1, *(char **)str2);
-}
-
-int Ordena_Inteiro(const void *a, const void *b) {
-    int x = *(int*)a;
-    int y = *(int*)b;
-
-    return (x > y) - (x < y);
 }

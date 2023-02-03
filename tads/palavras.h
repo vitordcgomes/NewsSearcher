@@ -32,10 +32,11 @@ void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet, int qtd
 // ---------------- AUXILIARES ----------------
 int Palavras_Retorna_Prop_Usado(Palavras p);
 void Palavras_imprime (Palavras* p, int qtd);
+Palavras* Palavras_Ordena(Palavras* p, int qtd);
+void Palavras_imprime_uma (Palavras* p, int ind);
 int Palavras_Retorna_Ind(Palavras p, int ind_doc);
 int Palavras_Retorna_Freq(Palavras p, int ind_doc);
-void Palavras_imprime_uma (Palavras* p, int ind);
-Palavras* Palavras_Ordena(Palavras* p, int qtd);
 double Palavras_Retorna_tf_idf(Palavras p, int ind);
+int Crescente_Inteiro(const void *a, const void *b);
 int String_Compara(const void *str1, const void *str2);
-int Ordena_Inteiro(const void *a, const void *b);
+
