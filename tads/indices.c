@@ -288,6 +288,8 @@ int Relatorio_Palavras (Indices ind){
     }
 
     int ind_palavra = Relat_Palavras_Imprime (str, ind->palavras_ind, ind->palavras_usadas);
+    if (ind_palavra < 0) return 1;
+    
     int qtd_docs = Palavras_Retorna_Prop_Usado (ind->palavras_ind[ind_palavra]);
     
     for (int i=0; i< qtd_docs; i++){
