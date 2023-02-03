@@ -9,6 +9,7 @@ all: libtads.a indexador principal
 #make experimental
 
 %.o: 
+	mkdir $(COMPILED)
 	gcc $(FLAGS) tads/palavras.c -o $(COMPILED)/palavras.o
 	gcc $(FLAGS) tads/documentos.c -o $(COMPILED)/documentos.o
 	gcc $(FLAGS) tads/propriedades.c -o $(COMPILED)/propriedades.o
@@ -33,8 +34,9 @@ run:
 	./principal binario.bin 42
 
 clean:
-	rm -f indexador principal $(COMPILED)/*.o
+	rm -f indexador principal
 	rm libtads.a
+	rm -rf $(COMPILED)
 	rm binario.bin
 	clear
 
