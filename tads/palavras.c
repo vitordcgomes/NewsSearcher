@@ -152,7 +152,36 @@ void Palavras_Escreve_Binario(FILE *file, Palavras *p, int qtd_palavras)
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
-//void Palavras_busca(Palavras *palavras, int qtd, char *str, int qtd_tot_docs);
+void Palavras_busca(Palavras *palavras, int qtd_palavras){
+
+  int* ind_docs = (int*)calloc(1, sizeof(int));
+  double* tf_idf ; // faz copia, ordena e itera referenciando pela copia original
+  int qtd_docs = 0;
+  int ind;
+
+  for (int i=0; i<qtd_palavras; i++){
+    for (int j = 0; j< palavras[i]->prop_usado; j++){
+
+      ind = Indice_Doc_Retorna (palavras[i]->prop, j); // retornar prop->ind
+      int* endereco = bsearch (&ind, ind_docs, qtd_docs, sizeof(int), Ind_compara);
+      
+        if (endereco != NULL){
+
+          //indice = ind_docs - endereco
+          //soma tf-idf
+          break;
+        }     
+
+          realloc; qtd_docs +1
+          add_ind_docs;
+          atribui;
+    }
+
+  }
+
+
+
+}
 
 Palavras *Palavras_Retorna_Endereco(char *token, Palavras *palavras, int qtd_palavras)
 {
@@ -302,4 +331,13 @@ int String_Compara(const void *str1, const void *str2)
 {
   // return strcmp(((Palavras)str1)->nome,((Palavras)str2)->nome);
   return strcmp(*(char **)str1, *(char **)str2);
+}
+
+int Ind_compara (const void *a, const void *b){
+  int x = *(int *)a;
+  int y = *(int *)b;
+
+  if (x < y) return -1;
+  if (x > y) return 1;
+  return 0;
 }
