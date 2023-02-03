@@ -35,8 +35,8 @@ run:
 
 clean:
 	rm -f indexador principal
-	rm libtads.a
 	rm -rf $(COMPILED)
+	rm libtads.a
 	rm binario.bin
 	clear
 

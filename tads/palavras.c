@@ -155,31 +155,63 @@ void Palavras_Escreve_Binario(FILE *file, Palavras *p, int qtd_palavras)
 void Palavras_busca(Palavras *palavras, int qtd_palavras){
 
   int* ind_docs = (int*)calloc(1, sizeof(int));
-  double* tf_idf ; // faz copia, ordena e itera referenciando pela copia original
+  double* tf_idf = (double*)calloc(1, sizeof(double)); // faz copia, ordena e itera referenciando pela copia original
+  //char** str = (char**)calloc(1, sizeof(char*));
+  //char nome;
   int qtd_docs = 0;
   int ind;
+  int flag_igual = 0;
 
   for (int i=0; i<qtd_palavras; i++){
     for (int j = 0; j< palavras[i]->prop_usado; j++){
 
-      ind = Indice_Doc_Retorna (palavras[i]->prop, j); // retornar prop->ind
-      int* endereco = bsearch (&ind, ind_docs, qtd_docs, sizeof(int), Ind_compara);
-      
-        if (endereco != NULL){
+      ind = Propriedades_Retorna_Ind(palavras[i]->prop, j); // retornar prop->ind
+      //qsort(ind_docs, qtd_docs, sizeof(int), Crescente_Inteiro);
+      //int* endereco = (int*)bsearch (&ind, ind_docs, qtd_docs, sizeof(int), Ind_compara);
 
-          //indice = ind_docs - endereco
+      for(int k = 0; k < qtd_docs; k++) {
+        if (ind == ind_docs[k]) {
+          printf("\nIGUAL\n");
+          int indice = ind_docs[k];
+          printf("indice: %d\n", indice);
+          
           //soma tf-idf
+          tf_idf[k] += Propriedades_Retorna_tf_idf(palavras[i]->prop, j);
+          flag_igual = 1;
           break;
-        }     
+        }
+      }
+      if (!flag_igual) {
+        ind_docs[qtd_docs] = ind;
+        tf_idf[qtd_docs] = Propriedades_Retorna_tf_idf(palavras[i]->prop, j);
 
-          realloc; qtd_docs +1
-          add_ind_docs;
-          atribui;
+        qtd_docs+=1;
+        ind_docs = (int*)realloc(ind_docs, (qtd_docs+1)*sizeof(int));
+        tf_idf = (double*)realloc(tf_idf, (qtd_docs+1)*sizeof(double));
+        
+      }
+      flag_igual = 0;
     }
+  }
+  //qsort(ind_docs, qtd_docs, sizeof(int), Crescente_Inteiro);
+  
+  //Proppriedades_Atribui();
+  Ordena_tf_idf(ind_docs, tf_idf, qtd_docs);
 
+  printf("ind_docs: ");
+  for (int i = 0; i < qtd_docs; i++) {
+    printf("%d ", ind_docs[i]);
   }
 
+  printf("\n\ntf-idfs: ");
+  for (int i = 0; i < qtd_docs; i++) {
+    printf("%.2lf ", tf_idf[i]);
+  }
+  printf("\n");
 
+  //free(str);
+  free(ind_docs);
+  free(tf_idf);
 
 }
 
@@ -334,8 +366,8 @@ int String_Compara(const void *str1, const void *str2)
 }
 
 int Ind_compara (const void *a, const void *b){
-  int x = *(int *)a;
-  int y = *(int *)b;
+  int x = *(const int *)a;
+  int y = *(const int *)b;
 
   if (x < y) return -1;
   if (x > y) return 1;

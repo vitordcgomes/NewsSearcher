@@ -27,6 +27,8 @@ void Propriedades_Escreve_Binario(FILE* file, Propriedades* prop, int qtd_prop);
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
 //int Busca_Indices_Docs(Propriedades* prop, int qtd, int* vet_docs, int tam_aloc);
+void Ordena_tf_idf(int* ind_docs, double* tf_idf, int tam);
+int Decrescente_double(const void *a, const void *b);
 
 // ---------------- AUXILIARES ----------------
 void Propriedades_Imprime (Propriedades* p, int qtd);

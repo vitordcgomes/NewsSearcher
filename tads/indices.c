@@ -290,12 +290,21 @@ void Texto_Busca(Indices ind)
 
         if ((Palavras *)endereco != NULL)
         {
-            cont_palavras += 1;
-            vet_ind = (int *)realloc(vet_ind, (cont_palavras + 1) * sizeof(int));
+            
             int indice = (Palavras *)endereco - ind->palavras_ind;
 
-            vet_ind[aux] = indice;
-            aux++;
+            int* resultado = (int*)bsearch(&indice, vet_ind, cont_palavras, sizeof(int), Ind_compara);
+
+            if (resultado != NULL) {
+                //nada a fazer, a palavra ja existe no vetor
+            }
+            else {
+                cont_palavras += 1;
+                vet_ind = (int *)realloc(vet_ind, (cont_palavras + 1) * sizeof(int));
+                vet_ind[aux] = indice;
+                aux++;
+            }
+            
 
             printf("Palavra '%s' encontrada no indice %d.\n", token, indice);
             // acessar o indice de cada palavras para calcular os atributos
@@ -459,6 +468,7 @@ int Decrescente_Inteiro(const void *a, const void *b)
 
 void Ordena_Classes(int *frequencias, char **classes_usadas, int qtd_classes)
 {
+    //vetor de propriedades
 
     int frequencias_2[qtd_classes];
     int aux;

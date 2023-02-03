@@ -41,3 +41,4 @@ double Palavras_Retorna_tf_idf(Palavras p, int ind);
 int Crescente_Inteiro(const void *a, const void *b);
 int String_Compara(const void *str1, const void *str2);
 int Ind_compara (const void *a, const void *b);
+
