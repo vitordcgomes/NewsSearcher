@@ -216,12 +216,12 @@ void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet, int qtd
   int qtd_docs = 0;
   int* vet_ind_doc = (int*)calloc(tam_aloc, sizeof(int));
 
-  // vet_ind = vetor de indices das palavras digitadas
+  /* vet_ind = vetor de indices das palavras digitadas
   for (int i = 0; i < tam_vet; i++) {
     qtd_docs += Busca_Indices_Docs(buscadas[i]->prop, buscadas[i]->prop_usado, vet_ind_doc, tam_aloc);
   }
 
-  /*for (int i = 0; i < qtd_docs; i++) {
+  for (int i = 0; i < qtd_docs; i++) {
     for (int j = 0; j < buscadas[i]->prop_usado; j++) {
       //soma
    }

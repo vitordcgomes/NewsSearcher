@@ -110,7 +110,7 @@ void Propriedades_Le_Binario(FILE* file, Propriedades* prop, int qtd_prop) {
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
-int Busca_Indices_Docs(Propriedades* prop, int qtd, int* vet_docs, int tam_aloc, Propriedades* prop_aux){
+/*int Busca_Indices_Docs(Propriedades* prop, int qtd, int* vet_docs, int tam_aloc, Propriedades* prop_aux){
 
     int qtd_docs = 0;
 
@@ -137,6 +137,7 @@ int Busca_Indices_Docs(Propriedades* prop, int qtd, int* vet_docs, int tam_aloc,
 
     return qtd_docs;
 }
+*/
 
 
 // ---------------- AUXILIARES ----------------
