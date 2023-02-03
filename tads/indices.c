@@ -330,6 +330,8 @@ void Texto_Busca(Indices ind)
         printf("Palavra de indice '%d' aparece nos seguinte documentos:\n", vet_ind[i]);
         Palavras_imprime_uma(ind_aux->palavras_ind, i);
     }
+
+    Palavras_busca (ind_aux->palavras_ind, ind_aux->palavras_usadas);
     
     //Palavras_imprime (ind_aux->palavras_ind, ind_aux->palavras_usadas);
 
