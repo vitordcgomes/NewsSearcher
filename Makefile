@@ -1,17 +1,40 @@
 FLAGS = -c -Wall
 
-all: 
-	make indexador
-	make principal
+COMPILED = compiled
+
+LIBRARY = -I tarefas -L . -ltads -lm
+
+all: libtads.a indexador principal
+	
 #make experimental
 
+%.o: 
+	gcc $(FLAGS) tads/palavras.c -o $(COMPILED)/palavras.o
+	gcc $(FLAGS) tads/documentos.c -o $(COMPILED)/documentos.o
+	gcc $(FLAGS) tads/propriedades.c -o $(COMPILED)/propriedades.o
+	gcc $(FLAGS) tads/indices.c -o $(COMPILED)/indices.o
+
+libtads.a: $(COMPILED)/palavras.o $(COMPILED)/documentos.o $(COMPILED)/propriedades.o $(COMPILED)/indices.o
+	ar -crs libtads.a $(COMPILED)/palavras.o $(COMPILED)/documentos.o $(COMPILED)/propriedades.o $(COMPILED)/indices.o
+
+indexador: indexador.c 
+	gcc -o indexador indexador.c $(LIBRARY)
+
+principal: principal.c 
+	gcc -o principal principal.c $(LIBRARY)
+
+experimental: experimental.c
+	gcc -o experimental experimental.c $(LIBRARY)
+	./experimentos
+	
 run: 
 	make
 	./indexador datasets/medium-small/test.txt binario.bin
 	./principal binario.bin 42
 
 clean:
-	rm -f indexador principal *.o
+	rm -f indexador principal $(COMPILED)/*.o
+	rm libtads.a
 	rm binario.bin
 	clear
 
@@ -23,28 +46,3 @@ valgrind:
 gdb:
 	make
 	gdb ./indexador datasets/medium-small/test.txt binario.bin 
-
-indexador: indexador.c tads/palavras.c tads/palavras.h tads/documentos.c tads/documentos.h tads/propriedades.c tads/propriedades.h tads/indices.c tads/indices.h 
-	gcc $(FLAGS) indexador.c
-	gcc $(FLAGS) tads/palavras.c 
-	gcc $(FLAGS) tads/documentos.c
-	gcc $(FLAGS) tads/propriedades.c
-	gcc $(FLAGS) tads/indices.c
-	gcc -o indexador indexador.o palavras.o documentos.o propriedades.o indices.o -lm
-
-#./indexador datasets/tiny/test.txt binario.bin
-
-principal: principal.c
-	gcc $(FLAGS) tads/palavras.c 
-	gcc $(FLAGS) tads/documentos.c
-	gcc $(FLAGS) tads/propriedades.c
-	gcc $(FLAGS) tads/indices.c
-	gcc $(FLAGS) principal.c
-	gcc -o principal principal.o palavras.o documentos.o propriedades.o indices.o -lm
-
-#./principal caminho_binario K
-
-experimental:
-	gcc -c algo.c
-	gcc -o experimentos algo.o
-	./experimentos

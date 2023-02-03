@@ -250,14 +250,69 @@ void Imprime_Binario(Indices indices, char** argv) {
 void Texto_Busca(Indices ind){
 
     char str [1000];
-
+    
     printf ("Digite o que deseja buscar: \033[96m");
     scanf ("%[^\n]%*c", str);
     printf ("\n\033[0m");
 
-    //printf ("%s\n", str);
+    int cont_palavras = 0;
+    int* vet_ind = (int*)calloc(1, sizeof(int));
+    const char separador[] = " ";
+    char* token;
 
-    Palavras_busca (ind->palavras_ind, ind->palavras_usadas, str, ind->documentos_usados);
+    //retira o primeiro 'token'
+    token = strtok(str, separador);
+    int aux = 0;
+
+    while (token != NULL)
+    {
+        void* endereco = Palavras_Retorna_Endereco(token, ind->palavras_ind, ind->palavras_usadas);
+
+        if ((Palavras*)endereco != NULL) {
+        cont_palavras+=1;
+        vet_ind = (int*)realloc(vet_ind, (cont_palavras+1)*sizeof(int));
+        int indice = (Palavras*)endereco - ind->palavras_ind;
+
+        vet_ind[aux] = indice;
+        aux++;
+
+        printf("Palavra '%s' encontrada no indice %d.\n", token, indice);
+        //acessar o indice de cada palavras para calcular os atributos
+        } 
+        
+        else {
+        printf("Palavra '%s' nao encontrada.\n", token);
+        }
+
+        //free(busca); 
+        token = strtok(NULL, separador);
+    }
+    
+    qsort(vet_ind, cont_palavras, sizeof(int), Crescente_Inteiro); //ordena vet_ind em ordem crescente
+
+    Indices ind_aux = (Indices)calloc(1, sizeof(struct indices));
+
+    ind_aux->palavras_ind = Palavras_Indices_Buscados(ind->palavras_ind, vet_ind, cont_palavras, ind->documentos_usados);
+    ind_aux->palavras_usadas = cont_palavras;
+
+    printf("\ncont_pal = %d", cont_palavras);
+    printf("\nind: ");
+    for (int i = 0; i < cont_palavras; i++) {
+        printf("%d ", vet_ind[i]);
+    }
+    printf("\n");
+
+    Palavras_imprime (ind->palavras_ind, ind->palavras_usadas);
+
+
+    free(vet_ind);
+
+    for (int i = 0; i < ind_aux->palavras_usadas; i++) {
+        Palavras_Libera(ind_aux->palavras_ind[i]);
+    }
+    free(ind_aux->palavras_ind);
+    free(ind_aux);
+
 }
 
 void Relatorio_Docs (Indices ind){

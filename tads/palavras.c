@@ -142,62 +142,24 @@ void Palavras_Escreve_Binario(FILE* file, Palavras* p, int qtd_palavras) {
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
-void Palavras_busca (Palavras* palavras, int qtd, char* str, int qtd_tot_docs){
-  
-  //quebrar 'str' na quantidade de palavras q tiverem sido escritas
-  int cont_palavras = 0;
-  int* vet_ind = (int*)calloc(1, sizeof(int));
-  const char separador[] = " ";
-  char* token;
 
-  //retira o primeiro 'token'
-  token = strtok(str, separador);
-  int aux = 0;
-  while (token != NULL)
-  {
-    //printf("token: %s\n", token);
+void Palavras_busca (Palavras* palavras, int qtd, char* str, int qtd_tot_docs);
 
+
+Palavras* Palavras_Retorna_Endereco(char* token, Palavras* palavras, int qtd_palavras) {
     Palavras busca = (Palavras)calloc(1, sizeof(struct palavras));
     strcpy(busca->nome, token);
-    Palavras* endereco = bsearch(&busca, palavras, qtd, sizeof(Palavras), String_Compara);
+    Palavras* endereco = bsearch(&busca, palavras, qtd_palavras, sizeof(Palavras), String_Compara);
 
-    if (endereco != NULL) {
-      cont_palavras+=1;
-      vet_ind = (int*)realloc(vet_ind, (cont_palavras+1)*sizeof(int));
-      int indice = endereco - palavras;
-
-      vet_ind[aux] = indice;
-      aux++;
-      /*
-        *pal = endereco da primeira casa (indice 0) do vetor
-        *endereco = endereco da palavra encontrada no vetor
-        *endereco - pal = diferenca de "casas" do vetor entre os endereços
-      */
-
-      printf("Palavra '%s' encontrada no indice %d.\n", token, indice);
-      //acessar o indice de cada palavras para calcular os atributos
-    } 
-    
-    else {
-      printf("Palavra '%s' nao encontrada.\n", token);
-    }
-
-    free(busca); 
-    token = strtok(NULL, separador);
-  }
-
-  qsort(vet_ind, cont_palavras, sizeof(int), Crescente_Inteiro); //ordena vet_ind em ordem crescente
-  Palavras_Indices_Buscados(palavras, vet_ind, cont_palavras, qtd_tot_docs);
-
-  free(vet_ind);
-  
+    free(busca);
+    return endereco;
 }
 
-void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet, int qtd_tot_docs) {
+Palavras* Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet, int qtd_tot_docs) {
 
   Palavras* buscadas = (Palavras*)calloc(tam_vet, sizeof(Palavras));
-  Palavras aux = (Palavras)calloc(1, sizeof(struct palavras));
-  aux->prop = Propriedades_Vet_Cria(qtd_tot_docs);
+  //Palavras aux = (Palavras)calloc(1, sizeof(struct palavras));
+  //aux->prop = Propriedades_Vet_Cria(qtd_tot_docs);
 
   for (int i = 0; i < tam_vet; i++) {
     buscadas[i] = (Palavras)calloc(1, sizeof(struct palavras));
@@ -211,26 +173,8 @@ void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet, int qtd
 
     //Propriedades_Imprime(buscadas[i]->prop, buscadas[i]->prop_usado);
   }
-
-  int tam_aloc = 20;
-  int qtd_docs = 0;
-  int* vet_ind_doc = (int*)calloc(tam_aloc, sizeof(int));
-
-  /* vet_ind = vetor de indices das palavras digitadas
-  for (int i = 0; i < tam_vet; i++) {
-    qtd_docs += Busca_Indices_Docs(buscadas[i]->prop, buscadas[i]->prop_usado, vet_ind_doc, tam_aloc);
-  }
-
-  for (int i = 0; i < qtd_docs; i++) {
-    for (int j = 0; j < buscadas[i]->prop_usado; j++) {
-      //soma
-   }
-
-   //atribui
-
-  }
-  */
   
+  /*
   printf("\ncont_pal = %d", tam_vet);
   printf("\nind: ");
   for (int i = 0; i < tam_vet; i++) {
@@ -242,6 +186,9 @@ void Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet, int qtd
     printf("Palavra de indice '%d' aparece nos seguinte documentos:\n", vet_ind[i]);
     Propriedades_Imprime(buscadas[i]->prop, buscadas[i]->prop_usado);
   }
+  */
+
+  return buscadas;
   
 }
 
