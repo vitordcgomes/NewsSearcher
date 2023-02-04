@@ -322,7 +322,7 @@ void Texto_Busca(Indices ind)
         //printf ("nome: %s\n", nomes_docs[i]);
     }
 
-    Palavras_busca (ind_aux->palavras_ind, ind_aux->palavras_usadas, nomes_docs);
+    Palavras_busca (ind_aux->palavras_ind, ind_aux->palavras_usadas, nomes_docs); 
     // se ficar muito grande mesmo tirando os comentarios, fazemos os frees em outra funcao;
     
     for (int i = 0; i < ind_aux->palavras_usadas; i++) {
@@ -432,7 +432,27 @@ int Relatorio_Palavras(Indices ind)
 }
 
 void Texto_Classifica(Indices ind, int knn) {
-    printf("\nknn = %d\n", knn);
+
+    char str [1000];
+    int ind_doc;
+
+    printf ("Digite o nome do documento base para a classificacao: \033[96m");
+    scanf ("%[^\n]%*c", str);
+    printf ("\033[0m");
+    //printf ("doc = %s\n", str);
+
+    ind_doc = Documentos_Verifica_Existencia (str, ind->documentos_ind, ind->documentos_usados);
+
+    if (ind_doc > -1){
+        Documentos_Classifica (str, ind_doc, ind->documentos_ind, ind->documentos_usados, knn);
+
+    }
+
+    else { 
+        printf ("\n\033[91m\033[1mERRO:\033[0m\033[91m Esse documento nao foi encontrado. Tente novamente!\033[0m\n\n");
+        }
+    
+
 }
 
 // ---------------- AUXILIARES ----------------

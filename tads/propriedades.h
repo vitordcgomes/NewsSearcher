@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 typedef struct propriedades* Propriedades;
 
@@ -29,6 +30,7 @@ void Propriedades_Escreve_Binario(FILE* file, Propriedades* prop, int qtd_prop);
 void Ordena_tf_idf(int* ind_docs, double* tf_idf, int tam, char** nomes_docs);
 int Decrescente_double(const void *a, const void *b);
 void Ordena_Classes (int* frequencias, char** classes_usadas, int qtd_classes);
+double Calcula_Cosseno (Propriedades* prop_ref, Propriedades* prop, int qtd_ref, int qtd_prop);
 
 // ---------------- AUXILIARES ----------------
 void Propriedades_Imprime (Propriedades* p, int qtd);
@@ -40,5 +42,7 @@ double Propriedades_Retorna_tf_idf(Propriedades* p, int ind);
 void Propriedades_Documentos_Imprime(Propriedades* p, int qtd);
 int Propriedades_busca (Propriedades* p, int ind, int qtd_prop);
 int Decrescente_int(const void *a, const void *b);
-int Busca_Ind (const void *a, const void *b);
 int Ind_compara (const void *a, const void *b);
+Propriedades Propriedades_Copia (Propriedades origem, Propriedades destino);
+int Ind_Crescente(const void *a, const void *b);
+int Prop_Ind_compara (const void *a, const void *b);

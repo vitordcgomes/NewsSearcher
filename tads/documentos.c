@@ -14,6 +14,7 @@ struct documentos {
     int prop_usado;
 
     int qtd_palavras;
+    double knn;
 };
 
 // ---------------- MEMORIA ----------------
@@ -206,4 +207,95 @@ char* Retorna_Classe (Documentos d){
 
 char* Documentos_Nome_Retorna (Documentos d){
     return d->nome;
+}
+
+int Documentos_Verifica_Existencia (char* str, Documentos* docs, int qtd_docs){
+
+    //como o vetor se encontra DESORDENADO, pela ordem alfabetica, nao usaremos bsearch (especificacao diz busca em arquivos ORDENADOS devem ser por bsearch)
+
+    for (int i=0; i<qtd_docs; i++){
+        if (!strcmp (docs[i]->nome, str))
+        return i;
+    }
+
+    return -1;
+}
+
+void Documentos_Classifica (char* str, int ind_doc, Documentos* docs, int qtd_docs, int qtd_vizinhos){
+
+    char* classe = Retorna_Classe (docs[ind_doc]);
+    Documentos doc_aux = Documentos_cria (str, classe);
+
+    (Propriedades*)realloc(doc_aux->prop, docs[ind_doc]->prop_usado * sizeof(Propriedades));
+    //calculamos tf-idf pelo vetor de palavras, entao nao eh possivel calcular da mesma maneira agora;
+
+        for (int j=0; j<docs[ind_doc]->prop_usado; j++){
+
+            doc_aux->prop[j] = Documentos_Propriedade_Cria();
+            doc_aux->prop[j] = Propriedades_Copia (docs[ind_doc]->prop[j], doc_aux->prop[j]);
+            doc_aux->prop_usado++;
+        }
+
+    for (int j=0; j<qtd_docs; j++){
+
+        if (j == ind_doc) {
+            docs[j]->knn = -1;
+            j++; //se for o mesmo documento a referencia, nao comparamos e pulamos para o proximo
+        }
+
+        //retorna distancia entre o texto de referencia (ind_doc) e o texto aual (j)
+        docs[j]->knn = Calcula_Cosseno (doc_aux->prop, docs[j]->prop, doc_aux->prop_usado, docs[j]->prop_usado);
+    }
+
+    Ordena_KNN (docs, qtd_docs, str);
+
+    for (int i = 0; i<docs[ind_doc]->prop_usado; i++){
+        free(doc_aux->prop[i]);
+    }
+    free (doc_aux);
+
+    
+    //LIBERAR PROP E DOCS
+}
+
+void Ordena_KNN (Documentos* docs, int qtd_docs, char* str){
+
+    Documentos* cpy_docs = (Documentos*)calloc(qtd_docs, sizeof(Documentos));
+    int cont = 10;
+
+    for (int i=0; i<qtd_docs; i++){
+        cpy_docs[i] = (Documentos)calloc(1, sizeof(struct documentos));
+        strcpy(cpy_docs[i]->nome, docs[i]->nome);
+        strcpy(cpy_docs[i]->classe, docs[i]->classe);
+        cpy_docs[i]->knn = docs[i]->knn;
+    }
+
+    qsort (cpy_docs, qtd_docs, sizeof(Documentos), Compara_KNN);
+
+    if (qtd_docs < 10){
+        cont = qtd_docs;
+    }
+
+    printf("\n\033[93m  ->\033[0m Top 10 documentos mais proximos de '%s':\n\n", str);
+
+    for (int i=0; i<cont; i++){
+        printf("\t\033[96m[\033[0m%d\033[96m]\033[0m - '%s', com %.2lf de proximidade;\n\n", i + 1, cpy_docs[i]->nome, cpy_docs[i]->knn);
+    }
+
+    for (int i=0; i<qtd_docs; i++)
+        free (cpy_docs[i]);
+    
+    free (cpy_docs);
+
+}
+
+int Compara_KNN (const void *fst, const void *scnd){
+    Documentos d1 = *(Documentos *)fst;
+    Documentos d2 = *(Documentos *)scnd;
+
+    double diferenca = d2->knn - d1->knn;
+
+    if (diferenca > 0) return 1;
+    if (diferenca < 0) return -1;
+    return 0;
 }

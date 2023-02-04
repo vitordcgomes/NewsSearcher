@@ -123,38 +123,9 @@ void Propriedades_Le_Binario(FILE *file, Propriedades *prop, int qtd_prop)
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
-/*int Busca_Indices_Docs(Propriedades* prop, int qtd, int* vet_docs, int tam_aloc, Propriedades* prop_aux){
-
-    int qtd_docs = 0;
-
-    for (int i = 0; i < qtd; i++) {
-
-        for (int j = 0; j < qtd_docs; j++){
-            if (prop[i]->indice == vet_docs[j]) {
-                //soma tf_idf no prop_aux;
-                break;
-            }
-
-            else {
-
-                if (qtd_docs == tam_aloc){
-                    tam_aloc *=2;
-                    (int*)realloc(vet_docs, tam_aloc * sizeof(int));
-                }
-                vet_docs[qtd_docs] = prop[i]->indice;
-                qtd_docs++;
-            }
-        }
-    }
-
-
-    return qtd_docs;
-}
-*/
-
 void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char** nomes_docs)
 {
-    // RETORNAR DOCUMENTO
+    // ERRO NO VALGRIND -> STRINGS
 
     Propriedades *prop = (Propriedades *)calloc(tam, sizeof(Propriedades));
     int qtd = 10;
@@ -167,7 +138,7 @@ void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char** nomes_docs)
         prop[i]->indice = ind_docs[i];
     }
 
-    qsort(prop, tam, sizeof(Propriedades), Decrescente_double);
+    //qsort(prop, tam, sizeof(Propriedades), Decrescente_double);
 
 
     printf("\n\033[93m  ->\033[0m Top 10 documentos em que a(s) palavra(s) mais aparece(m):\n\n");
@@ -202,6 +173,41 @@ int Decrescente_double(const void *a, const void *b)
     Propriedades prop1 = *(Propriedades *)a;
     Propriedades prop2 = *(Propriedades *)b;
     return (int)(prop2->tf_idf - prop1->tf_idf);
+}
+
+double Calcula_Cosseno (Propriedades* prop_ref, Propriedades* prop, int qtd_ref, int qtd_prop){
+
+    double numerador = 0;
+    double denominador = 0;
+    double denominador_ref = 0;
+    double denominador_prop = 0;
+    double cosseno = 0;
+    int flag_encontrei =0;
+
+    qsort (prop_ref, qtd_ref, sizeof(Propriedades), Ind_Crescente);
+    qsort (prop, qtd_prop, sizeof(Propriedades), Ind_Crescente);
+    // na iteracao, verificar documento a documento se o indice é o mesmo, se nao for, recebe zero e seguimos com o for
+
+    for (int k=0; k<qtd_ref; k++){
+
+        Propriedades* endereco = bsearch (&prop_ref[k]->indice, prop, qtd_prop, sizeof(Propriedades), Prop_Ind_compara);
+
+        if (endereco != NULL){
+            int indice = endereco - prop;
+            numerador += (prop[indice]->tf_idf * prop_ref[k]->tf_idf);
+            denominador_ref += pow(prop_ref[k]->tf_idf , 2);
+            denominador_prop += pow( prop[indice]->tf_idf , 2);
+            flag_encontrei = 1;
+        }
+    }
+
+    if (!flag_encontrei) return 0;
+
+    denominador = sqrt(denominador_ref) * sqrt(denominador_prop);
+    cosseno = numerador/denominador;
+
+return cosseno;
+
 }
 
 // ---------------- AUXILIARES ----------------
@@ -330,4 +336,28 @@ int Ind_compara (const void *a, const void *b){
   if (x < y) return -1;
   if (x > y) return 1;
   return 0;
+}
+
+Propriedades Propriedades_Copia (Propriedades origem, Propriedades destino){
+
+    destino->frequencia = origem->frequencia;
+    destino->tf_idf = origem->tf_idf;
+    destino->indice = origem->indice;
+
+    return destino;
+}
+
+int Ind_Crescente(const void *a, const void *b){
+    Propriedades x = *(Propriedades *)a;
+    Propriedades y = *(Propriedades *)b;
+
+    return (x->indice - y->indice);
+}
+
+
+int Prop_Ind_compara (const void *a, const void *b){
+  int x = *(const int *)a;
+  Propriedades y = *( Propriedades *)b;
+
+  return (x - y->indice);
 }
