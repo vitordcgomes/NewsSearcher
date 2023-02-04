@@ -149,11 +149,14 @@ void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char nomes_docs[][100
     if(tam==0) {
         printf("ERRO: Nao foi possivel localizar essa(s) palavra(s)\n");
     }
-    else {
-        printf("\n\033[93m  ->\033[0m Top 10 documentos em que a(s) palavra(s) mais aparece(m):\n\n");
-    }
 
     if (tam < 10) qtd = tam;
+
+    if (tam>0) {
+        printf("\n\033[93m  ->\033[0m Top %d documentos em que a(s) palavra(s) mais aparece(m):\n\n", qtd);
+    }
+
+    
 
     for (int i = 0; i < qtd; i++)
     {   

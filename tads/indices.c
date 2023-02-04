@@ -491,7 +491,7 @@ void Texto_Classifica(Indices ind, int knn) {
     //qsort(ind_palavras, cont_palavras, sizeof(int), Crescente_Inteiro); // ordena vet_ind em ordem crescente
 
     Indices ind_aux = (Indices)calloc(1, sizeof(struct indices));
-    ind_aux->documentos_ind = (Documentos*)realloc(ind_aux->documentos_ind, sizeof(Documentos*));
+    ind_aux->documentos_ind = (Documentos*)calloc(1, sizeof(Documentos*));
     ind_aux->documentos_ind[0] = Documentos_Classif_Constroi (str, cont_palavras, ind_palavras, frequencias);
     ind_aux->documentos_usados = 1;
 
