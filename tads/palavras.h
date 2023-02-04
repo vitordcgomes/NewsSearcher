@@ -27,6 +27,7 @@ void Palavras_Escreve_Binario(FILE* file, Palavras* p, int qtd_palavras);
 // ---------------- FUNCIONALIDADES (menu) ----------------
 void Palavras_busca(Palavras *palavras, int qtd_palavras, char** nomes_docs);
 int* Cria_Ind_Docs(Palavras *palavras, int qtd_palavras);
+double* Cria_Ind_tf_idf(Palavras* palavras, int qtd_palavras, int size); //nao estamos usando
 Palavras* Palavras_Retorna_Endereco(char* token, Palavras* palavras, int qtd_palavras);
 int Relat_Palavras_Imprime (char* str, Palavras* p, int qtd_palavras);
 Palavras* Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet, int qtd_docs);

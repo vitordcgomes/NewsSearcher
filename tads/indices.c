@@ -299,37 +299,50 @@ void Texto_Busca(Indices ind)
     ind_aux->palavras_usadas = cont_palavras;
 
     int* ind_docs = Cria_Ind_Docs(ind_aux->palavras_ind, ind_aux->palavras_usadas);
+    
     int size = 0;
     for (int i = 0; ind_docs[i] != -1; i++) {
         size++;
     }
 
-    printf("size: %d\n", size);
+    //printf("size: %d\n", size);
 
     char** nomes_docs = (char**)malloc(size * sizeof(char*));
     //char* nome;
-    printf("qtd_docs: %ld", ind->documentos_usados);
+    //printf("qtd_docs: %ld", ind->documentos_usados);
 
     for (int i=0; i<size; i++){
         nomes_docs[i] = (char*)malloc(100 * sizeof(char));
-        printf("\nind_docs: %d\n", ind_docs[i]);
+        //printf("\nind_docs: %d\n", ind_docs[i]);
  
         //vet_ind[i] acessa uma posicao maior q a do vetor de documentos, por isso seg_fault
         //vet_ind eh o vetor com os indices das palavras, nao dos documentos, por isso da erro
         nomes_docs[i] = Documentos_Nome_Retorna(ind->documentos_ind[ind_docs[i]]); 
 
-        printf ("nome: %s\n", nomes_docs[i]);
+        //printf ("nome: %s\n", nomes_docs[i]);
     }
 
     Palavras_busca (ind_aux->palavras_ind, ind_aux->palavras_usadas, nomes_docs);
     // se ficar muito grande mesmo tirando os comentarios, fazemos os frees em outra funcao;
     
-    for (int i = 0; i < ind_aux->palavras_usadas; i++)
+    for (int i = 0; i < ind_aux->palavras_usadas; i++) {
         Palavras_Libera(ind_aux->palavras_ind[i]);
-    
+    }
     free(ind_aux->palavras_ind);
     free(ind_aux);
+
     free(vet_ind);
+    free(ind_docs);
+
+    /* quando descomentado, aponta varios erros :(
+    for(int i = 0; i < size; i++) {
+        free(nomes_docs[i]);
+    }
+    */
+
+    free(nomes_docs);
+
+   
 
 }
 

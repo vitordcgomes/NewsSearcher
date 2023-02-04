@@ -192,10 +192,8 @@ void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char** nomes_docs)
 
     for (int i = 0; i < tam; i++)
     {
-        //free (nomes_docs[i]);
         free(prop[i]);
     }
-    //free (nomes_docs);
     free(prop);
 }
 
