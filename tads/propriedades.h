@@ -27,7 +27,7 @@ void Propriedades_Escreve_Binario(FILE* file, Propriedades* prop, int qtd_prop);
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
-void Ordena_tf_idf(int* ind_docs, double* tf_idf, int tam, char** nomes_docs);
+void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char nomes_docs[][100]);
 int Decrescente_double(const void *a, const void *b);
 void Ordena_Classes (int* frequencias, char** classes_usadas, int qtd_classes);
 double Calcula_Cosseno (Propriedades* prop_ref, Propriedades* prop, int qtd_ref, int qtd_prop);

@@ -104,7 +104,7 @@ double Calcula_IDF(int tot_doc, Palavras p)
 
 double Calcula_IDF_Classif (int tot_doc, Palavras p){
 
-  double idf;
+  double idf = 0;
   double num = 0.0, denom = 0.0;
 
   num = 1 + tot_doc; //+ o texto digitado
@@ -163,7 +163,7 @@ void Palavras_Escreve_Binario(FILE *file, Palavras *p, int qtd_palavras)
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
-void Palavras_busca(Palavras *palavras, int qtd_palavras, char** nomes_docs){
+void Palavras_busca(Palavras *palavras, int qtd_palavras, char nomes_docs[][100]){
 
   int* ind_docs = (int*)calloc(1, sizeof(int));
   double* tf_idf = (double*)calloc(1, sizeof(double)); // faz copia, ordena e itera referenciando pela copia original

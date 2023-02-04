@@ -122,7 +122,7 @@ void Propriedades_Le_Binario(FILE *file, Propriedades *prop, int qtd_prop)
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
-void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char** nomes_docs)
+void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char nomes_docs[][100])
 {
     // ERRO NO VALGRIND -> STRINGS
 
@@ -137,10 +137,21 @@ void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char** nomes_docs)
         prop[i]->indice = ind_docs[i];
     }
 
-    //qsort(prop, tam, sizeof(Propriedades), Decrescente_double);
+    for (int i = 0; i < tam; i++) {
+        printf("ind_doc: %d; ", prop[i]->indice);
+        printf("tf_idf: %.2lf; ", prop[i]->tf_idf);
+        printf("nome: %s;\n\n", nomes_docs[i]);
 
+    }
 
-    printf("\n\033[93m  ->\033[0m Top 10 documentos em que a(s) palavra(s) mais aparece(m):\n\n");
+    qsort(prop, tam, sizeof(Propriedades), Decrescente_double);
+
+    if(tam==0) {
+        printf("ERRO: Nao foi possivel localizar essa(s) palavra(s)\n");
+    }
+    else {
+        printf("\n\033[93m  ->\033[0m Top 10 documentos em que a(s) palavra(s) mais aparece(m):\n\n");
+    }
 
     if (tam < 10) qtd = tam;
 
@@ -171,7 +182,10 @@ int Decrescente_double(const void *a, const void *b)
 {
     Propriedades prop1 = *(Propriedades *)a;
     Propriedades prop2 = *(Propriedades *)b;
-    return (int)(prop2->tf_idf - prop1->tf_idf);
+    double var = prop2->tf_idf - prop1->tf_idf;
+    if (var > 0) return 1;
+    else if(var < 0) return -1;
+    else return 0;
 }
 
 double Calcula_Cosseno (Propriedades* prop_ref, Propriedades* prop, int qtd_ref, int qtd_prop){

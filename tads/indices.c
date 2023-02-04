@@ -10,7 +10,6 @@
 #define QTD_INICIAL 100
 #define QTD_CLASSES 21
 
-void Erros_Entrada(int argc, Indices ind); //ESTAMOS USANDO?????
 
 struct indices
 {
@@ -280,6 +279,7 @@ void Texto_Busca(Indices ind)
         if ((Palavras *)endereco != NULL)
         {            
             int indice = (Palavras *)endereco - ind->palavras_ind;
+            qsort(vet_ind, cont_palavras, sizeof(int), Crescente_Inteiro); // ordena vet_ind em ordem crescente
             int* resultado = (int*)bsearch(&indice, vet_ind, cont_palavras, sizeof(int), Ind_compara);
 
             if (resultado == NULL) {
@@ -308,17 +308,18 @@ void Texto_Busca(Indices ind)
 
     //printf("size: %d\n", size);
 
-    char** nomes_docs = (char**)malloc(size * sizeof(char*));
-    //char* nome;
+    char nomes_docs[size][100];
+    
     //printf("qtd_docs: %ld", ind->documentos_usados);
 
     for (int i=0; i<size; i++){
-        nomes_docs[i] = (char*)malloc(100 * sizeof(char));
         //printf("\nind_docs: %d\n", ind_docs[i]);
  
         //vet_ind[i] acessa uma posicao maior q a do vetor de documentos, por isso seg_fault
         //vet_ind eh o vetor com os indices das palavras, nao dos documentos, por isso da erro
-        nomes_docs[i] = Documentos_Nome_Retorna(ind->documentos_ind[ind_docs[i]]); 
+         
+        char* nome = Documentos_Nome_Retorna(ind->documentos_ind[ind_docs[i]]); 
+        strcpy(nomes_docs[i], nome);
 
         //printf ("nome: %s\n", nomes_docs[i]);
     }
@@ -340,7 +341,6 @@ void Texto_Busca(Indices ind)
         free(nomes_docs[i]);
     }
     */
-    free(nomes_docs);
 
 }
 
@@ -432,7 +432,7 @@ int Relatorio_Palavras(Indices ind)
 void Texto_Classifica(Indices ind, int knn) {
 
     char str [100000];
-    int ind_doc;
+    //int ind_doc;
     int cont_palavras = 0;
 
     printf ("Digite um texto: \033[96m");
@@ -453,7 +453,7 @@ void Texto_Classifica(Indices ind, int knn) {
 
     while (1){
 
-        int flag_igual = 0;
+        //int flag_igual = 0;
         void *endereco = Palavras_Retorna_Endereco(token, ind->palavras_ind, ind->palavras_usadas);
         if ((Palavras *)endereco != NULL)
         {            
