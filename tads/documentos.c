@@ -222,14 +222,18 @@ int Documentos_Verifica_Existencia (char* str, Documentos* docs, int qtd_docs){
 }
 
 
-void Documentos_Classifica (char* str, Documentos* docs, int qtd_docs, int qtd_vizinhos, Documentos texto_digitado, int qtd_palavras, double* tf_idf){
+void Documentos_Classifica (char* str, Documentos* docs, int qtd_docs, int qtd_vizinhos, Documentos texto_digitado, int qtd_palavras, double* vet_tf_idf, int* vet_freq, int* vet_ind_palavras){
 
     //calculamos tf-idf pelo vetor de palavras, entao nao eh possivel calcular da mesma maneira agora;
 
+    
+    printf("\n\n\n\nqtd_PAL: %d\n\n\n", qtd_palavras);
     //Propriedades_Imprime (texto_digitado->prop, qtd_palavras);
     for (int i=0; i<qtd_palavras; i++){
-        texto_digitado->prop[i] = TF_IDF_Classif (texto_digitado->prop[i], tf_idf[i]);
+        Propriedades_Doc_Atribui(texto_digitado->prop[i], vet_ind_palavras[i], vet_freq[i], 0);
+        texto_digitado->prop[i] = TF_IDF_Classif (texto_digitado->prop[i], vet_tf_idf[i]);
     }
+    
     
     for (int j=0; j<qtd_docs; j++){
 
@@ -238,7 +242,7 @@ void Documentos_Classifica (char* str, Documentos* docs, int qtd_docs, int qtd_v
     }
 
     Ordena_KNN (docs, qtd_docs, str, qtd_vizinhos);
-
+    
     //LIBERAR PROP E DOCS
 }
 

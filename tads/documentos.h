@@ -32,7 +32,7 @@ void Modelo_Impressao_Docs (Documentos* docs, int qtd_impressao, int qtd_docs);
 char* Retorna_Classe (Documentos d);
 char* Documentos_Nome_Retorna (Documentos d);
 int Documentos_Verifica_Existencia (char* str, Documentos* docs, int qtd_docs);
-void Documentos_Classifica (char* str, Documentos* docs, int qtd_docs, int qtd_vizinhos, Documentos texto_digitado, int qtd_palavras, double* tf_idf);
+void Documentos_Classifica (char* str, Documentos* docs, int qtd_docs, int qtd_vizinhos, Documentos texto_digitado, int qtd_palavras, double* vet_tf_idf, int* vet_freq, int* vet_ind_palavras);
 void Ordena_KNN (Documentos* docs, int qtd_docs, char* str, int qtd_vizinhos);
 int Compara_KNN (const void *fst, const void *scnd);
 Documentos Documentos_Classif_Constroi (char* str, int qtd_palavras, int* ind_palavras, int* frequencias);

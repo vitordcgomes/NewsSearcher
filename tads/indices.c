@@ -431,13 +431,13 @@ int Relatorio_Palavras(Indices ind)
 
 void Texto_Classifica(Indices ind, int knn) {
 
-    char str [100000];
+    char str [10000];
     //int ind_doc;
     int cont_palavras = 0;
 
     printf ("Digite um texto: \033[96m");
-    scanf ("%[^\n]%*c", str);
-    printf ("\033[0m");
+    scanf("%[^\n]%*c", str);
+    printf("\n\033[0m");
     //printf ("doc = %s\n", str);
 
     const char separador[] = " ";
@@ -458,9 +458,9 @@ void Texto_Classifica(Indices ind, int knn) {
         if ((Palavras *)endereco != NULL)
         {            
             int indice = (Palavras *)endereco - ind->palavras_ind;
-            //printf ("i: %d; str: %s;\n", indice, token);
+            printf ("i: %d; str: %s;\n", indice, token);
             qsort(palavras_aux, cont_palavras, sizeof(int), Crescente_Inteiro);
-            int* resultado = (int*)bsearch(&indice, palavras_aux, cont_palavras, sizeof(int), Ind_compara);
+            int* resultado = bsearch(&indice, palavras_aux, cont_palavras, sizeof(int), Ind_compara);
 
             if (resultado == NULL) {
 
@@ -471,39 +471,96 @@ void Texto_Classifica(Indices ind, int knn) {
 
                     ind_palavras[aux] = indice;
                     palavras_aux[aux] = indice;
-                    frequencias[aux]++;
+                    frequencias[aux] = 1;
                     aux++;
                 }
             
             else {
-                int posicao = resultado - (int*)ind_palavras;
+                int posicao = resultado - palavras_aux;
+                printf("posicao: %d\n", posicao);
                 frequencias[posicao]++;
                 //printf ("%s - Agora minha frequencia eh %d!\n", token, frequencias[posicao]);
             }
         }
         
-        else printf ("A palavra '%s' nao esta presente em nenhum dos documentos.\n", token);
+        else {
+            printf ("A palavra '%s' nao esta presente em nenhum dos documentos.\n", token);
+        }
         token = strtok(NULL, separador);
-
         if (token == NULL) break;
     } 
 
-    //qsort(ind_palavras, cont_palavras, sizeof(int), Crescente_Inteiro); // ordena vet_ind em ordem crescente
 
-    Indices ind_aux = (Indices)calloc(1, sizeof(struct indices));
-    ind_aux->documentos_ind = (Documentos*)calloc(1, sizeof(Documentos*));
-    ind_aux->documentos_ind[0] = Documentos_Classif_Constroi (str, cont_palavras, ind_palavras, frequencias);
-    ind_aux->documentos_usados = 1;
+    /*
+    int idx;
+    int frequencias_aux[aux];
+    for (int i = 0; i < aux; i++) {
+        for(int j = 0; j < aux; j++) {
+            if(palavras_aux[i] == palavras_aux[j]) {
+                idx = j;
+                break;
+            }
+        }
 
-    double tf_idf[cont_palavras];
+        frequencias_aux[i] = frequencias[idx];
+    }
+    */
 
-    for (int i=0; i<cont_palavras; i++){
-        tf_idf[i] = Calcula_IDF_Classif (ind->documentos_usados, ind->palavras_ind[ind_palavras[i]]);
+    for (int i = 0; i < aux; i++) {
+        printf("ind_PAL: %d; ", ind_palavras[i]);
+        printf("PAL_aux: %d; ", palavras_aux[i]);
+        printf("freq_aux_AMEM: %d\n\n", frequencias[i]);
     }
 
-    Documentos_Classifica (str, ind->documentos_ind, ind->documentos_usados, knn, ind_aux->documentos_ind[0], cont_palavras, tf_idf);
+    
+    //qsort(ind_palavras, cont_palavras, sizeof(int), Crescente_Inteiro); // ordena vet_ind em ordem crescente
+    
+    Indices ind_aux = (Indices)calloc(1, sizeof(struct indices));
+    ind_aux->documentos_ind = (Documentos*)calloc(1, sizeof(Documentos));
+    ind_aux->documentos_ind[0] = Documentos_Classif_Constroi (str, aux, ind_palavras, frequencias);
+    ind_aux->documentos_usados = 1;
+
+    int idx;
+    int frequencias_aux[aux];
+    //ind_palavras[aux] = indice;
+    //palavras_aux[aux] = indice;
+    //frequencias[aux]++;
+    for (int i = 0; i < aux; i++) {
+        for(int j = 0; j < aux; j++) {
+            if(palavras_aux[i] == palavras_aux[j]) {
+                idx = j;
+                break;
+            }
+        }
+
+        frequencias_aux[i] = frequencias[idx];
+    }
+
+    for (int i = 0; i < aux; i++) {
+        printf("freq_aux_AMEM: %d ", frequencias_aux[i]);
+    }
+
+    printf("\n\n");
+
+    
+    double tf_idf[aux];
+
+    for (int i=0; i<aux; i++){
+        tf_idf[i] = Calcula_IDF_Classif (ind->documentos_usados, ind->palavras_ind[ind_palavras[i]]);
+        printf("tf_idf_AMEM: %.2lf ", tf_idf[i]);
+    }
+    
+    Documentos_Classifica (str, ind->documentos_ind, ind->documentos_usados, knn, ind_aux->documentos_ind[0], cont_palavras, tf_idf, frequencias_aux, palavras_aux);
     //printf ("\n\033[91m\033[1mERRO:\033[0m\033[91m Esse documento nao foi encontrado. Tente novamente!\033[0m\n\n");
-        
+    
+
+   Documentos_Libera(ind_aux->documentos_ind[0]);
+   free(ind_aux->documentos_ind);
+   free(ind_aux);
+
+   free(ind_palavras);
+   free(frequencias);
+   free(palavras_aux);
 }
 
 // ---------------- AUXILIARES ----------------

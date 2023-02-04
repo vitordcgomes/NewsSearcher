@@ -147,7 +147,7 @@ void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char nomes_docs[][100
     qsort(prop, tam, sizeof(Propriedades), Decrescente_double);
 
     if(tam==0) {
-        printf("ERRO: Nao foi possivel localizar essa(s) palavra(s)\n");
+        printf("\033[91m\033[1mERRO:\033[0m\033[91m Nao foi possivel localizar essa(s) palavra(s).\033[0m\n");
     }
 
     if (tam < 10) qtd = tam;
