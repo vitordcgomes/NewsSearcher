@@ -93,16 +93,27 @@ double Calcula_IDF(int tot_doc, Palavras p)
 {
 
   double idf;
-
   double num = 0.0, denom = 0.0;
 
   num = 1 + tot_doc;
   denom = 1 + p->prop_usado;
-
   idf = log(num / denom) + 1;
 
   return idf;
 }
+
+double Calcula_IDF_Classif (int tot_doc, Palavras p){
+
+  double idf;
+  double num = 0.0, denom = 0.0;
+
+  num = 1 + tot_doc; //+ o texto digitado
+  denom = 1 + p->prop_usado;
+  idf = log(num / denom) + 1;
+
+  return idf;
+}
+
 
 Palavras Calcula_TF_IDF(double idf, Palavras p, int ind_prop)
 {

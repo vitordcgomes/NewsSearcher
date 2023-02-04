@@ -67,9 +67,8 @@ void Propriedade_Atualiza_Freq(Propriedades *p, int indice)
     p[indice]->frequencia++;
 }
 
-Propriedades Propriedades_Doc_Atribui(Propriedades p, int ind_vet, int ind_pal, int freq_pal, double tf_idf_pal)
+Propriedades Propriedades_Doc_Atribui(Propriedades p, int ind_pal, int freq_pal, double tf_idf_pal)
 {
-
     p->indice = ind_pal;
     p->frequencia = freq_pal;
     p->tf_idf = tf_idf_pal;
@@ -218,7 +217,7 @@ void Propriedades_Imprime(Propriedades *p, int qtd)
     printf("\n");
     for (int i = 0; i < qtd; i++)
     {
-        printf("\tDoc: %d; Freq: %d; tf-idf: %.2lf;\n", p[i]->indice, p[i]->frequencia, p[i]->tf_idf);
+        printf("\tIndice: %d; Freq: %d; tf-idf: %.2lf;\n", p[i]->indice, p[i]->frequencia, p[i]->tf_idf);
     }
 
     printf("\n\n");
@@ -304,7 +303,7 @@ void Ordena_Classes(int *frequencias, char **classes_usadas, int qtd_classes)
         prop[i]->indice = i;
     }
 
-    qsort(prop, qtd_classes, sizeof(Propriedades), Decrescente_int);
+    qsort(prop, qtd_classes, sizeof(Propriedades), Decrescente_freq);
 
     printf("\n\033[93m  ->\033[0m Frequencia por classe:\n\n");
 
@@ -321,7 +320,7 @@ void Ordena_Classes(int *frequencias, char **classes_usadas, int qtd_classes)
 
 }
 
-int Decrescente_int(const void *a, const void *b)
+int Decrescente_freq(const void *a, const void *b)
 {
     Propriedades x = *(Propriedades *)a;
     Propriedades y = *(Propriedades *)b;
@@ -333,9 +332,7 @@ int Ind_compara (const void *a, const void *b){
   int x = *(const int *)a;
   int y = *(const int *)b;
 
-  if (x < y) return -1;
-  if (x > y) return 1;
-  return 0;
+  return (x-y);
 }
 
 Propriedades Propriedades_Copia (Propriedades origem, Propriedades destino){
@@ -354,10 +351,23 @@ int Ind_Crescente(const void *a, const void *b){
     return (x->indice - y->indice);
 }
 
+int Crescente_freq(const void *a, const void *b)
+{
+    Propriedades x = *(Propriedades *)a;
+    Propriedades y = *(Propriedades *)b;
+
+    return (x->frequencia - y->frequencia);
+}
 
 int Prop_Ind_compara (const void *a, const void *b){
   int x = *(const int *)a;
   Propriedades y = *( Propriedades *)b;
 
   return (x - y->indice);
+}
+
+Propriedades TF_IDF_Classif (Propriedades p, double tf_idf){
+    p->tf_idf = tf_idf * (p->frequencia); 
+    printf ("tf_idf = %.2lf\n", p->tf_idf);
+    return p;
 }

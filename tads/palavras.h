@@ -17,6 +17,7 @@ void Palavras_Libera(Palavras pal);
 // ---------------- INDEXADORES ----------------
 int Palavra_le (Palavras* p, FILE* f, int ind, int qtd);
 double Calcula_IDF(int tot_doc, Palavras p);
+double Calcula_IDF_Classif (int tot_doc, Palavras p);
 Palavras Calcula_TF_IDF(double idf, Palavras p, int ind_prop);
 
 

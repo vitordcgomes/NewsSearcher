@@ -286,6 +286,7 @@ void Texto_Busca(Indices ind)
                 cont_palavras += 1;
                 vet_ind = (int *)realloc(vet_ind, (cont_palavras + 1) * sizeof(int));
                 vet_ind[aux] = indice;
+                printf ("indice = %d, token = %s\n", vet_ind[aux], token);
                 aux++;
             }
         }
@@ -339,10 +340,7 @@ void Texto_Busca(Indices ind)
         free(nomes_docs[i]);
     }
     */
-
     free(nomes_docs);
-
-   
 
 }
 
@@ -433,26 +431,79 @@ int Relatorio_Palavras(Indices ind)
 
 void Texto_Classifica(Indices ind, int knn) {
 
-    char str [1000];
+    char str [100000];
     int ind_doc;
+    int cont_palavras = 0;
 
-    printf ("Digite o nome do documento base para a classificacao: \033[96m");
+    printf ("Digite um texto: \033[96m");
     scanf ("%[^\n]%*c", str);
     printf ("\033[0m");
     //printf ("doc = %s\n", str);
 
-    ind_doc = Documentos_Verifica_Existencia (str, ind->documentos_ind, ind->documentos_usados);
+    const char separador[] = " ";
+    char *token;
 
-    if (ind_doc > -1){
-        Documentos_Classifica (str, ind_doc, ind->documentos_ind, ind->documentos_usados, knn);
+    // retira o primeiro 'token'
+    token = strtok(str, separador);
+    int aux = 0;
 
+    int *ind_palavras = (int *)calloc(1, sizeof(int));
+    int *frequencias = (int *)calloc(1, sizeof(int));
+    int *palavras_aux = (int *)calloc(1, sizeof(int));
+
+    while (1){
+
+        int flag_igual = 0;
+        void *endereco = Palavras_Retorna_Endereco(token, ind->palavras_ind, ind->palavras_usadas);
+        if ((Palavras *)endereco != NULL)
+        {            
+            int indice = (Palavras *)endereco - ind->palavras_ind;
+            //printf ("i: %d; str: %s;\n", indice, token);
+            qsort(palavras_aux, cont_palavras, sizeof(int), Crescente_Inteiro);
+            int* resultado = (int*)bsearch(&indice, palavras_aux, cont_palavras, sizeof(int), Ind_compara);
+
+            if (resultado == NULL) {
+
+                    cont_palavras += 1;
+                    ind_palavras = (int *)realloc(ind_palavras, (cont_palavras + 1) * sizeof(int));
+                    frequencias = (int *)realloc(frequencias, (cont_palavras + 1) * sizeof(int));
+                    palavras_aux = (int *)realloc(palavras_aux, (cont_palavras + 1) * sizeof(int));
+
+                    ind_palavras[aux] = indice;
+                    palavras_aux[aux] = indice;
+                    frequencias[aux]++;
+                    aux++;
+                }
+            
+            else {
+                int posicao = resultado - (int*)ind_palavras;
+                frequencias[posicao]++;
+                //printf ("%s - Agora minha frequencia eh %d!\n", token, frequencias[posicao]);
+            }
+        }
+        
+        else printf ("A palavra '%s' nao esta presente em nenhum dos documentos.\n", token);
+        token = strtok(NULL, separador);
+
+        if (token == NULL) break;
+    } 
+
+    //qsort(ind_palavras, cont_palavras, sizeof(int), Crescente_Inteiro); // ordena vet_ind em ordem crescente
+
+    Indices ind_aux = (Indices)calloc(1, sizeof(struct indices));
+    ind_aux->documentos_ind = (Documentos*)realloc(ind_aux->documentos_ind, sizeof(Documentos*));
+    ind_aux->documentos_ind[0] = Documentos_Classif_Constroi (str, cont_palavras, ind_palavras, frequencias);
+    ind_aux->documentos_usados = 1;
+
+    double tf_idf[cont_palavras];
+
+    for (int i=0; i<cont_palavras; i++){
+        tf_idf[i] = Calcula_IDF_Classif (ind->documentos_usados, ind->palavras_ind[ind_palavras[i]]);
     }
 
-    else { 
-        printf ("\n\033[91m\033[1mERRO:\033[0m\033[91m Esse documento nao foi encontrado. Tente novamente!\033[0m\n\n");
-        }
-    
-
+    Documentos_Classifica (str, ind->documentos_ind, ind->documentos_usados, knn, ind_aux->documentos_ind[0], cont_palavras, tf_idf);
+    //printf ("\n\033[91m\033[1mERRO:\033[0m\033[91m Esse documento nao foi encontrado. Tente novamente!\033[0m\n\n");
+        
 }
 
 // ---------------- AUXILIARES ----------------
@@ -471,4 +522,3 @@ int Decrescente_Inteiro(const void *a, const void *b)
 
     return (y - x);
 }
-

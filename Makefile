@@ -31,7 +31,7 @@ experimental: experimental.c
 run: 
 	make
 	./indexador datasets/medium-small/test.txt binario.bin
-	./principal binario.bin 42
+	./principal binario.bin 15
 
 clean:
 	rm -f indexador principal

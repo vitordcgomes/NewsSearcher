@@ -61,7 +61,7 @@ Documentos Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal, double 
         Documentos_Propriedades_Realoca(doc);
     
     doc->prop[doc->prop_usado] = Documentos_Propriedade_Cria();
-    doc->prop[doc->prop_usado] = Propriedades_Doc_Atribui(doc->prop[doc->prop_usado], doc->prop_usado, ind_pal, freq_pal, tf_idf_pal);
+    doc->prop[doc->prop_usado] = Propriedades_Doc_Atribui(doc->prop[doc->prop_usado], ind_pal, freq_pal, tf_idf_pal);
     doc->prop_usado++;
 
     //Propriedades_Documentos_Imprime (doc->prop, doc->prop_usado);
@@ -221,47 +221,32 @@ int Documentos_Verifica_Existencia (char* str, Documentos* docs, int qtd_docs){
     return -1;
 }
 
-void Documentos_Classifica (char* str, int ind_doc, Documentos* docs, int qtd_docs, int qtd_vizinhos){
 
-    char* classe = Retorna_Classe (docs[ind_doc]);
-    Documentos doc_aux = Documentos_cria (str, classe);
+void Documentos_Classifica (char* str, Documentos* docs, int qtd_docs, int qtd_vizinhos, Documentos texto_digitado, int qtd_palavras, double* tf_idf){
 
-    (Propriedades*)realloc(doc_aux->prop, docs[ind_doc]->prop_usado * sizeof(Propriedades));
     //calculamos tf-idf pelo vetor de palavras, entao nao eh possivel calcular da mesma maneira agora;
 
-        for (int j=0; j<docs[ind_doc]->prop_usado; j++){
-
-            doc_aux->prop[j] = Documentos_Propriedade_Cria();
-            doc_aux->prop[j] = Propriedades_Copia (docs[ind_doc]->prop[j], doc_aux->prop[j]);
-            doc_aux->prop_usado++;
-        }
-
+    //Propriedades_Imprime (texto_digitado->prop, qtd_palavras);
+    for (int i=0; i<qtd_palavras; i++){
+        texto_digitado->prop[i] = TF_IDF_Classif (texto_digitado->prop[i], tf_idf[i]);
+    }
+    
     for (int j=0; j<qtd_docs; j++){
 
-        if (j == ind_doc) {
-            docs[j]->knn = -1;
-            j++; //se for o mesmo documento a referencia, nao comparamos e pulamos para o proximo
-        }
-
         //retorna distancia entre o texto de referencia (ind_doc) e o texto aual (j)
-        docs[j]->knn = Calcula_Cosseno (doc_aux->prop, docs[j]->prop, doc_aux->prop_usado, docs[j]->prop_usado);
+        docs[j]->knn = Calcula_Cosseno (texto_digitado->prop, docs[j]->prop, qtd_palavras, docs[j]->prop_usado);
     }
 
-    Ordena_KNN (docs, qtd_docs, str);
+    Ordena_KNN (docs, qtd_docs, str, qtd_vizinhos);
 
-    for (int i = 0; i<docs[ind_doc]->prop_usado; i++){
-        free(doc_aux->prop[i]);
-    }
-    free (doc_aux);
-
-    
     //LIBERAR PROP E DOCS
 }
 
-void Ordena_KNN (Documentos* docs, int qtd_docs, char* str){
+
+void Ordena_KNN (Documentos* docs, int qtd_docs, char* str, int qtd_vizinhos){
 
     Documentos* cpy_docs = (Documentos*)calloc(qtd_docs, sizeof(Documentos));
-    int cont = 10;
+    int cont = qtd_vizinhos;
 
     for (int i=0; i<qtd_docs; i++){
         cpy_docs[i] = (Documentos)calloc(1, sizeof(struct documentos));
@@ -272,7 +257,7 @@ void Ordena_KNN (Documentos* docs, int qtd_docs, char* str){
 
     qsort (cpy_docs, qtd_docs, sizeof(Documentos), Compara_KNN);
 
-    if (qtd_docs < 10){
+    if (qtd_docs < qtd_vizinhos){
         cont = qtd_docs;
     }
 
@@ -298,4 +283,19 @@ int Compara_KNN (const void *fst, const void *scnd){
     if (diferenca > 0) return 1;
     if (diferenca < 0) return -1;
     return 0;
+}
+
+Documentos Documentos_Classif_Constroi (char* str, int qtd_palavras, int* ind_palavras, int* frequencias){
+    
+    Documentos doc_aux = Documentos_cria (str, "classe");
+    
+    for (int j=0; j<qtd_palavras; j++){
+            doc_aux->prop[j] = Documentos_Propriedade_Cria();
+            Propriedades_Doc_Atribui(doc_aux->prop[j], ind_palavras[j], frequencias[j], 0.00);
+            //printf ("indice palavra: %d, frequencia: %d;\n", ind_palavras[j], frequencias[j]);
+        }
+        
+    doc_aux->prop_usado = qtd_palavras;
+     
+    return doc_aux;
 }
