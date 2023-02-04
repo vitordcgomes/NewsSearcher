@@ -26,9 +26,9 @@ void Propriedades_Escreve_Binario(FILE* file, Propriedades* prop, int qtd_prop);
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
-//int Busca_Indices_Docs(Propriedades* prop, int qtd, int* vet_docs, int tam_aloc);
-void Ordena_tf_idf(int* ind_docs, double* tf_idf, int tam);
+void Ordena_tf_idf(int* ind_docs, double* tf_idf, int tam, char** nomes_docs);
 int Decrescente_double(const void *a, const void *b);
+void Ordena_Classes (int* frequencias, char** classes_usadas, int qtd_classes);
 
 // ---------------- AUXILIARES ----------------
 void Propriedades_Imprime (Propriedades* p, int qtd);
@@ -39,3 +39,6 @@ int Propriedades_Retorna_Freq(Propriedades* p, int ind);
 double Propriedades_Retorna_tf_idf(Propriedades* p, int ind);
 void Propriedades_Documentos_Imprime(Propriedades* p, int qtd);
 int Propriedades_busca (Propriedades* p, int ind, int qtd_prop);
+int Decrescente_int(const void *a, const void *b);
+int Busca_Ind (const void *a, const void *b);
+int Ind_compara (const void *a, const void *b);

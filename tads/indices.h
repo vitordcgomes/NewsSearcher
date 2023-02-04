@@ -26,5 +26,4 @@ int Relatorio_Palavras (Indices ind);
 // ---------------- AUXILIARES ----------------
 void Imprime_Tudo(Indices indices);
 int Decrescente_Inteiro(const void *a, const void *b);
-void Ordena_Classes (int* frequencias, char** classes_usadas, int qtd_classes);
 
