@@ -152,12 +152,13 @@ void Propriedades_Le_Binario(FILE *file, Propriedades *prop, int qtd_prop)
 }
 */
 
-void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam)
+void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char** nomes_docs)
 {
-    // VETOR COM MENOS DE 10
     // RETORNAR DOCUMENTO
 
     Propriedades *prop = (Propriedades *)calloc(tam, sizeof(Propriedades));
+    int qtd = 10;
+    int indice = 0;
 
     for (int i = 0; i < tam; i++)
     {
@@ -166,15 +167,25 @@ void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam)
         prop[i]->indice = ind_docs[i];
     }
 
-    printf("\nANTES\n");
     qsort(prop, tam, sizeof(Propriedades), Decrescente_double);
-    printf("\nDEPOIS\n");
 
-    printf("\n\033[93m  ->\033[0m Documentos em que as palavras mais aparecem:\n\n");
+    printf("\n\033[93m  ->\033[0m Top 10 documentos em que a(s) palavra(s) mais aparece(m):\n\n");
 
-    for (int i = 0; i < tam; i++)
-    {
-        printf("\t\033[96m[\033[0m%d\033[96m]\033[0m - '%s'; ind: '%d'\n\n", i + 1, "vet_string[ind]", prop[i]->indice);
+    if (tam < 10) qtd = tam;
+
+    for (int i = 0; i < qtd; i++)
+    {   
+        //int* endereco = bsearch (&prop[i]->indice, ind_docs, tam, sizeof(int), Ind_compara);
+        //int indice = endereco - ind_docs;
+
+        for (int j=0; j < tam; j++){
+            if (prop[i]->indice == ind_docs[j]) {
+                indice = j;
+                break;
+            }
+
+        }
+        printf("\t\033[96m[\033[0m%d\033[96m]\033[0m - '%s'; ind: '%d'\n\n", i + 1, nomes_docs[indice], prop[i]->indice);
     }
 
     for (int i = 0; i < tam; i++)
@@ -272,4 +283,49 @@ int Propriedades_busca(Propriedades *p, int ind_doc, int qtd_prop)
     }
 
     return -1;
+}
+
+void Ordena_Classes(int *frequencias, char **classes_usadas, int qtd_classes)
+{
+    Propriedades *prop = (Propriedades *)calloc(qtd_classes, sizeof(Propriedades));
+
+ for (int i = 0; i < qtd_classes; i++)
+    {
+        prop[i] = (Propriedades)calloc(1, sizeof(struct propriedades));
+        prop[i]->frequencia = frequencias[i];
+        prop[i]->indice = i;
+    }
+
+    qsort(prop, qtd_classes, sizeof(Propriedades), Decrescente_int);
+
+    printf("\n\033[93m  ->\033[0m Frequencia por classe:\n\n");
+
+    for (int i = 0; i < qtd_classes; i++)
+    {
+        printf("\t\033[96m[\033[0m%s\033[96m]\033[0m - Aparece %d vez(es);\n\n", classes_usadas[prop[i]->indice], prop[i]->frequencia);
+    }
+
+        for (int i = 0; i < qtd_classes; i++)
+    {
+        free(prop[i]);
+    }
+    free(prop);
+
+}
+
+int Decrescente_int(const void *a, const void *b)
+{
+    Propriedades x = *(Propriedades *)a;
+    Propriedades y = *(Propriedades *)b;
+
+    return (y->frequencia - x->frequencia);
+}
+
+int Ind_compara (const void *a, const void *b){
+  int x = *(const int *)a;
+  int y = *(const int *)b;
+
+  if (x < y) return -1;
+  if (x > y) return 1;
+  return 0;
 }

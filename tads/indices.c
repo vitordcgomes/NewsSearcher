@@ -116,7 +116,6 @@ void Documentos_Indexador(Indices ind)
 
 Indices Le_Arquivo_Principal(Indices ind, char **argv)
 {
-
     FILE *file;
     file = fopen(argv[1], "r");
 
@@ -129,34 +128,34 @@ Indices Le_Arquivo_Principal(Indices ind, char **argv)
 
     while (!feof(file))
     {
-
-        char caminho[50];
+        char caminho[100];
         char classe[4];
+        char token[100];
 
         fscanf(file, "%[^ ] ", caminho);
         fscanf(file, "%[^\n]\n", classe);
+        strcpy(token, caminho);
+
+        const char separador[] = "/";
+        char *nome_doc;
+        nome_doc = strtok(token, separador);
+        nome_doc = strtok(NULL, separador);
 
         // Indexador de documentos:
         Documentos_realoca(ind);
-        ind->documentos_ind[ind->documentos_usados] = Documentos_cria(caminho, classe);
+        ind->documentos_ind[ind->documentos_usados] = Documentos_cria(nome_doc, classe);
 
         // Indexador de palavras:
         ind = Le_Subarquivo(ind, argv, caminho, classe, ind->documentos_usados);
-
         ind->documentos_usados++;
     }
 
-    // Palavras_imprime (ind->palavras_ind, ind->palavras_usadas);
-    // Documentos_imprime (ind->documentos_usados, ind->documentos_ind);
-
     fclose(file);
-
     return ind;
 }
 
 Indices Le_Subarquivo(Indices indices, char **argv, char *caminho, char *classe, int ind)
 {
-
     char caminho_completo[1000];
     strcpy(caminho_completo, argv[1]);
     int tam_caminho = strlen(caminho_completo);
@@ -173,7 +172,6 @@ Indices Le_Subarquivo(Indices indices, char **argv, char *caminho, char *classe,
     }
 
     FILE *file = fopen(caminho_completo, "r");
-
     if (file == NULL)
     {
         printf("\033[91mERRO: Nao foi possivel abrir o arquivo de conteudo pelo caminho '%s'\n\033[0m", caminho_completo);
@@ -183,7 +181,6 @@ Indices Le_Subarquivo(Indices indices, char **argv, char *caminho, char *classe,
 
     while (!feof(file))
     {
-
         // Indexador de palavras:
         Palavras_realoca(indices);
 
@@ -194,9 +191,7 @@ Indices Le_Subarquivo(Indices indices, char **argv, char *caminho, char *classe,
         indices->documentos_ind[ind] = Documentos_Atualiza(indices->documentos_ind[ind]);
     }
 
-    // Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
     fclose(file);
-
     return indices;
 }
 
@@ -204,7 +199,6 @@ Indices Le_Subarquivo(Indices indices, char **argv, char *caminho, char *classe,
 
 Indices Le_Binario(Indices ind, char *caminho)
 {
-
     FILE *file = fopen(caminho, "rb");
 
     if (file == NULL)
@@ -216,23 +210,19 @@ Indices Le_Binario(Indices ind, char *caminho)
 
     // leitura de palavras
     fread(&ind->palavras_usadas, sizeof(long int), 1, file);
-    // printf ("qtd_pal: %ld\n", ind->palavras_usadas);
-
     ind->palavras_ind = (Palavras *)realloc(ind->palavras_ind, ind->palavras_usadas * sizeof(Palavras));
-
+    
     Palavras_Le_Binario(file, ind->palavras_ind, ind->palavras_usadas);
 
     // leitura documentos
     fread(&ind->documentos_usados, sizeof(long int), 1, file);
-    // printf ("quantidade de documentos distintos: %ld\n", ind->documentos_usados);
 
     ind->documentos_ind = (Documentos *)realloc(ind->documentos_ind, ind->documentos_usados * sizeof(Documentos));
-
     Documentos_Le_Binario(file, ind->documentos_ind, ind->documentos_usados);
 
-    printf("\nPRINCIPAL:\n");
-    printf("\n\033[95mQuantidade de palavras distintas: \033[96m%ld\n", ind->palavras_usadas);
-    printf("\033[95mQuantidade de documentos distintos: \033[96m%ld\n\n\033[0m", ind->documentos_usados);
+    //printf("\nPRINCIPAL:\n");
+    //printf("\n\033[95mQuantidade de palavras distintas: \033[96m%ld\n", ind->palavras_usadas);
+    //printf("\033[95mQuantidade de documentos distintos: \033[96m%ld\n\n\033[0m", ind->documentos_usados);
 
     fclose(file);
 
@@ -268,7 +258,6 @@ void Imprime_Binario(Indices indices, char **argv)
 
 void Texto_Busca(Indices ind)
 {
-
     char str[1000];
 
     printf("Digite o que deseja buscar: \033[96m");
@@ -284,74 +273,49 @@ void Texto_Busca(Indices ind)
     token = strtok(str, separador);
     int aux = 0;
 
-    while (token != NULL)
-    {
+    while (token != NULL){
+
         void *endereco = Palavras_Retorna_Endereco(token, ind->palavras_ind, ind->palavras_usadas);
-
         if ((Palavras *)endereco != NULL)
-        {
-            
+        {            
             int indice = (Palavras *)endereco - ind->palavras_ind;
-
             int* resultado = (int*)bsearch(&indice, vet_ind, cont_palavras, sizeof(int), Ind_compara);
 
-            if (resultado != NULL) {
-                //nada a fazer, a palavra ja existe no vetor
-            }
-            else {
+            if (resultado == NULL) {
                 cont_palavras += 1;
                 vet_ind = (int *)realloc(vet_ind, (cont_palavras + 1) * sizeof(int));
                 vet_ind[aux] = indice;
                 aux++;
             }
-            
-
-            printf("Palavra '%s' encontrada no indice %d.\n", token, indice);
-            // acessar o indice de cada palavras para calcular os atributos
         }
-
-        else
-        {
-            printf("Palavra '%s' nao encontrada.\n", token);
-        }
-
-        // free(busca);
         token = strtok(NULL, separador);
     }
 
     qsort(vet_ind, cont_palavras, sizeof(int), Crescente_Inteiro); // ordena vet_ind em ordem crescente
 
-    Indices ind_aux = (Indices)calloc(1, sizeof(struct indices));
+    char** nomes_docs = (char**)calloc(cont_palavras, sizeof(char*));
+    char* nome;
 
+    for (int i=0; i<cont_palavras; i++){
+        nomes_docs[i] = (char*)calloc(1, sizeof(char*));
+        nomes_docs[i] = Documentos_Nome_Retorna (ind->documentos_ind, i);
+        printf ("nome: %s\n", nomes_docs[i]);
+    }
+
+    Indices ind_aux = (Indices)calloc(1, sizeof(struct indices));
     ind_aux->palavras_ind = Palavras_Indices_Buscados(ind->palavras_ind, vet_ind, cont_palavras, ind->documentos_usados);
     ind_aux->palavras_usadas = cont_palavras;
 
+    Palavras_busca (ind_aux->palavras_ind, ind_aux->palavras_usadas, nomes_docs);
+    // se ficar muito grande mesmo tirando os comentarios, fazemos os frees em outra funcao;
     
-    printf("\ncont_pal = %d", cont_palavras);
-    printf("\nind: ");
-    for (int i = 0; i < cont_palavras; i++)
-    {
-        printf("%d ", vet_ind[i]);
-    }
-    printf("\n");
-
-    for(int i = 0; i < cont_palavras; i++) {
-        printf("Palavra de indice '%d' aparece nos seguinte documentos:\n", vet_ind[i]);
-        Palavras_imprime_uma(ind_aux->palavras_ind, i);
-    }
-
-    Palavras_busca (ind_aux->palavras_ind, ind_aux->palavras_usadas);
-    
-    //Palavras_imprime (ind_aux->palavras_ind, ind_aux->palavras_usadas);
-
-    free(vet_ind);
-
     for (int i = 0; i < ind_aux->palavras_usadas; i++)
-    {
         Palavras_Libera(ind_aux->palavras_ind[i]);
-    }
+    
     free(ind_aux->palavras_ind);
     free(ind_aux);
+    free(vet_ind);
+
 }
 
 void Relatorio_Docs(Indices ind)
@@ -361,13 +325,10 @@ void Relatorio_Docs(Indices ind)
 
 int Relatorio_Palavras(Indices ind)
 {
-
     char *classe;
     int qtd_classes = 0;
-
     char **classes_usadas = (char **)calloc(QTD_CLASSES, sizeof(char *));
     int frequencias[QTD_CLASSES];
-
     char str[100];
 
     printf("Digite a palavra (tema) do relatorio: \033[96m");
@@ -375,7 +336,6 @@ int Relatorio_Palavras(Indices ind)
     printf("\n\033[0m");
 
     int tam_string = strlen(str);
-
     for (int i = 0; i < tam_string; i++)
     {
         if (str[i] == ' ')
@@ -393,7 +353,6 @@ int Relatorio_Palavras(Indices ind)
         return 0;
     }
         
-
     int qtd_docs = Palavras_Retorna_Prop_Usado(ind->palavras_ind[ind_palavra]);
 
     for (int i = 0; i < qtd_docs; i++)
@@ -431,19 +390,14 @@ int Relatorio_Palavras(Indices ind)
         classes_usadas[qtd_classes] = strdup(classe);
         frequencias[qtd_classes] = freq_classe;
         qtd_classes++;
-
-
-        // freq_classe += Frequencia_por_classe (classe, ind->documentos_ind, ind->documentos_usados, ind_doc);
-        // preciso passar pelos outros documentos, ver se tem a mesma classe e, se tiver, soma a frequencia, senao pula o arquivo e segue
     }
 
     Ordena_Classes(frequencias, classes_usadas, qtd_classes);
-
+    
     for (int i = 0; i < qtd_classes; i++)
     {
         free(classes_usadas[i]);
     }
-
     free(classes_usadas);
 
     return 0;
@@ -466,34 +420,3 @@ int Decrescente_Inteiro(const void *a, const void *b)
     return (y - x);
 }
 
-void Ordena_Classes(int *frequencias, char **classes_usadas, int qtd_classes)
-{
-    //vetor de propriedades
-
-    int frequencias_2[qtd_classes];
-    int aux;
-    int ind;
-
-    for (int i = 0; i < qtd_classes; i++)
-        frequencias_2[i] = frequencias[i];
-
-    qsort(frequencias_2, qtd_classes, sizeof(int), Decrescente_Inteiro);
-
-    printf("\n\033[93m  ->\033[0m Frequencia por classe:\n\n");
-
-    for (int i = 0; i < qtd_classes; i++)
-    {
-        aux = frequencias_2[i];
-
-        for (int j = 0; j < qtd_classes; j++)
-        {
-            if (aux == frequencias[j])
-            {
-                ind = j;
-                break;
-            }
-        }
-
-        printf("\t\033[96m[\033[0m%s\033[96m]\033[0m - Aparece %d vez(es);\n\n", classes_usadas[ind], aux);
-    }
-}

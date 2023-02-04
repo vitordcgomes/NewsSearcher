@@ -30,3 +30,4 @@ int Crescente (const void *fst, const void *scnd);
 int Decrescente (const void *fst, const void *scnd);
 void Modelo_Impressao_Docs (Documentos* docs, int qtd_impressao, int qtd_docs);
 char* Retorna_Classe (Documentos d);
+char* Documentos_Nome_Retorna (Documentos* d, int indice);

@@ -81,7 +81,7 @@ void Imprime_Menu (){
     printf ("\n\033[95m\033[1m # \033[96mNewsSearcher\033[95m #\n\033[0m");
     printf ("\n\t\033[95m1.\033[0m Buscar noticias");
     printf ("\n\t\033[95m2.\033[0m Classificar noticias");
-    printf ("\n\t\033[95m3.\033[0m Imprimir relatorio de palavras");
+    printf ("\n\t\033[95m3.\033[0m Imprimir relatorio de uma palavra");
     printf ("\n\t\033[95m4.\033[0m Imprimir relatorio de documentos");
     printf ("\n\t\033[91m0.\033[0m Encerrar programa\033[0m\n\n");
     printf ("Digite a operacao desejada:\033[96m ");

@@ -202,3 +202,7 @@ void Modelo_Impressao_Docs (Documentos* docs, int qtd_impressao, int qtd_docs){
 char* Retorna_Classe (Documentos d){
     return d->classe;
 }
+
+char* Documentos_Nome_Retorna (Documentos* d, int indice){
+    return d[indice]->nome;
+}
