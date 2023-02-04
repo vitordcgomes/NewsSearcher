@@ -39,7 +39,8 @@ void Documentos_Propriedades_Realoca(Documentos doc) {
     Documentos doc = (Documentos)calloc(1, sizeof(struct documentos));
 
     strcpy(doc->classe, classe);
-    strcpy(doc->nome, caminho); //precisa tirar o "test/"??
+    strcpy(doc->nome, caminho);
+    //printf("doc_nome: %s\n", doc->nome);
 
     doc->prop = Propriedades_vetor_cria();
 
@@ -203,6 +204,6 @@ char* Retorna_Classe (Documentos d){
     return d->classe;
 }
 
-char* Documentos_Nome_Retorna (Documentos* d, int indice){
-    return d[indice]->nome;
+char* Documentos_Nome_Retorna (Documentos d){
+    return d->nome;
 }

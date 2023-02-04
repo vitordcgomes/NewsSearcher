@@ -169,6 +169,7 @@ void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char** nomes_docs)
 
     qsort(prop, tam, sizeof(Propriedades), Decrescente_double);
 
+
     printf("\n\033[93m  ->\033[0m Top 10 documentos em que a(s) palavra(s) mais aparece(m):\n\n");
 
     if (tam < 10) qtd = tam;
@@ -188,10 +189,13 @@ void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char** nomes_docs)
         printf("\t\033[96m[\033[0m%d\033[96m]\033[0m - '%s'; ind: '%d'\n\n", i + 1, nomes_docs[indice], prop[i]->indice);
     }
 
+
     for (int i = 0; i < tam; i++)
     {
+        //free (nomes_docs[i]);
         free(prop[i]);
     }
+    //free (nomes_docs);
     free(prop);
 }
 

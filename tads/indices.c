@@ -10,7 +10,7 @@
 #define QTD_INICIAL 100
 #define QTD_CLASSES 21
 
-void Erros_Entrada(int argc, Indices ind);
+void Erros_Entrada(int argc, Indices ind); //ESTAMOS USANDO?????
 
 struct indices
 {
@@ -143,6 +143,7 @@ Indices Le_Arquivo_Principal(Indices ind, char **argv)
 
         // Indexador de documentos:
         Documentos_realoca(ind);
+       
         ind->documentos_ind[ind->documentos_usados] = Documentos_cria(nome_doc, classe);
 
         // Indexador de palavras:
@@ -293,18 +294,32 @@ void Texto_Busca(Indices ind)
 
     qsort(vet_ind, cont_palavras, sizeof(int), Crescente_Inteiro); // ordena vet_ind em ordem crescente
 
-    char** nomes_docs = (char**)calloc(cont_palavras, sizeof(char*));
-    char* nome;
-
-    for (int i=0; i<cont_palavras; i++){
-        nomes_docs[i] = (char*)calloc(1, sizeof(char*));
-        nomes_docs[i] = Documentos_Nome_Retorna (ind->documentos_ind, i);
-        printf ("nome: %s\n", nomes_docs[i]);
-    }
-
     Indices ind_aux = (Indices)calloc(1, sizeof(struct indices));
     ind_aux->palavras_ind = Palavras_Indices_Buscados(ind->palavras_ind, vet_ind, cont_palavras, ind->documentos_usados);
     ind_aux->palavras_usadas = cont_palavras;
+
+    int* ind_docs = Cria_Ind_Docs(ind_aux->palavras_ind, ind_aux->palavras_usadas);
+    int size = 0;
+    for (int i = 0; ind_docs[i] != -1; i++) {
+        size++;
+    }
+
+    printf("size: %d\n", size);
+
+    char** nomes_docs = (char**)malloc(size * sizeof(char*));
+    //char* nome;
+    printf("qtd_docs: %ld", ind->documentos_usados);
+
+    for (int i=0; i<size; i++){
+        nomes_docs[i] = (char*)malloc(100 * sizeof(char));
+        printf("\nind_docs: %d\n", ind_docs[i]);
+ 
+        //vet_ind[i] acessa uma posicao maior q a do vetor de documentos, por isso seg_fault
+        //vet_ind eh o vetor com os indices das palavras, nao dos documentos, por isso da erro
+        nomes_docs[i] = Documentos_Nome_Retorna(ind->documentos_ind[ind_docs[i]]); 
+
+        printf ("nome: %s\n", nomes_docs[i]);
+    }
 
     Palavras_busca (ind_aux->palavras_ind, ind_aux->palavras_usadas, nomes_docs);
     // se ficar muito grande mesmo tirando os comentarios, fazemos os frees em outra funcao;
@@ -401,6 +416,10 @@ int Relatorio_Palavras(Indices ind)
     free(classes_usadas);
 
     return 0;
+}
+
+void Texto_Classifica(Indices ind, int knn) {
+    printf("\nknn = %d\n", knn);
 }
 
 // ---------------- AUXILIARES ----------------

@@ -188,13 +188,42 @@ void Palavras_busca(Palavras *palavras, int qtd_palavras, char** nomes_docs){
 
   Ordena_tf_idf(ind_docs, tf_idf, qtd_docs, nomes_docs);
 
-  for (int i=0; i<qtd_docs; i++)
-    free (nomes_docs[i]);
-  
-  free (nomes_docs);
   free(ind_docs);
   free(tf_idf);
 }
+
+int* Cria_Ind_Docs(Palavras *palavras, int qtd_palavras) {
+  int* ind_docs = (int*)calloc(1, sizeof(int));
+
+  int qtd_docs = 0;
+  int ind;
+  int flag_igual = 0;
+
+  for (int i=0; i<qtd_palavras; i++){
+    for (int j = 0; j< palavras[i]->prop_usado; j++){
+
+      ind = Propriedades_Retorna_Ind(palavras[i]->prop, j); // retornar prop->ind
+      
+      for(int k = 0; k < qtd_docs; k++) {
+        if (ind == ind_docs[k]) {   
+          flag_igual = 1;
+          break;
+        }
+      }
+      if (!flag_igual) {
+        ind_docs[qtd_docs] = ind;
+
+        qtd_docs+=1;
+        ind_docs = (int*)realloc(ind_docs, (qtd_docs+1)*sizeof(int));
+      }
+      flag_igual = 0;
+    }
+  }
+
+  ind_docs[qtd_docs+1] = -1;
+  return ind_docs;
+}
+
 
 Palavras *Palavras_Retorna_Endereco(char *token, Palavras *palavras, int qtd_palavras)
 {
@@ -210,8 +239,6 @@ Palavras *Palavras_Indices_Buscados(Palavras *pal, int *vet_ind, int tam_vet, in
 {
 
   Palavras *buscadas = (Palavras *)calloc(tam_vet, sizeof(Palavras));
-  // Palavras aux = (Palavras)calloc(1, sizeof(struct palavras));
-  // aux->prop = Propriedades_Vet_Cria(qtd_tot_docs);
 
   for (int i = 0; i < tam_vet; i++)
   {
@@ -228,22 +255,6 @@ Palavras *Palavras_Indices_Buscados(Palavras *pal, int *vet_ind, int tam_vet, in
     // Propriedades_Imprime(buscadas[i]->prop, buscadas[i]->prop_usado);
   }
 
-  /*
-  printf("\n\nAMEM\n\n");
-  printf("\ncont_pal = %d", tam_vet);
-  printf("\nind: ");
-  for (int i = 0; i < tam_vet; i++)
-  {
-    printf("%d ", vet_ind[i]);
-  }
-  printf("\n");
-
-  for (int i = 0; i < tam_vet; i++)
-  {
-    printf("Palavra de indice '%d' aparece nos seguinte documentos:\n", vet_ind[i]);
-    Propriedades_Imprime(buscadas[i]->prop, buscadas[i]->prop_usado);
-  }
-  */
   return buscadas;
 }
 

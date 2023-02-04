@@ -22,6 +22,7 @@ void Imprime_Binario(Indices indices, char** argv);
 void Texto_Busca(Indices ind);
 void Relatorio_Docs (Indices ind);
 int Relatorio_Palavras (Indices ind);
+void Texto_Classifica(Indices ind, int knn);
 
 // ---------------- AUXILIARES ----------------
 void Imprime_Tudo(Indices indices);

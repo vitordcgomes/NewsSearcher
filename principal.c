@@ -3,7 +3,7 @@
 #include "tads/indices.h"
 
 void Erros_Entrada_Principal (int argc);
-void Menu_Funcionalidades();
+void Menu_Funcionalidades(Indices ind, char* k);
 void Imprime_Menu ();
 
 typedef enum {
@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
 
     Indices ind = Indices_cria();
     ind = Le_Binario(ind, argv[1]);
-    Menu_Funcionalidades(ind);
+    Menu_Funcionalidades(ind, argv[2]);
     Indices_Libera(ind);
     printf("\033[1m----Ate a proxima!----\033[0m\n\n");
 
@@ -29,9 +29,10 @@ int main(int argc, char** argv) {
 
 // ---------------- FUNCOES LOCAIS ----------------
 
-void Menu_Funcionalidades(Indices ind){
+void Menu_Funcionalidades(Indices ind, char* k){
 
     char op;
+    int knn;
     int flag_encerra = 0;
 
     while(1){
@@ -47,6 +48,8 @@ void Menu_Funcionalidades(Indices ind){
             break;
 
             case CLASSIFICA:
+                knn = atoi(k);
+                Texto_Classifica(ind, knn);
             break;
 
             case RELAT_PAL:
