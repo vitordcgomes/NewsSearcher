@@ -265,11 +265,13 @@ void Ordena_KNN (Documentos* docs, int qtd_docs, char* str, int qtd_vizinhos){
         cont = qtd_docs;
     }
 
-    printf("\n\033[93m  ->\033[0m Top 10 documentos mais proximos de '%s':\n\n", str);
+    printf("\n\033[93m  ->\033[0m Top %d documentos mais proximos de '%s':\n\n", qtd_vizinhos, str);
 
     for (int i=0; i<cont; i++){
         printf("\t\033[96m[\033[0m%d\033[96m]\033[0m - '%s', com %.2lf de proximidade;\n\n", i + 1, cpy_docs[i]->nome, cpy_docs[i]->knn);
     }
+
+
 
     for (int i=0; i<qtd_docs; i++)
         free (cpy_docs[i]);

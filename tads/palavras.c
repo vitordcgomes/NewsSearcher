@@ -107,8 +107,8 @@ double Calcula_IDF_Classif (int tot_doc, Palavras p){
   double idf = 0;
   double num = 0.0, denom = 0.0;
 
-  num = 1 + tot_doc+1; //+ o texto digitado
-  denom = 1 + p->prop_usado+1;
+  num = 1 + 1; //+ o texto digitado
+  denom = 1 + 1;
   idf = log(num / denom) + 1;
 
   return idf;

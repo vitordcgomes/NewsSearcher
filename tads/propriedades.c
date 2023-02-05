@@ -215,6 +215,20 @@ double Calcula_Cosseno (Propriedades* prop_ref, Propriedades* prop, int qtd_ref,
             denominador_prop += pow( prop[indice]->tf_idf , 2);
             flag_encontrei = 1;
         }
+        
+        else {
+            denominador_ref += pow(prop_ref[k]->tf_idf , 2);
+        }
+    }
+
+    for (int k=0; k<qtd_prop; k++){
+        //so no outro documento
+
+        Propriedades* endereco = bsearch (&prop[k]->indice, prop_ref, qtd_ref, sizeof(Propriedades), Prop_Ind_compara);
+
+        if (endereco == NULL){
+            denominador_prop += pow( prop[k]->tf_idf , 2);
+        }
     }
 
     if (!flag_encontrei) return 0;
