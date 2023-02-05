@@ -13,7 +13,6 @@ struct palavras
   int prop_usado;
 };
 
-
 // ---------------- MEMORIA ----------------
 
 Palavras Palavra_cria()
@@ -47,7 +46,6 @@ void Propriedades_realoca(Palavras p)
   p->prop = (Propriedades *)realloc(p->prop, p->prop_alocado * sizeof(Propriedades));
 }
 
-
 // ---------------- INDEXADORES ----------------
 
 double Calcula_IDF(int tot_doc, Palavras p)
@@ -63,12 +61,13 @@ double Calcula_IDF(int tot_doc, Palavras p)
   return idf;
 }
 
-double Calcula_IDF_Classif (int tot_doc, Palavras p){
+double Calcula_IDF_Classif(int tot_doc, Palavras p)
+{
 
   double idf = 0;
   double num = 0.0, denom = 0.0;
 
-  num = 1 + 1; //+ o texto digitado
+  num = 1 + 1;
   denom = 1 + 1;
   idf = log(num / denom) + 1;
 
@@ -89,7 +88,7 @@ int Palavra_le(Palavras *p, FILE *f, int ind_doc, int ind_palavra)
     {
 
       // busca o indice no vetor de propriedades do documento de indice = ind
-      indice_vetor = Propriedades_busca(p[i]->prop, ind_doc, p[i]->prop_usado); // bsearch?
+      indice_vetor = Propriedades_busca(p[i]->prop, ind_doc, p[i]->prop_usado);
 
       // se o indice do documento não existir no vetor de propriedades, ou seja, a função retornar <0, criamos outra "casinha" para o novo indice
       if (indice_vetor < 0)
@@ -123,7 +122,6 @@ Palavras Calcula_TF_IDF(double idf, Palavras p, int ind_prop)
   return p;
 }
 
-
 // ---------------- BINARIO ----------------
 
 void Palavras_Le_Binario(FILE *file, Palavras *p, int qtd_palavras)
@@ -138,8 +136,6 @@ void Palavras_Le_Binario(FILE *file, Palavras *p, int qtd_palavras)
     fread(&tam_string, sizeof(int), 1, file);
     fread(p[i]->nome, tam_string, 1, file);
     fread(&p[i]->prop_usado, sizeof(int), 1, file);
-
-    // printf("[%d] - nome: %s; prop_usado: %d;\n", i, p[i]->nome, p[i]->prop_usado);
 
     p[i]->prop = (Propriedades *)realloc(p[i]->prop, p[i]->prop_usado * sizeof(Propriedades));
 
@@ -165,29 +161,35 @@ void Palavras_Escreve_Binario(FILE *file, Palavras *p, int qtd_palavras)
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
-int* Cria_Ind_Docs(Palavras *palavras, int qtd_palavras) {
-  int* ind_docs = (int*)calloc(1, sizeof(int));
+int *Cria_Ind_Docs(Palavras *palavras, int qtd_palavras)
+{
+  int *ind_docs = (int *)calloc(1, sizeof(int));
 
   int qtd_docs = 0;
   int ind;
   int flag_igual = 0;
 
-  for (int i=0; i<qtd_palavras; i++){
-    for (int j = 0; j< palavras[i]->prop_usado; j++){
+  for (int i = 0; i < qtd_palavras; i++)
+  {
+    for (int j = 0; j < palavras[i]->prop_usado; j++)
+    {
 
       ind = Propriedades_Retorna_Ind(palavras[i]->prop, j); // retornar prop->ind
-      
-      for(int k = 0; k < qtd_docs; k++) {
-        if (ind == ind_docs[k]) {   
+
+      for (int k = 0; k < qtd_docs; k++)
+      {
+        if (ind == ind_docs[k])
+        {
           flag_igual = 1;
           break;
         }
       }
-      if (!flag_igual) {
+      if (!flag_igual)
+      {
         ind_docs[qtd_docs] = ind;
 
-        qtd_docs+=1;
-        ind_docs = (int*)realloc(ind_docs, (qtd_docs+1)*sizeof(int));
+        qtd_docs += 1;
+        ind_docs = (int *)realloc(ind_docs, (qtd_docs + 1) * sizeof(int));
       }
       flag_igual = 0;
     }
@@ -229,35 +231,41 @@ int Relat_Palavras_Imprime(char *str, Palavras *p, int qtd_palavras)
   return indice;
 }
 
-void Palavras_busca(Palavras *palavras, int qtd_palavras, char nomes_docs[][100]){
+void Palavras_busca(Palavras *palavras, int qtd_palavras, char nomes_docs[][100])
+{
 
-  int* ind_docs = (int*)calloc(1, sizeof(int));
-  double* tf_idf = (double*)calloc(1, sizeof(double)); // faz copia, ordena e itera referenciando pela copia original
+  int *ind_docs = (int *)calloc(1, sizeof(int));
+  double *tf_idf = (double *)calloc(1, sizeof(double)); // faz copia, ordena e itera referenciando pela copia original
   int qtd_docs = 0;
   int ind;
   int flag_igual = 0;
 
-  for (int i=0; i<qtd_palavras; i++){
-    for (int j = 0; j< palavras[i]->prop_usado; j++){
+  for (int i = 0; i < qtd_palavras; i++)
+  {
+    for (int j = 0; j < palavras[i]->prop_usado; j++)
+    {
 
       ind = Propriedades_Retorna_Ind(palavras[i]->prop, j); // retornar prop->ind
-      
-      for(int k = 0; k < qtd_docs; k++) {
-        if (ind == ind_docs[k]) {
 
-          //soma tf-idf
+      for (int k = 0; k < qtd_docs; k++)
+      {
+        if (ind == ind_docs[k])
+        {
+
+          // soma tf-idf
           tf_idf[k] += Propriedades_Retorna_tf_idf(palavras[i]->prop, j);
           flag_igual = 1;
           break;
         }
       }
-      if (!flag_igual) {
+      if (!flag_igual)
+      {
         ind_docs[qtd_docs] = ind;
         tf_idf[qtd_docs] = Propriedades_Retorna_tf_idf(palavras[i]->prop, j);
 
-        qtd_docs+=1;
-        ind_docs = (int*)realloc(ind_docs, (qtd_docs+1)*sizeof(int));
-        tf_idf = (double*)realloc(tf_idf, (qtd_docs+1)*sizeof(double));
+        qtd_docs += 1;
+        ind_docs = (int *)realloc(ind_docs, (qtd_docs + 1) * sizeof(int));
+        tf_idf = (double *)realloc(tf_idf, (qtd_docs + 1) * sizeof(double));
       }
       flag_igual = 0;
     }
@@ -295,14 +303,10 @@ Palavras *Palavras_Indices_Buscados(Palavras *pal, int *vet_ind, int tam_vet, in
       buscadas[i]->prop[j] = Documentos_Propriedade_Cria();
       buscadas[i]->prop[j] = Atribui_Auxiliar(buscadas[i]->prop[j], pal[vet_ind[i]]->prop[j]);
     }
-
-    // Propriedades_Imprime(buscadas[i]->prop, buscadas[i]->prop_usado);
   }
 
   return buscadas;
 }
-
-
 
 // ---------------- AUXILIARES ----------------
 

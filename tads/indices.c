@@ -10,7 +10,6 @@
 #define QTD_INICIAL 100
 #define QTD_CLASSES 21
 
-
 struct indices
 {
 
@@ -53,7 +52,7 @@ void Indices_Libera(Indices ind)
         Documentos_Libera(ind->documentos_ind[i]);
     }
     free(ind->documentos_ind);
-    
+
     free(ind);
 }
 
@@ -137,7 +136,7 @@ Indices Le_Arquivo_Principal(Indices ind, char **argv)
 
         // Indexador de documentos:
         Documentos_realoca(ind);
-       
+
         ind->documentos_ind[ind->documentos_usados] = Documentos_cria(nome_doc, classe);
 
         // Indexador de palavras:
@@ -206,7 +205,7 @@ Indices Le_Binario(Indices ind, char *caminho)
     // leitura de palavras
     fread(&ind->palavras_usadas, sizeof(int), 1, file);
     ind->palavras_ind = (Palavras *)realloc(ind->palavras_ind, ind->palavras_usadas * sizeof(Palavras));
-    
+
     Palavras_Le_Binario(file, ind->palavras_ind, ind->palavras_usadas);
 
     // leitura documentos
@@ -214,10 +213,6 @@ Indices Le_Binario(Indices ind, char *caminho)
 
     ind->documentos_ind = (Documentos *)realloc(ind->documentos_ind, ind->documentos_usados * sizeof(Documentos));
     Documentos_Le_Binario(file, ind->documentos_ind, ind->documentos_usados);
-
-    //printf("\nPRINCIPAL:\n");
-    //printf("\n\033[95mQuantidade de palavras distintas: \033[96m%ld\n", ind->palavras_usadas);
-    //printf("\033[95mQuantidade de documentos distintos: \033[96m%ld\n\n\033[0m", ind->documentos_usados);
 
     fclose(file);
 
@@ -235,13 +230,11 @@ void Imprime_Binario(Indices indices, char **argv)
     }
 
     int qtd_pal = indices->palavras_usadas;
-    // printf("\npalavras_usadas: %ld\n", qtd_pal);
 
     fwrite(&qtd_pal, sizeof(int), 1, file);
     Palavras_Escreve_Binario(file, indices->palavras_ind, qtd_pal);
 
     int qtd_doc = indices->documentos_usados;
-    // printf("\nqtd_doc_antes: %ld", qtd_doc);
 
     fwrite(&qtd_doc, sizeof(int), 1, file);
     Documentos_Escreve_Binario(file, indices->documentos_ind, qtd_doc);
@@ -268,16 +261,18 @@ void Texto_Busca(Indices ind)
     token = strtok(str, separador);
     int aux = 0;
 
-    while (token != NULL){
+    while (token != NULL)
+    {
 
         void *endereco = Palavras_Retorna_Endereco(token, ind->palavras_ind, ind->palavras_usadas);
         if ((Palavras *)endereco != NULL)
-        {            
+        {
             int indice = (Palavras *)endereco - ind->palavras_ind;
             qsort(vet_ind, cont_palavras, sizeof(int), Crescente_Inteiro); // ordena vet_ind em ordem crescente
-            int* resultado = (int*)bsearch(&indice, vet_ind, cont_palavras, sizeof(int), Ind_compara);
+            int *resultado = (int *)bsearch(&indice, vet_ind, cont_palavras, sizeof(int), Ind_compara);
 
-            if (resultado == NULL) {
+            if (resultado == NULL)
+            {
                 cont_palavras += 1;
                 vet_ind = (int *)realloc(vet_ind, (cont_palavras + 1) * sizeof(int));
                 vet_ind[aux] = indice;
@@ -292,22 +287,25 @@ void Texto_Busca(Indices ind)
     Indices ind_aux = (Indices)calloc(1, sizeof(struct indices));
     ind_aux->palavras_ind = Palavras_Indices_Buscados(ind->palavras_ind, vet_ind, cont_palavras, ind->documentos_usados);
     ind_aux->palavras_usadas = cont_palavras;
-    int* ind_docs = Cria_Ind_Docs(ind_aux->palavras_ind, ind_aux->palavras_usadas);
+    int *ind_docs = Cria_Ind_Docs(ind_aux->palavras_ind, ind_aux->palavras_usadas);
     int size = 0;
 
-    for (int i = 0; ind_docs[i] != -1; i++) {
+    for (int i = 0; ind_docs[i] != -1; i++)
+    {
         size++;
     }
 
     char nomes_docs[size][100];
-    for (int i=0; i<size; i++){
-        char* nome = Documentos_Nome_Retorna(ind->documentos_ind[ind_docs[i]]); 
+    for (int i = 0; i < size; i++)
+    {
+        char *nome = Documentos_Nome_Retorna(ind->documentos_ind[ind_docs[i]]);
         strcpy(nomes_docs[i], nome);
     }
 
-    Palavras_busca (ind_aux->palavras_ind, ind_aux->palavras_usadas, nomes_docs); 
-    
-    for (int i = 0; i < ind_aux->palavras_usadas; i++) {
+    Palavras_busca(ind_aux->palavras_ind, ind_aux->palavras_usadas, nomes_docs);
+
+    for (int i = 0; i < ind_aux->palavras_usadas; i++)
+    {
         Palavras_Libera(ind_aux->palavras_ind[i]);
     }
 
@@ -347,11 +345,12 @@ int Relatorio_Palavras(Indices ind)
 
     int ind_palavra = Relat_Palavras_Imprime(str, ind->palavras_ind, ind->palavras_usadas);
 
-    if (ind_palavra < 0) {
+    if (ind_palavra < 0)
+    {
         free(classes_usadas);
         return 0;
     }
-        
+
     int qtd_docs = Palavras_Retorna_Prop_Usado(ind->palavras_ind[ind_palavra]);
 
     for (int i = 0; i < qtd_docs; i++)
@@ -392,7 +391,7 @@ int Relatorio_Palavras(Indices ind)
     }
 
     Ordena_Classes(frequencias, classes_usadas, qtd_classes);
-    
+
     for (int i = 0; i < qtd_classes; i++)
     {
         free(classes_usadas[i]);
@@ -402,16 +401,15 @@ int Relatorio_Palavras(Indices ind)
     return 0;
 }
 
-void Texto_Classifica(Indices ind, int knn) {
+void Texto_Classifica(Indices ind, int knn)
+{
 
-    char str [10000];
-    //int ind_doc;
+    char str[10000];
     int cont_palavras = 0;
 
-    printf ("Digite um texto: \033[96m");
+    printf("Digite um texto: \033[96m");
     scanf("%[^\n]%*c", str);
     printf("\n\033[0m");
-    //printf ("doc = %s\n", str);
 
     const char separador[] = " ";
     char *token;
@@ -424,71 +422,76 @@ void Texto_Classifica(Indices ind, int knn) {
     int *frequencias = (int *)calloc(1, sizeof(int));
     int *palavras_aux = (int *)calloc(1, sizeof(int));
 
-    while (1){
+    while (1)
+    {
 
-        //int flag_igual = 0;
         void *endereco = Palavras_Retorna_Endereco(token, ind->palavras_ind, ind->palavras_usadas);
         if ((Palavras *)endereco != NULL)
-        {            
+        {
             int indice = (Palavras *)endereco - ind->palavras_ind;
             qsort(palavras_aux, cont_palavras, sizeof(int), Crescente_Inteiro);
-            int* resultado = bsearch(&indice, palavras_aux, cont_palavras, sizeof(int), Ind_compara);
+            int *resultado = bsearch(&indice, palavras_aux, cont_palavras, sizeof(int), Ind_compara);
 
-            if (resultado == NULL) {
+            if (resultado == NULL)
+            {
 
-                    cont_palavras += 1;
-                    ind_palavras = (int *)realloc(ind_palavras, (cont_palavras + 1) * sizeof(int));
-                    frequencias = (int *)realloc(frequencias, (cont_palavras + 1) * sizeof(int));
-                    palavras_aux = (int *)realloc(palavras_aux, (cont_palavras + 1) * sizeof(int));
+                cont_palavras += 1;
+                ind_palavras = (int *)realloc(ind_palavras, (cont_palavras + 1) * sizeof(int));
+                frequencias = (int *)realloc(frequencias, (cont_palavras + 1) * sizeof(int));
+                palavras_aux = (int *)realloc(palavras_aux, (cont_palavras + 1) * sizeof(int));
 
-                    ind_palavras[aux] = indice;
-                    palavras_aux[aux] = indice;
-                    frequencias[aux] = 1;
-                    aux++;
-                }
-            
-            else {
+                ind_palavras[aux] = indice;
+                palavras_aux[aux] = indice;
+                frequencias[aux] = 1;
+                aux++;
+            }
+
+            else
+            {
                 int posicao = resultado - palavras_aux;
                 frequencias[posicao]++;
             }
         }
-        
-        else {
-            printf ("\033[91mA palavra '%s' nao esta presente nas noticias do nosso banco de dados.\033[0m\n\n", token);
+
+        else
+        {
+            printf("\033[91mA palavra '%s' nao esta presente nas noticias do nosso banco de dados.\033[0m\n\n", token);
         }
         token = strtok(NULL, separador);
-        if (token == NULL) break;
-    } 
-    
+        if (token == NULL)
+            break;
+    }
+
     Indices ind_aux = (Indices)calloc(1, sizeof(struct indices));
-    ind_aux->documentos_ind = (Documentos*)calloc(1, sizeof(Documentos));
-    ind_aux->documentos_ind[0] = Documentos_Classif_Constroi (str, aux, ind_palavras, frequencias);
+    ind_aux->documentos_ind = (Documentos *)calloc(1, sizeof(Documentos));
+    ind_aux->documentos_ind[0] = Documentos_Classif_Constroi(str, aux, ind_palavras, frequencias);
     ind_aux->documentos_usados = 1;
-    
+
     double tf_idf[aux];
 
-    for (int i=0; i<aux; i++){
-        tf_idf[i] = Calcula_IDF_Classif (ind->documentos_usados, ind->palavras_ind[ind_palavras[i]]);
+    for (int i = 0; i < aux; i++)
+    {
+        tf_idf[i] = Calcula_IDF_Classif(ind->documentos_usados, ind->palavras_ind[ind_palavras[i]]);
     }
-    
-    Documentos_Classifica (str, ind->documentos_ind, ind->documentos_usados, knn, ind_aux->documentos_ind[0], cont_palavras, tf_idf);    
 
-   Documentos_Libera(ind_aux->documentos_ind[0]);
-   free(ind_aux->documentos_ind);
-   free(ind_aux);
+    Documentos_Classifica(str, ind->documentos_ind, ind->documentos_usados, knn, ind_aux->documentos_ind[0], cont_palavras, tf_idf);
 
-   free(ind_palavras);
-   free(frequencias);
-   free(palavras_aux);
+    Documentos_Libera(ind_aux->documentos_ind[0]);
+    free(ind_aux->documentos_ind);
+    free(ind_aux);
+
+    free(ind_palavras);
+    free(frequencias);
+    free(palavras_aux);
 }
 
 // ---------------- AUXILIARES ----------------
 
 void Imprime_Tudo(Indices indices)
 {
-    // Palavras_imprime (indices->palavras_ind, indices->palavras_usadas);
+    Palavras_imprime(indices->palavras_ind, indices->palavras_usadas);
     Documentos_imprime(indices->documentos_usados, indices->documentos_ind);
-    // Palavras_imprime_uma(indices->palavras_ind, 3);
+    Palavras_imprime_uma(indices->palavras_ind, 3);
 }
 
 int Decrescente_Inteiro(const void *a, const void *b)

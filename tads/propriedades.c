@@ -47,7 +47,6 @@ void Propriedades_Libera(Propriedades *p, int qtd)
     free(p);
 }
 
-
 // ---------------- INDEXADORES ----------------
 
 Propriedades Atribui_TF_IDF(double idf, Propriedades prop)
@@ -79,7 +78,6 @@ Propriedades Propriedades_Doc_Atribui(Propriedades p, int ind_pal, int freq_pal,
     return p;
 }
 
-
 // ---------------- BINARIO ----------------
 
 void Propriedades_Le_Binario(FILE *file, Propriedades *prop, int qtd_prop)
@@ -92,7 +90,6 @@ void Propriedades_Le_Binario(FILE *file, Propriedades *prop, int qtd_prop)
         fread(&prop[i]->indice, sizeof(int), 1, file);
         fread(&prop[i]->tf_idf, sizeof(double), 1, file);
     }
-
 }
 
 void Propriedades_Escreve_Binario(FILE *file, Propriedades *prop, int qtd_prop)
@@ -105,11 +102,11 @@ void Propriedades_Escreve_Binario(FILE *file, Propriedades *prop, int qtd_prop)
     }
 }
 
-
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
-Propriedades TF_IDF_Classif (Propriedades p, double tf_idf){
-    p->tf_idf = tf_idf * (p->frequencia); 
+Propriedades TF_IDF_Classif(Propriedades p, double tf_idf)
+{
+    p->tf_idf = tf_idf * (p->frequencia);
     return p;
 }
 
@@ -117,7 +114,7 @@ void Ordena_Classes(int *frequencias, char **classes_usadas, int qtd_classes)
 {
     Propriedades *prop = (Propriedades *)calloc(qtd_classes, sizeof(Propriedades));
 
- for (int i = 0; i < qtd_classes; i++)
+    for (int i = 0; i < qtd_classes; i++)
     {
         prop[i] = (Propriedades)calloc(1, sizeof(struct propriedades));
         prop[i]->frequencia = frequencias[i];
@@ -133,12 +130,11 @@ void Ordena_Classes(int *frequencias, char **classes_usadas, int qtd_classes)
         printf("\t\033[96m[\033[0m%s\033[96m]\033[0m - Aparece %d vez(es);\n\n", classes_usadas[prop[i]->indice], prop[i]->frequencia);
     }
 
-        for (int i = 0; i < qtd_classes; i++)
+    for (int i = 0; i < qtd_classes; i++)
     {
         free(prop[i]);
     }
     free(prop);
-
 }
 
 void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char nomes_docs[][100])
@@ -156,20 +152,25 @@ void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char nomes_docs[][100
 
     qsort(prop, tam, sizeof(Propriedades), Decrescente_double);
 
-    if(tam==0) {
+    if (tam == 0)
+    {
         printf("\033[91m\033[1mERRO:\033[0m\033[91m Nao foi possivel localizar essa(s) palavra(s).\033[0m\n");
     }
 
-    if (tam < 10) qtd = tam;
+    if (tam < 10)
+        qtd = tam;
 
-    if (tam>0) {
+    if (tam > 0)
+    {
         printf("\n\033[93m  ->\033[0m Top %d documentos em que a(s) palavra(s) mais aparece(m):\n\n", qtd);
-    } 
+    }
 
     for (int i = 0; i < qtd; i++)
-    {   
-        for (int j=0; j < tam; j++){
-            if (prop[i]->indice == ind_docs[j]) {
+    {
+        for (int j = 0; j < tam; j++)
+        {
+            if (prop[i]->indice == ind_docs[j])
+            {
                 indice = j;
                 break;
             }
@@ -179,67 +180,73 @@ void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char nomes_docs[][100
 
     for (int i = 0; i < tam; i++)
         free(prop[i]);
-    
+
     free(prop);
 }
 
-double Calcula_Cosseno (Propriedades* prop_ref, Propriedades* prop, int qtd_ref, int qtd_prop){
+double Calcula_Cosseno(Propriedades *prop_ref, Propriedades *prop, int qtd_ref, int qtd_prop)
+{
 
     double numerador = 0;
     double denominador = 0;
     double denominador_ref = 0;
     double denominador_prop = 0;
     double cosseno = 0;
-    int flag_encontrei =0;
+    int flag_encontrei = 0;
 
-    qsort (prop_ref, qtd_ref, sizeof(Propriedades), Ind_Crescente);
-    qsort (prop, qtd_prop, sizeof(Propriedades), Ind_Crescente);
+    qsort(prop_ref, qtd_ref, sizeof(Propriedades), Ind_Crescente);
+    qsort(prop, qtd_prop, sizeof(Propriedades), Ind_Crescente);
     // na iteracao, verificar documento a documento se o indice é o mesmo, se nao for, soma apenas os fatores que nao sao afetados por isso
 
-    for (int k=0; k<qtd_ref; k++){
+    for (int k = 0; k < qtd_ref; k++)
+    {
 
-        Propriedades* endereco = bsearch (&prop_ref[k]->indice, prop, qtd_prop, sizeof(Propriedades), Prop_Ind_compara);
+        Propriedades *endereco = bsearch(&prop_ref[k]->indice, prop, qtd_prop, sizeof(Propriedades), Prop_Ind_compara);
 
-        if (endereco != NULL){
+        if (endereco != NULL)
+        {
             int indice = endereco - prop;
             numerador += (prop[indice]->tf_idf * prop_ref[k]->tf_idf);
-            denominador_ref += pow(prop_ref[k]->tf_idf , 2);
-            denominador_prop += pow( prop[indice]->tf_idf , 2);
+            denominador_ref += pow(prop_ref[k]->tf_idf, 2);
+            denominador_prop += pow(prop[indice]->tf_idf, 2);
             flag_encontrei = 1;
         }
-        
-        else denominador_ref += pow(prop_ref[k]->tf_idf , 2);
-        
+
+        else
+            denominador_ref += pow(prop_ref[k]->tf_idf, 2);
     }
 
-    for (int k=0; k<qtd_prop; k++){
+    for (int k = 0; k < qtd_prop; k++)
+    {
 
-        Propriedades* endereco = bsearch (&prop[k]->indice, prop_ref, qtd_ref, sizeof(Propriedades), Prop_Ind_compara);
-        if (endereco == NULL){
-            denominador_prop += pow( prop[k]->tf_idf , 2);
+        Propriedades *endereco = bsearch(&prop[k]->indice, prop_ref, qtd_ref, sizeof(Propriedades), Prop_Ind_compara);
+        if (endereco == NULL)
+        {
+            denominador_prop += pow(prop[k]->tf_idf, 2);
         }
     }
 
-    if (!flag_encontrei) return 0;
+    if (!flag_encontrei)
+        return 0;
 
     denominador = sqrt(denominador_ref) * sqrt(denominador_prop);
-    cosseno = numerador/denominador;
+    cosseno = numerador / denominador;
 
-return cosseno;
-
+    return cosseno;
 }
-
 
 // ---------------- AUXILIARES ----------------
 
-int Ind_compara (const void *a, const void *b){
-  int x = *(const int *)a;
-  int y = *(const int *)b;
+int Ind_compara(const void *a, const void *b)
+{
+    int x = *(const int *)a;
+    int y = *(const int *)b;
 
-  return (x-y);
+    return (x - y);
 }
 
-int Ind_Crescente(const void *a, const void *b){
+int Ind_Crescente(const void *a, const void *b)
+{
     Propriedades x = *(Propriedades *)a;
     Propriedades y = *(Propriedades *)b;
 
@@ -262,11 +269,12 @@ int Decrescente_freq(const void *a, const void *b)
     return (y->frequencia - x->frequencia);
 }
 
-int Prop_Ind_compara (const void *a, const void *b){
-  int x = *(const int *)a;
-  Propriedades y = *( Propriedades *)b;
+int Prop_Ind_compara(const void *a, const void *b)
+{
+    int x = *(const int *)a;
+    Propriedades y = *(Propriedades *)b;
 
-  return (x - y->indice);
+    return (x - y->indice);
 }
 
 int Decrescente_double(const void *a, const void *b)
@@ -274,9 +282,12 @@ int Decrescente_double(const void *a, const void *b)
     Propriedades prop1 = *(Propriedades *)a;
     Propriedades prop2 = *(Propriedades *)b;
     double var = prop2->tf_idf - prop1->tf_idf;
-    if (var > 0) return 1;
-    else if(var < 0) return -1;
-    else return 0;
+    if (var > 0)
+        return 1;
+    else if (var < 0)
+        return -1;
+    else
+        return 0;
 }
 
 void Propriedades_Imprime(Propriedades *p, int qtd)
@@ -358,7 +369,8 @@ int Propriedades_busca(Propriedades *p, int ind_doc, int qtd_prop)
     return -1;
 }
 
-Propriedades Propriedades_Copia (Propriedades origem, Propriedades destino){
+Propriedades Propriedades_Copia(Propriedades origem, Propriedades destino)
+{
 
     destino->frequencia = origem->frequencia;
     destino->tf_idf = origem->tf_idf;

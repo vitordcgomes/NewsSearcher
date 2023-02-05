@@ -46,7 +46,6 @@ Documentos Documentos_cria(char *caminho, char *classe)
 
     strcpy(doc->classe, classe);
     strcpy(doc->nome, caminho);
-    // printf("doc_nome: %s\n", doc->nome);
 
     doc->prop = Propriedades_vetor_cria();
 
@@ -66,7 +65,6 @@ Documentos Documentos_Classif_Constroi(char *str, int qtd_palavras, int *ind_pal
     {
         doc_aux->prop[j] = Documentos_Propriedade_Cria();
         Propriedades_Doc_Atribui(doc_aux->prop[j], ind_palavras[j], frequencias[j], 0.00);
-        // printf ("indice palavra: %d, frequencia: %d;\n", ind_palavras[j], frequencias[j]);
     }
 
     doc_aux->prop_usado = qtd_palavras;
@@ -75,7 +73,6 @@ Documentos Documentos_Classif_Constroi(char *str, int qtd_palavras, int *ind_pal
 
     return doc_aux;
 }
-
 
 // ---------------- INDEXADORES ----------------
 
@@ -95,11 +92,8 @@ Documentos Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal, double 
     doc->prop[doc->prop_usado] = Propriedades_Doc_Atribui(doc->prop[doc->prop_usado], ind_pal, freq_pal, tf_idf_pal);
     doc->prop_usado++;
 
-    // Propriedades_Documentos_Imprime (doc->prop, doc->prop_usado);
-
     return doc;
 }
-
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
@@ -152,11 +146,13 @@ void Ordena_KNN(Documentos *docs, int qtd_docs, char *str, int qtd_vizinhos)
     qsort(cpy_docs, qtd_docs, sizeof(Documentos), Compara_KNN);
 
     char resp;
-    printf ("Estima-se que a classe do texto digitado seja: \033[96m%s\033[0m! \nAcertamos? sim(s) ou nao(n):\033[95m ", cpy_docs[0]->classe);
+    printf("Estima-se que a classe do texto digitado seja: \033[96m%s\033[0m! \nAcertamos? sim(s) ou nao(n):\033[95m ", cpy_docs[0]->classe);
     scanf("%c%*c", &resp);
 
-    if (resp == 's') printf ("\033[92m\nQue bom! Fico feliz em ajudar :)\033[0m\n\n");
-    else if (resp == 'n') printf ("\033[91m\nPoxa :( Espero conseguir te ajudar numa proxima oportunidade!\033[0m\n\n");
+    if (resp == 's')
+        printf("\033[92m\nQue bom! Fico feliz em ajudar :)\033[0m\n\n");
+    else if (resp == 'n')
+        printf("\033[91m\nPoxa :( Espero conseguir te ajudar numa proxima oportunidade!\033[0m\n\n");
 
     for (int i = 0; i < qtd_docs; i++)
         free(cpy_docs[i]);
@@ -181,13 +177,10 @@ void Modelo_Impressao_Docs(Documentos *docs, int qtd_impressao, int qtd_docs)
 void Documentos_Classifica(char *str, Documentos *docs, int qtd_docs, int qtd_vizinhos, Documentos texto_digitado, int qtd_palavras, double *vet_tf_idf)
 {
 
-    // calculamos tf-idf pelo vetor de palavras, entao nao eh possivel calcular da mesma maneira agora;
+    // Calculamos tf-idf pelo vetor de palavras, entao nao eh possivel calcular da mesma maneira agora;
 
-    //printf("\n\n\n\nqtd_PAL: %d\n\n\n", qtd_palavras);
-    // Propriedades_Imprime (texto_digitado->prop, qtd_palavras);
     for (int i = 0; i < qtd_palavras; i++)
     {
-        //Propriedades_Doc_Atribui(texto_digitado->prop[i], vet_ind_palavras[i], vet_freq[i], 0);
         texto_digitado->prop[i] = TF_IDF_Classif(texto_digitado->prop[i], vet_tf_idf[i]);
     }
 
@@ -199,10 +192,7 @@ void Documentos_Classifica(char *str, Documentos *docs, int qtd_docs, int qtd_vi
     }
 
     Ordena_KNN(docs, qtd_docs, str, qtd_vizinhos);
-
-    // LIBERAR PROP E DOCS
 }
-
 
 // ---------------- BINARIO ----------------
 
@@ -214,20 +204,13 @@ void Documentos_Le_Binario(FILE *file, Documentos *doc, int qtd_doc)
         int tam_string_doc = 0;
         fread(&tam_string_doc, sizeof(int), 1, file);
 
-        // vet_nomes_doc[i] = (char*)malloc(tam_string_doc);
-
         char nome[tam_string_doc];
         fread(nome, tam_string_doc, 1, file);
-
-        // vet_classe_doc[i] = (char*)malloc(4); //tamanho da string classe eh fixo e == 4
 
         char classe[4];
         fread(classe, 4, 1, file);
 
         doc[i] = Documentos_cria(nome, classe);
-
-        // printf("nome_doc: %s; ", doc[i]->nome);
-        // printf("classe: %s;\n", doc[i]->classe);
 
         fread(&doc[i]->qtd_palavras, sizeof(int), 1, file);
         fread(&doc[i]->prop_usado, sizeof(int), 1, file);
@@ -284,12 +267,6 @@ void Documentos_imprime(int qtd, Documentos *docs)
         printf("DOC: %d, NOME: %s, CLASSE: %s\n", i, docs[i]->nome, docs[i]->classe);
         Propriedades_Documentos_Imprime(docs[i]->prop, docs[i]->prop_usado);
     }
-
-    /*
-    for (int i = 0; i < qtd; i++) {
-        Propriedades_Documentos_Imprime(docs[i]->prop, docs[i]->prop_usado);
-    }
-    */
 }
 
 int Compara_KNN(const void *fst, const void *scnd)
