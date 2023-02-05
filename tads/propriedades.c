@@ -234,7 +234,12 @@ double Calcula_Cosseno (Propriedades* prop_ref, Propriedades* prop, int qtd_ref,
     if (!flag_encontrei) return 0;
 
     denominador = sqrt(denominador_ref) * sqrt(denominador_prop);
+    printf("numerador: %.2lf\n", numerador);
+    printf("denominador: %.2f\n", denominador);
+    
+
     cosseno = numerador/denominador;
+    printf("cosseno: %.2lf\n", cosseno);
 
 return cosseno;
 

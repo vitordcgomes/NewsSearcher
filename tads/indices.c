@@ -550,7 +550,7 @@ void Texto_Classifica(Indices ind, int knn) {
         printf("tf_idf_AMEM: %.2lf ", tf_idf[i]);
     }
     
-    Documentos_Classifica (str, ind->documentos_ind, ind->documentos_usados, knn, ind_aux->documentos_ind[0], cont_palavras, tf_idf, frequencias_aux, palavras_aux);
+    Documentos_Classifica (str, ind->documentos_ind, ind->documentos_usados, knn, ind_aux->documentos_ind[0], cont_palavras, tf_idf);
     //printf ("\n\033[91m\033[1mERRO:\033[0m\033[91m Esse documento nao foi encontrado. Tente novamente!\033[0m\n\n");
     
 
