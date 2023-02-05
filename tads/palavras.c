@@ -13,14 +13,8 @@ struct palavras
   int prop_usado;
 };
 
+
 // ---------------- MEMORIA ----------------
-
-Palavras *Palavras_vetor_cria()
-{
-
-  Palavras *palavra = (Palavras *)calloc(QTD_INICIAL, sizeof(Palavras));
-  return palavra;
-}
 
 Palavras Palavra_cria()
 {
@@ -33,11 +27,11 @@ Palavras Palavra_cria()
   return palavra;
 }
 
-void Propriedades_realoca(Palavras p)
+Palavras *Palavras_vetor_cria()
 {
 
-  p->prop_alocado *= 2;
-  p->prop = (Propriedades *)realloc(p->prop, p->prop_alocado * sizeof(Propriedades));
+  Palavras *palavra = (Palavras *)calloc(QTD_INICIAL, sizeof(Palavras));
+  return palavra;
 }
 
 void Palavras_Libera(Palavras p)
@@ -46,7 +40,40 @@ void Palavras_Libera(Palavras p)
   free(p);
 }
 
+void Propriedades_realoca(Palavras p)
+{
+
+  p->prop_alocado *= 2;
+  p->prop = (Propriedades *)realloc(p->prop, p->prop_alocado * sizeof(Propriedades));
+}
+
+
 // ---------------- INDEXADORES ----------------
+
+double Calcula_IDF(int tot_doc, Palavras p)
+{
+
+  double idf;
+  double num = 0.0, denom = 0.0;
+
+  num = 1 + tot_doc;
+  denom = 1 + p->prop_usado;
+  idf = log(num / denom) + 1;
+
+  return idf;
+}
+
+double Calcula_IDF_Classif (int tot_doc, Palavras p){
+
+  double idf = 0;
+  double num = 0.0, denom = 0.0;
+
+  num = 1 + 1; //+ o texto digitado
+  denom = 1 + 1;
+  idf = log(num / denom) + 1;
+
+  return idf;
+}
 
 int Palavra_le(Palavras *p, FILE *f, int ind_doc, int ind_palavra)
 {
@@ -89,38 +116,13 @@ int Palavra_le(Palavras *p, FILE *f, int ind_doc, int ind_palavra)
   return 1; // retornar 1 significa que foi criada uma palavra nova.
 }
 
-double Calcula_IDF(int tot_doc, Palavras p)
-{
-
-  double idf;
-  double num = 0.0, denom = 0.0;
-
-  num = 1 + tot_doc;
-  denom = 1 + p->prop_usado;
-  idf = log(num / denom) + 1;
-
-  return idf;
-}
-
-double Calcula_IDF_Classif (int tot_doc, Palavras p){
-
-  double idf = 0;
-  double num = 0.0, denom = 0.0;
-
-  num = 1 + 1; //+ o texto digitado
-  denom = 1 + 1;
-  idf = log(num / denom) + 1;
-
-  return idf;
-}
-
-
 Palavras Calcula_TF_IDF(double idf, Palavras p, int ind_prop)
 {
 
   p->prop[ind_prop] = Atribui_TF_IDF(idf, p->prop[ind_prop]);
   return p;
 }
+
 
 // ---------------- BINARIO ----------------
 
@@ -163,47 +165,6 @@ void Palavras_Escreve_Binario(FILE *file, Palavras *p, int qtd_palavras)
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
-void Palavras_busca(Palavras *palavras, int qtd_palavras, char nomes_docs[][100]){
-
-  int* ind_docs = (int*)calloc(1, sizeof(int));
-  double* tf_idf = (double*)calloc(1, sizeof(double)); // faz copia, ordena e itera referenciando pela copia original
-  int qtd_docs = 0;
-  int ind;
-  int flag_igual = 0;
-
-  for (int i=0; i<qtd_palavras; i++){
-    for (int j = 0; j< palavras[i]->prop_usado; j++){
-
-      ind = Propriedades_Retorna_Ind(palavras[i]->prop, j); // retornar prop->ind
-      
-      for(int k = 0; k < qtd_docs; k++) {
-        if (ind == ind_docs[k]) {
-
-          //soma tf-idf
-          tf_idf[k] += Propriedades_Retorna_tf_idf(palavras[i]->prop, j);
-          flag_igual = 1;
-          break;
-        }
-      }
-      if (!flag_igual) {
-        ind_docs[qtd_docs] = ind;
-        tf_idf[qtd_docs] = Propriedades_Retorna_tf_idf(palavras[i]->prop, j);
-
-        qtd_docs+=1;
-        ind_docs = (int*)realloc(ind_docs, (qtd_docs+1)*sizeof(int));
-        tf_idf = (double*)realloc(tf_idf, (qtd_docs+1)*sizeof(double));
-      }
-      flag_igual = 0;
-    }
-  }
-
-  //printf("qtd_docs: %d\n", qtd_docs);
-  Ordena_tf_idf(ind_docs, tf_idf, qtd_docs, nomes_docs);
-
-  free(ind_docs);
-  free(tf_idf);
-}
-
 int* Cria_Ind_Docs(Palavras *palavras, int qtd_palavras) {
   int* ind_docs = (int*)calloc(1, sizeof(int));
 
@@ -234,78 +195,6 @@ int* Cria_Ind_Docs(Palavras *palavras, int qtd_palavras) {
 
   ind_docs[qtd_docs] = -1;
   return ind_docs;
-}
-
-double* Cria_Ind_tf_idf(Palavras* palavras, int qtd_palavras, int size) {
-  
-  int* ind_docs = (int*)calloc(1, sizeof(int));
-  double* tf_idf = (double*)calloc(1, sizeof(double)); // faz copia, ordena e itera referenciando pela copia original
-  int qtd_docs = 0;
-  int ind;
-  int flag_igual = 0;
-
-  for (int i=0; i<qtd_palavras; i++){
-    for (int j = 0; j< palavras[i]->prop_usado; j++){
-
-      ind = Propriedades_Retorna_Ind(palavras[i]->prop, j); // retornar prop->ind
-      
-      for(int k = 0; k < qtd_docs; k++) {
-        if (ind == ind_docs[k]) {
-
-          //soma tf-idf
-          tf_idf[k] += Propriedades_Retorna_tf_idf(palavras[i]->prop, j);
-          flag_igual = 1;
-          break;
-        }
-      }
-      if (!flag_igual) {
-        ind_docs[qtd_docs] = ind;
-        tf_idf[qtd_docs] = Propriedades_Retorna_tf_idf(palavras[i]->prop, j);
-
-        qtd_docs+=1;
-        ind_docs = (int*)realloc(ind_docs, (qtd_docs+1)*sizeof(int));
-        tf_idf = (double*)realloc(tf_idf, (qtd_docs+1)*sizeof(double));
-      }
-      flag_igual = 0;
-    }
-  }
-
-
-  return tf_idf;
-}
-
-
-Palavras *Palavras_Retorna_Endereco(char *token, Palavras *palavras, int qtd_palavras)
-{
-  Palavras busca = (Palavras)calloc(1, sizeof(struct palavras));
-  strcpy(busca->nome, token);
-  Palavras *endereco = bsearch(&busca, palavras, qtd_palavras, sizeof(Palavras), String_Compara);
-
-  free(busca);
-  return endereco;
-}
-
-Palavras *Palavras_Indices_Buscados(Palavras *pal, int *vet_ind, int tam_vet, int qtd_docs)
-{
-
-  Palavras *buscadas = (Palavras *)calloc(tam_vet, sizeof(Palavras));
-
-  for (int i = 0; i < tam_vet; i++)
-  {
-    buscadas[i] = (Palavras)calloc(1, sizeof(struct palavras));
-    buscadas[i]->prop_usado = pal[vet_ind[i]]->prop_usado;
-    buscadas[i]->prop = Propriedades_Vet_Cria(buscadas[i]->prop_usado);
-
-    for (int j = 0; j < buscadas[i]->prop_usado; j++)
-    {
-      buscadas[i]->prop[j] = Documentos_Propriedade_Cria();
-      buscadas[i]->prop[j] = Atribui_Auxiliar(buscadas[i]->prop[j], pal[vet_ind[i]]->prop[j]);
-    }
-
-    // Propriedades_Imprime(buscadas[i]->prop, buscadas[i]->prop_usado);
-  }
-
-  return buscadas;
 }
 
 int Relat_Palavras_Imprime(char *str, Palavras *p, int qtd_palavras)
@@ -340,6 +229,81 @@ int Relat_Palavras_Imprime(char *str, Palavras *p, int qtd_palavras)
   return indice;
 }
 
+void Palavras_busca(Palavras *palavras, int qtd_palavras, char nomes_docs[][100]){
+
+  int* ind_docs = (int*)calloc(1, sizeof(int));
+  double* tf_idf = (double*)calloc(1, sizeof(double)); // faz copia, ordena e itera referenciando pela copia original
+  int qtd_docs = 0;
+  int ind;
+  int flag_igual = 0;
+
+  for (int i=0; i<qtd_palavras; i++){
+    for (int j = 0; j< palavras[i]->prop_usado; j++){
+
+      ind = Propriedades_Retorna_Ind(palavras[i]->prop, j); // retornar prop->ind
+      
+      for(int k = 0; k < qtd_docs; k++) {
+        if (ind == ind_docs[k]) {
+
+          //soma tf-idf
+          tf_idf[k] += Propriedades_Retorna_tf_idf(palavras[i]->prop, j);
+          flag_igual = 1;
+          break;
+        }
+      }
+      if (!flag_igual) {
+        ind_docs[qtd_docs] = ind;
+        tf_idf[qtd_docs] = Propriedades_Retorna_tf_idf(palavras[i]->prop, j);
+
+        qtd_docs+=1;
+        ind_docs = (int*)realloc(ind_docs, (qtd_docs+1)*sizeof(int));
+        tf_idf = (double*)realloc(tf_idf, (qtd_docs+1)*sizeof(double));
+      }
+      flag_igual = 0;
+    }
+  }
+
+  Ordena_tf_idf(ind_docs, tf_idf, qtd_docs, nomes_docs);
+
+  free(ind_docs);
+  free(tf_idf);
+}
+
+Palavras *Palavras_Retorna_Endereco(char *token, Palavras *palavras, int qtd_palavras)
+{
+  Palavras busca = (Palavras)calloc(1, sizeof(struct palavras));
+  strcpy(busca->nome, token);
+  Palavras *endereco = bsearch(&busca, palavras, qtd_palavras, sizeof(Palavras), String_Compara);
+
+  free(busca);
+  return endereco;
+}
+
+Palavras *Palavras_Indices_Buscados(Palavras *pal, int *vet_ind, int tam_vet, int qtd_docs)
+{
+
+  Palavras *buscadas = (Palavras *)calloc(tam_vet, sizeof(Palavras));
+
+  for (int i = 0; i < tam_vet; i++)
+  {
+    buscadas[i] = (Palavras)calloc(1, sizeof(struct palavras));
+    buscadas[i]->prop_usado = pal[vet_ind[i]]->prop_usado;
+    buscadas[i]->prop = Propriedades_Vet_Cria(buscadas[i]->prop_usado);
+
+    for (int j = 0; j < buscadas[i]->prop_usado; j++)
+    {
+      buscadas[i]->prop[j] = Documentos_Propriedade_Cria();
+      buscadas[i]->prop[j] = Atribui_Auxiliar(buscadas[i]->prop[j], pal[vet_ind[i]]->prop[j]);
+    }
+
+    // Propriedades_Imprime(buscadas[i]->prop, buscadas[i]->prop_usado);
+  }
+
+  return buscadas;
+}
+
+
+
 // ---------------- AUXILIARES ----------------
 
 int Palavras_Retorna_Prop_Usado(Palavras p)
@@ -361,19 +325,12 @@ void Palavras_imprime(Palavras *p, int qtd)
 
 Palavras *Palavras_Ordena(Palavras *p, int qtd)
 {
-  // int n = sizeof(pal) / sizeof(pal[0]);
-
   qsort(p, qtd, sizeof(char *), String_Compara);
-
-  // Palavras_imprime(pal, qtd);
-
   return p;
 }
 
 void Palavras_imprime_uma(Palavras *p, int ind)
 {
-
-  //printf("ind: %d; %s; ", ind, p[ind]->nome);
   Propriedades_Imprime(p[ind]->prop, p[ind]->prop_usado);
   printf("\n\n");
 }
@@ -403,6 +360,5 @@ int Crescente_Inteiro(const void *a, const void *b)
 
 int String_Compara(const void *str1, const void *str2)
 {
-  // return strcmp(((Palavras)str1)->nome,((Palavras)str2)->nome);
   return strcmp(*(char **)str1, *(char **)str2);
 }

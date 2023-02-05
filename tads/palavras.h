@@ -8,16 +8,16 @@
 typedef struct palavras* Palavras;
 
 // ---------------- MEMORIA ----------------
-Palavras* Palavras_vetor_cria ();
 Palavras Palavra_cria ();
-void Propriedades_realoca (Palavras p);
+Palavras* Palavras_vetor_cria ();
 void Palavras_Libera(Palavras pal);
+void Propriedades_realoca (Palavras p);
 
 
 // ---------------- INDEXADORES ----------------
-int Palavra_le (Palavras* p, FILE* f, int ind, int qtd);
 double Calcula_IDF(int tot_doc, Palavras p);
 double Calcula_IDF_Classif (int tot_doc, Palavras p);
+int Palavra_le (Palavras* p, FILE* f, int ind, int qtd);
 Palavras Calcula_TF_IDF(double idf, Palavras p, int ind_prop);
 
 
@@ -26,11 +26,10 @@ void Palavras_Le_Binario(FILE* file, Palavras* p, int qtd_palavras);
 void Palavras_Escreve_Binario(FILE* file, Palavras* p, int qtd_palavras);
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
-void Palavras_busca(Palavras *palavras, int qtd_palavras, char nomes_docs[][100]);
 int* Cria_Ind_Docs(Palavras *palavras, int qtd_palavras);
-double* Cria_Ind_tf_idf(Palavras* palavras, int qtd_palavras, int size); //nao estamos usando
-Palavras* Palavras_Retorna_Endereco(char* token, Palavras* palavras, int qtd_palavras);
 int Relat_Palavras_Imprime (char* str, Palavras* p, int qtd_palavras);
+void Palavras_busca(Palavras *palavras, int qtd_palavras, char nomes_docs[][100]);
+Palavras* Palavras_Retorna_Endereco(char* token, Palavras* palavras, int qtd_palavras);
 Palavras* Palavras_Indices_Buscados(Palavras* pal, int* vet_ind, int tam_vet, int qtd_docs);
 
 // ---------------- AUXILIARES ----------------

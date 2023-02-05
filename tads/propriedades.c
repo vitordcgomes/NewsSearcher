@@ -16,12 +16,6 @@ Propriedades *Propriedades_vetor_cria()
     return p;
 }
 
-Propriedades *Propriedades_Vet_Cria(int qtd)
-{
-    Propriedades *p = (Propriedades *)calloc(qtd, sizeof(Propriedades));
-    return p;
-}
-
 Propriedades Propriedades_cria(int ind)
 {
 
@@ -36,44 +30,35 @@ Propriedades Propriedades_cria(int ind)
 Propriedades Documentos_Propriedade_Cria()
 {
     Propriedades p = (Propriedades)calloc(1, sizeof(struct propriedades));
+    return p;
+}
 
+Propriedades *Propriedades_Vet_Cria(int qtd)
+{
+    Propriedades *p = (Propriedades *)calloc(qtd, sizeof(Propriedades));
     return p;
 }
 
 void Propriedades_Libera(Propriedades *p, int qtd)
 {
     for (int i = 0; i < qtd; i++)
-    {
         free(p[i]);
-    }
 
     free(p);
 }
+
 
 // ---------------- INDEXADORES ----------------
 
 Propriedades Atribui_TF_IDF(double idf, Propriedades prop)
 {
-
     prop->tf_idf = prop->frequencia * idf;
-
-    // printf("tf-idf: %.2lf\n", prop->tf_idf);
-
     return prop;
 }
 
 void Propriedade_Atualiza_Freq(Propriedades *p, int indice)
 {
     p[indice]->frequencia++;
-}
-
-Propriedades Propriedades_Doc_Atribui(Propriedades p, int ind_pal, int freq_pal, double tf_idf_pal)
-{
-    p->indice = ind_pal;
-    p->frequencia = freq_pal;
-    p->tf_idf = tf_idf_pal;
-
-    return p;
 }
 
 Propriedades Atribui_Auxiliar(Propriedades destino, Propriedades origem)
@@ -85,47 +70,79 @@ Propriedades Atribui_Auxiliar(Propriedades destino, Propriedades origem)
     return destino;
 }
 
-// ---------------- BINARIO ----------------
-
-void Propriedades_Escreve_Binario(FILE *file, Propriedades *prop, int qtd_prop)
+Propriedades Propriedades_Doc_Atribui(Propriedades p, int ind_pal, int freq_pal, double tf_idf_pal)
 {
+    p->indice = ind_pal;
+    p->frequencia = freq_pal;
+    p->tf_idf = tf_idf_pal;
 
-    for (int i = 0; i < qtd_prop; i++)
-    {
-        fwrite(&prop[i]->frequencia, sizeof(int), 1, file);
-
-        fwrite(&prop[i]->indice, sizeof(int), 1, file);
-
-        fwrite(&prop[i]->tf_idf, sizeof(double), 1, file);
-    }
+    return p;
 }
+
+
+// ---------------- BINARIO ----------------
 
 void Propriedades_Le_Binario(FILE *file, Propriedades *prop, int qtd_prop)
 {
     for (int i = 0; i < qtd_prop; i++)
     {
-
         prop[i] = Propriedades_cria(0);
 
         fread(&prop[i]->frequencia, sizeof(int), 1, file);
-        // printf("\tfreq: %d; ", prop[i]->frequencia);
-
         fread(&prop[i]->indice, sizeof(int), 1, file);
-        // printf("ind: %d; ", prop[i]->indice);
-
         fread(&prop[i]->tf_idf, sizeof(double), 1, file);
-        // printf("tf-idf: %.2lf;\n", prop[i]->tf_idf);
     }
 
-    // printf("\n\n");
 }
+
+void Propriedades_Escreve_Binario(FILE *file, Propriedades *prop, int qtd_prop)
+{
+    for (int i = 0; i < qtd_prop; i++)
+    {
+        fwrite(&prop[i]->frequencia, sizeof(int), 1, file);
+        fwrite(&prop[i]->indice, sizeof(int), 1, file);
+        fwrite(&prop[i]->tf_idf, sizeof(double), 1, file);
+    }
+}
+
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
+Propriedades TF_IDF_Classif (Propriedades p, double tf_idf){
+    p->tf_idf = tf_idf * (p->frequencia); 
+    return p;
+}
+
+void Ordena_Classes(int *frequencias, char **classes_usadas, int qtd_classes)
+{
+    Propriedades *prop = (Propriedades *)calloc(qtd_classes, sizeof(Propriedades));
+
+ for (int i = 0; i < qtd_classes; i++)
+    {
+        prop[i] = (Propriedades)calloc(1, sizeof(struct propriedades));
+        prop[i]->frequencia = frequencias[i];
+        prop[i]->indice = i;
+    }
+
+    qsort(prop, qtd_classes, sizeof(Propriedades), Decrescente_freq);
+
+    printf("\n\033[93m  ->\033[0m Frequencia por classe:\n\n");
+
+    for (int i = 0; i < qtd_classes; i++)
+    {
+        printf("\t\033[96m[\033[0m%s\033[96m]\033[0m - Aparece %d vez(es);\n\n", classes_usadas[prop[i]->indice], prop[i]->frequencia);
+    }
+
+        for (int i = 0; i < qtd_classes; i++)
+    {
+        free(prop[i]);
+    }
+    free(prop);
+
+}
+
 void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char nomes_docs[][100])
 {
-    // ERRO NO VALGRIND -> STRINGS
-
     Propriedades *prop = (Propriedades *)calloc(tam, sizeof(Propriedades));
     int qtd = 10;
     int indice = 0;
@@ -135,13 +152,6 @@ void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char nomes_docs[][100
         prop[i] = (Propriedades)calloc(1, sizeof(struct propriedades));
         prop[i]->tf_idf = tf_idf[i];
         prop[i]->indice = ind_docs[i];
-    }
-
-    for (int i = 0; i < tam; i++) {
-        printf("ind_doc: %d; ", prop[i]->indice);
-        printf("tf_idf: %.2lf; ", prop[i]->tf_idf);
-        printf("nome: %s;\n\n", nomes_docs[i]);
-
     }
 
     qsort(prop, tam, sizeof(Propriedades), Decrescente_double);
@@ -154,41 +164,23 @@ void Ordena_tf_idf(int *ind_docs, double *tf_idf, int tam, char nomes_docs[][100
 
     if (tam>0) {
         printf("\n\033[93m  ->\033[0m Top %d documentos em que a(s) palavra(s) mais aparece(m):\n\n", qtd);
-    }
-
-    
+    } 
 
     for (int i = 0; i < qtd; i++)
     {   
-        //int* endereco = bsearch (&prop[i]->indice, ind_docs, tam, sizeof(int), Ind_compara);
-        //int indice = endereco - ind_docs;
-
         for (int j=0; j < tam; j++){
             if (prop[i]->indice == ind_docs[j]) {
                 indice = j;
                 break;
             }
-
         }
         printf("\t\033[96m[\033[0m%d\033[96m]\033[0m - '%s'; ind: '%d'\n\n", i + 1, nomes_docs[indice], prop[i]->indice);
     }
 
-
     for (int i = 0; i < tam; i++)
-    {
         free(prop[i]);
-    }
+    
     free(prop);
-}
-
-int Decrescente_double(const void *a, const void *b)
-{
-    Propriedades prop1 = *(Propriedades *)a;
-    Propriedades prop2 = *(Propriedades *)b;
-    double var = prop2->tf_idf - prop1->tf_idf;
-    if (var > 0) return 1;
-    else if(var < 0) return -1;
-    else return 0;
 }
 
 double Calcula_Cosseno (Propriedades* prop_ref, Propriedades* prop, int qtd_ref, int qtd_prop){
@@ -202,7 +194,7 @@ double Calcula_Cosseno (Propriedades* prop_ref, Propriedades* prop, int qtd_ref,
 
     qsort (prop_ref, qtd_ref, sizeof(Propriedades), Ind_Crescente);
     qsort (prop, qtd_prop, sizeof(Propriedades), Ind_Crescente);
-    // na iteracao, verificar documento a documento se o indice é o mesmo, se nao for, recebe zero e seguimos com o for
+    // na iteracao, verificar documento a documento se o indice é o mesmo, se nao for, soma apenas os fatores que nao sao afetados por isso
 
     for (int k=0; k<qtd_ref; k++){
 
@@ -216,16 +208,13 @@ double Calcula_Cosseno (Propriedades* prop_ref, Propriedades* prop, int qtd_ref,
             flag_encontrei = 1;
         }
         
-        else {
-            denominador_ref += pow(prop_ref[k]->tf_idf , 2);
-        }
+        else denominador_ref += pow(prop_ref[k]->tf_idf , 2);
+        
     }
 
     for (int k=0; k<qtd_prop; k++){
-        //so no outro documento
 
         Propriedades* endereco = bsearch (&prop[k]->indice, prop_ref, qtd_ref, sizeof(Propriedades), Prop_Ind_compara);
-
         if (endereco == NULL){
             denominador_prop += pow( prop[k]->tf_idf , 2);
         }
@@ -234,18 +223,61 @@ double Calcula_Cosseno (Propriedades* prop_ref, Propriedades* prop, int qtd_ref,
     if (!flag_encontrei) return 0;
 
     denominador = sqrt(denominador_ref) * sqrt(denominador_prop);
-    printf("numerador: %.2lf\n", numerador);
-    printf("denominador: %.2f\n", denominador);
-    
-
     cosseno = numerador/denominador;
-    printf("cosseno: %.2lf\n", cosseno);
 
 return cosseno;
 
 }
 
+
 // ---------------- AUXILIARES ----------------
+
+int Ind_compara (const void *a, const void *b){
+  int x = *(const int *)a;
+  int y = *(const int *)b;
+
+  return (x-y);
+}
+
+int Ind_Crescente(const void *a, const void *b){
+    Propriedades x = *(Propriedades *)a;
+    Propriedades y = *(Propriedades *)b;
+
+    return (x->indice - y->indice);
+}
+
+int Crescente_freq(const void *a, const void *b)
+{
+    Propriedades x = *(Propriedades *)a;
+    Propriedades y = *(Propriedades *)b;
+
+    return (x->frequencia - y->frequencia);
+}
+
+int Decrescente_freq(const void *a, const void *b)
+{
+    Propriedades x = *(Propriedades *)a;
+    Propriedades y = *(Propriedades *)b;
+
+    return (y->frequencia - x->frequencia);
+}
+
+int Prop_Ind_compara (const void *a, const void *b){
+  int x = *(const int *)a;
+  Propriedades y = *( Propriedades *)b;
+
+  return (x - y->indice);
+}
+
+int Decrescente_double(const void *a, const void *b)
+{
+    Propriedades prop1 = *(Propriedades *)a;
+    Propriedades prop2 = *(Propriedades *)b;
+    double var = prop2->tf_idf - prop1->tf_idf;
+    if (var > 0) return 1;
+    else if(var < 0) return -1;
+    else return 0;
+}
 
 void Propriedades_Imprime(Propriedades *p, int qtd)
 {
@@ -314,10 +346,8 @@ void Propriedades_Documentos_Imprime(Propriedades *p, int qtd)
 
 int Propriedades_busca(Propriedades *p, int ind_doc, int qtd_prop)
 {
-
     for (int i = 0; i < qtd_prop; i++)
     {
-
         if (p[i]->indice == ind_doc)
         {
             p[i]->frequencia++;
@@ -328,49 +358,6 @@ int Propriedades_busca(Propriedades *p, int ind_doc, int qtd_prop)
     return -1;
 }
 
-void Ordena_Classes(int *frequencias, char **classes_usadas, int qtd_classes)
-{
-    Propriedades *prop = (Propriedades *)calloc(qtd_classes, sizeof(Propriedades));
-
- for (int i = 0; i < qtd_classes; i++)
-    {
-        prop[i] = (Propriedades)calloc(1, sizeof(struct propriedades));
-        prop[i]->frequencia = frequencias[i];
-        prop[i]->indice = i;
-    }
-
-    qsort(prop, qtd_classes, sizeof(Propriedades), Decrescente_freq);
-
-    printf("\n\033[93m  ->\033[0m Frequencia por classe:\n\n");
-
-    for (int i = 0; i < qtd_classes; i++)
-    {
-        printf("\t\033[96m[\033[0m%s\033[96m]\033[0m - Aparece %d vez(es);\n\n", classes_usadas[prop[i]->indice], prop[i]->frequencia);
-    }
-
-        for (int i = 0; i < qtd_classes; i++)
-    {
-        free(prop[i]);
-    }
-    free(prop);
-
-}
-
-int Decrescente_freq(const void *a, const void *b)
-{
-    Propriedades x = *(Propriedades *)a;
-    Propriedades y = *(Propriedades *)b;
-
-    return (y->frequencia - x->frequencia);
-}
-
-int Ind_compara (const void *a, const void *b){
-  int x = *(const int *)a;
-  int y = *(const int *)b;
-
-  return (x-y);
-}
-
 Propriedades Propriedades_Copia (Propriedades origem, Propriedades destino){
 
     destino->frequencia = origem->frequencia;
@@ -378,32 +365,4 @@ Propriedades Propriedades_Copia (Propriedades origem, Propriedades destino){
     destino->indice = origem->indice;
 
     return destino;
-}
-
-int Ind_Crescente(const void *a, const void *b){
-    Propriedades x = *(Propriedades *)a;
-    Propriedades y = *(Propriedades *)b;
-
-    return (x->indice - y->indice);
-}
-
-int Crescente_freq(const void *a, const void *b)
-{
-    Propriedades x = *(Propriedades *)a;
-    Propriedades y = *(Propriedades *)b;
-
-    return (x->frequencia - y->frequencia);
-}
-
-int Prop_Ind_compara (const void *a, const void *b){
-  int x = *(const int *)a;
-  Propriedades y = *( Propriedades *)b;
-
-  return (x - y->indice);
-}
-
-Propriedades TF_IDF_Classif (Propriedades p, double tf_idf){
-    p->tf_idf = tf_idf * (p->frequencia); 
-    printf ("tf_idf = %.2lf\n", p->tf_idf);
-    return p;
 }

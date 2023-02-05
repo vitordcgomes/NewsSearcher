@@ -82,9 +82,7 @@ void Documentos_Indexador(Indices ind)
 
     for (int i = 0; i < ind->palavras_usadas; i++)
     {
-
-        // pega o indice do doc e a frequencia de cada palavra
-
+        // acessa o indice do documento e a frequencia de cada palavra
         int prop_usado = Palavras_Retorna_Prop_Usado(ind->palavras_ind[i]); // qtd de docs q a palavra se encontra
         int ind_doc;
         int freq_pal;
@@ -99,8 +97,6 @@ void Documentos_Indexador(Indices ind)
             ind_doc = Palavras_Retorna_Ind(ind->palavras_ind[i], j);
             freq_pal = Palavras_Retorna_Freq(ind->palavras_ind[i], j);
             tf_idf_pal = Palavras_Retorna_tf_idf(ind->palavras_ind[i], j);
-            // printf("%.2lf\n", tf_idf_pal);
-
             ind->documentos_ind[ind_doc] = Documentos_Atribui(ind->documentos_ind[ind_doc], i, freq_pal, tf_idf_pal);
         }
     }
@@ -285,7 +281,6 @@ void Texto_Busca(Indices ind)
                 cont_palavras += 1;
                 vet_ind = (int *)realloc(vet_ind, (cont_palavras + 1) * sizeof(int));
                 vet_ind[aux] = indice;
-                printf ("indice = %d, token = %s\n", vet_ind[aux], token);
                 aux++;
             }
         }
@@ -297,50 +292,29 @@ void Texto_Busca(Indices ind)
     Indices ind_aux = (Indices)calloc(1, sizeof(struct indices));
     ind_aux->palavras_ind = Palavras_Indices_Buscados(ind->palavras_ind, vet_ind, cont_palavras, ind->documentos_usados);
     ind_aux->palavras_usadas = cont_palavras;
-
     int* ind_docs = Cria_Ind_Docs(ind_aux->palavras_ind, ind_aux->palavras_usadas);
-    
     int size = 0;
+
     for (int i = 0; ind_docs[i] != -1; i++) {
         size++;
     }
 
-    //printf("size: %d\n", size);
-
     char nomes_docs[size][100];
-    
-    //printf("qtd_docs: %ld", ind->documentos_usados);
-
     for (int i=0; i<size; i++){
-        //printf("\nind_docs: %d\n", ind_docs[i]);
- 
-        //vet_ind[i] acessa uma posicao maior q a do vetor de documentos, por isso seg_fault
-        //vet_ind eh o vetor com os indices das palavras, nao dos documentos, por isso da erro
-         
         char* nome = Documentos_Nome_Retorna(ind->documentos_ind[ind_docs[i]]); 
         strcpy(nomes_docs[i], nome);
-
-        //printf ("nome: %s\n", nomes_docs[i]);
     }
 
     Palavras_busca (ind_aux->palavras_ind, ind_aux->palavras_usadas, nomes_docs); 
-    // se ficar muito grande mesmo tirando os comentarios, fazemos os frees em outra funcao;
     
     for (int i = 0; i < ind_aux->palavras_usadas; i++) {
         Palavras_Libera(ind_aux->palavras_ind[i]);
     }
+
     free(ind_aux->palavras_ind);
     free(ind_aux);
-
     free(vet_ind);
     free(ind_docs);
-
-    /* quando descomentado, aponta varios erros :(
-    for(int i = 0; i < size; i++) {
-        free(nomes_docs[i]);
-    }
-    */
-
 }
 
 void Relatorio_Docs(Indices ind)
@@ -457,7 +431,6 @@ void Texto_Classifica(Indices ind, int knn) {
         if ((Palavras *)endereco != NULL)
         {            
             int indice = (Palavras *)endereco - ind->palavras_ind;
-            printf ("i: %d; str: %s;\n", indice, token);
             qsort(palavras_aux, cont_palavras, sizeof(int), Crescente_Inteiro);
             int* resultado = bsearch(&indice, palavras_aux, cont_palavras, sizeof(int), Ind_compara);
 
@@ -476,82 +449,29 @@ void Texto_Classifica(Indices ind, int knn) {
             
             else {
                 int posicao = resultado - palavras_aux;
-                printf("posicao: %d\n", posicao);
                 frequencias[posicao]++;
-                //printf ("%s - Agora minha frequencia eh %d!\n", token, frequencias[posicao]);
             }
         }
         
         else {
-            printf ("A palavra '%s' nao esta presente em nenhum dos documentos.\n", token);
+            printf ("\033[91mA palavra '%s' nao esta presente nas noticias do nosso banco de dados.\033[0m\n\n", token);
         }
         token = strtok(NULL, separador);
         if (token == NULL) break;
     } 
-
-
-    /*
-    int idx;
-    int frequencias_aux[aux];
-    for (int i = 0; i < aux; i++) {
-        for(int j = 0; j < aux; j++) {
-            if(palavras_aux[i] == palavras_aux[j]) {
-                idx = j;
-                break;
-            }
-        }
-
-        frequencias_aux[i] = frequencias[idx];
-    }
-    */
-
-    for (int i = 0; i < aux; i++) {
-        printf("ind_PAL: %d; ", ind_palavras[i]);
-        printf("PAL_aux: %d; ", palavras_aux[i]);
-        printf("freq_aux_AMEM: %d\n\n", frequencias[i]);
-    }
-
-    
-    //qsort(ind_palavras, cont_palavras, sizeof(int), Crescente_Inteiro); // ordena vet_ind em ordem crescente
     
     Indices ind_aux = (Indices)calloc(1, sizeof(struct indices));
     ind_aux->documentos_ind = (Documentos*)calloc(1, sizeof(Documentos));
     ind_aux->documentos_ind[0] = Documentos_Classif_Constroi (str, aux, ind_palavras, frequencias);
     ind_aux->documentos_usados = 1;
-
-    int idx;
-    int frequencias_aux[aux];
-    //ind_palavras[aux] = indice;
-    //palavras_aux[aux] = indice;
-    //frequencias[aux]++;
-    for (int i = 0; i < aux; i++) {
-        for(int j = 0; j < aux; j++) {
-            if(palavras_aux[i] == palavras_aux[j]) {
-                idx = j;
-                break;
-            }
-        }
-
-        frequencias_aux[i] = frequencias[idx];
-    }
-
-    for (int i = 0; i < aux; i++) {
-        printf("freq_aux_AMEM: %d ", frequencias_aux[i]);
-    }
-
-    printf("\n\n");
-
     
     double tf_idf[aux];
 
     for (int i=0; i<aux; i++){
         tf_idf[i] = Calcula_IDF_Classif (ind->documentos_usados, ind->palavras_ind[ind_palavras[i]]);
-        printf("tf_idf_AMEM: %.2lf ", tf_idf[i]);
     }
     
-    Documentos_Classifica (str, ind->documentos_ind, ind->documentos_usados, knn, ind_aux->documentos_ind[0], cont_palavras, tf_idf);
-    //printf ("\n\033[91m\033[1mERRO:\033[0m\033[91m Esse documento nao foi encontrado. Tente novamente!\033[0m\n\n");
-    
+    Documentos_Classifica (str, ind->documentos_ind, ind->documentos_usados, knn, ind_aux->documentos_ind[0], cont_palavras, tf_idf);    
 
    Documentos_Libera(ind_aux->documentos_ind[0]);
    free(ind_aux->documentos_ind);

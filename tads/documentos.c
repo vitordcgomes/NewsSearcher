@@ -57,7 +57,33 @@ Documentos Documentos_cria(char *caminho, char *classe)
     return doc;
 }
 
+Documentos Documentos_Classif_Constroi(char *str, int qtd_palavras, int *ind_palavras, int *frequencias)
+{
+
+    Documentos doc_aux = Documentos_cria(str, "classe");
+
+    for (int j = 0; j < qtd_palavras; j++)
+    {
+        doc_aux->prop[j] = Documentos_Propriedade_Cria();
+        Propriedades_Doc_Atribui(doc_aux->prop[j], ind_palavras[j], frequencias[j], 0.00);
+        // printf ("indice palavra: %d, frequencia: %d;\n", ind_palavras[j], frequencias[j]);
+    }
+
+    doc_aux->prop_usado = qtd_palavras;
+
+    qsort(doc_aux->prop, doc_aux->prop_usado, sizeof(Propriedades), Ind_Crescente);
+
+    return doc_aux;
+}
+
+
 // ---------------- INDEXADORES ----------------
+
+Documentos Documentos_Atualiza(Documentos d)
+{
+    d->qtd_palavras++;
+    return d;
+}
 
 Documentos Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal, double tf_idf_pal)
 {
@@ -74,11 +100,6 @@ Documentos Documentos_Atribui(Documentos doc, int ind_pal, int freq_pal, double 
     return doc;
 }
 
-Documentos Documentos_Atualiza(Documentos d)
-{
-    d->qtd_palavras++;
-    return d;
-}
 
 // ---------------- FUNCIONALIDADES (menu) ----------------
 
@@ -114,6 +135,74 @@ void Relat_Documentos_Imprime(Documentos *d, int qtd)
     }
     free(docs);
 }
+
+void Ordena_KNN(Documentos *docs, int qtd_docs, char *str, int qtd_vizinhos)
+{
+
+    Documentos *cpy_docs = (Documentos *)calloc(qtd_docs, sizeof(Documentos));
+
+    for (int i = 0; i < qtd_docs; i++)
+    {
+        cpy_docs[i] = (Documentos)calloc(1, sizeof(struct documentos));
+        strcpy(cpy_docs[i]->nome, docs[i]->nome);
+        strcpy(cpy_docs[i]->classe, docs[i]->classe);
+        cpy_docs[i]->knn = docs[i]->knn;
+    }
+
+    qsort(cpy_docs, qtd_docs, sizeof(Documentos), Compara_KNN);
+
+    char resp;
+    printf ("Estima-se que a classe do texto digitado seja: \033[96m%s\033[0m! \nAcertamos? sim(s) ou nao(n):\033[95m ", cpy_docs[0]->classe);
+    scanf("%c%*c", &resp);
+
+    if (resp == 's') printf ("\033[92m\nQue bom! Fico feliz em ajudar :)\033[0m\n\n");
+    else if (resp == 'n') printf ("\033[91m\nPoxa :( Espero conseguir te ajudar numa proxima oportunidade!\033[0m\n\n");
+
+    for (int i = 0; i < qtd_docs; i++)
+        free(cpy_docs[i]);
+
+    free(cpy_docs);
+}
+
+void Modelo_Impressao_Docs(Documentos *docs, int qtd_impressao, int qtd_docs)
+{
+
+    if (qtd_impressao > qtd_docs)
+    {
+        qtd_impressao = qtd_docs;
+    }
+
+    for (int i = 0; i < qtd_impressao; i++)
+    {
+        printf("  \033[96m[\033[0m%d\033[96m]\033[0m - %s, %d palavra(s), classe %s;\n\n", i + 1, docs[i]->nome, docs[i]->qtd_palavras, docs[i]->classe);
+    }
+}
+
+void Documentos_Classifica(char *str, Documentos *docs, int qtd_docs, int qtd_vizinhos, Documentos texto_digitado, int qtd_palavras, double *vet_tf_idf)
+{
+
+    // calculamos tf-idf pelo vetor de palavras, entao nao eh possivel calcular da mesma maneira agora;
+
+    //printf("\n\n\n\nqtd_PAL: %d\n\n\n", qtd_palavras);
+    // Propriedades_Imprime (texto_digitado->prop, qtd_palavras);
+    for (int i = 0; i < qtd_palavras; i++)
+    {
+        //Propriedades_Doc_Atribui(texto_digitado->prop[i], vet_ind_palavras[i], vet_freq[i], 0);
+        texto_digitado->prop[i] = TF_IDF_Classif(texto_digitado->prop[i], vet_tf_idf[i]);
+    }
+
+    for (int j = 0; j < qtd_docs; j++)
+    {
+
+        // retorna distancia entre o texto de referencia (ind_doc) e o texto atual (j)
+        docs[j]->knn = Calcula_Cosseno(texto_digitado->prop, docs[j]->prop, qtd_palavras, docs[j]->prop_usado);
+    }
+
+    Ordena_KNN(docs, qtd_docs, str, qtd_vizinhos);
+
+    // LIBERAR PROP E DOCS
+}
+
 
 // ---------------- BINARIO ----------------
 
@@ -168,6 +257,25 @@ void Documentos_Escreve_Binario(FILE *file, Documentos *doc, int qtd_doc)
 
 // ---------------- AUXILIARES ----------------
 
+char *Retorna_Classe(Documentos d)
+{
+    return d->classe;
+}
+
+char *Documentos_Nome_Retorna(Documentos d)
+{
+    return d->nome;
+}
+
+int Crescente(const void *fst, const void *scnd)
+{
+
+    Documentos d1 = *(Documentos *)fst;
+    Documentos d2 = *(Documentos *)scnd;
+
+    return (d1->qtd_palavras - d2->qtd_palavras);
+}
+
 void Documentos_imprime(int qtd, Documentos *docs)
 {
 
@@ -184,120 +292,6 @@ void Documentos_imprime(int qtd, Documentos *docs)
     */
 }
 
-int Crescente(const void *fst, const void *scnd)
-{
-
-    Documentos d1 = *(Documentos *)fst;
-    Documentos d2 = *(Documentos *)scnd;
-
-    return (d1->qtd_palavras - d2->qtd_palavras);
-}
-
-int Decrescente(const void *fst, const void *scnd)
-{
-    Documentos d1 = *(Documentos *)fst;
-    Documentos d2 = *(Documentos *)scnd;
-
-    return (d2->qtd_palavras - d1->qtd_palavras);
-}
-
-void Modelo_Impressao_Docs(Documentos *docs, int qtd_impressao, int qtd_docs)
-{
-
-    if (qtd_impressao > qtd_docs)
-    {
-        qtd_impressao = qtd_docs;
-    }
-
-    for (int i = 0; i < qtd_impressao; i++)
-    {
-        printf("  \033[96m[\033[0m%d\033[96m]\033[0m - %s, %d palavra(s), classe %s;\n\n", i + 1, docs[i]->nome, docs[i]->qtd_palavras, docs[i]->classe);
-    }
-}
-
-char *Retorna_Classe(Documentos d)
-{
-    return d->classe;
-}
-
-char *Documentos_Nome_Retorna(Documentos d)
-{
-    return d->nome;
-}
-
-int Documentos_Verifica_Existencia(char *str, Documentos *docs, int qtd_docs)
-{
-
-    // como o vetor se encontra DESORDENADO, pela ordem alfabetica, nao usaremos bsearch (especificacao diz busca em arquivos ORDENADOS devem ser por bsearch)
-
-    for (int i = 0; i < qtd_docs; i++)
-    {
-        if (!strcmp(docs[i]->nome, str))
-            return i;
-    }
-
-    return -1;
-}
-
-void Documentos_Classifica(char *str, Documentos *docs, int qtd_docs, int qtd_vizinhos, Documentos texto_digitado, int qtd_palavras, double *vet_tf_idf)
-{
-
-    // calculamos tf-idf pelo vetor de palavras, entao nao eh possivel calcular da mesma maneira agora;
-
-    printf("\n\n\n\nqtd_PAL: %d\n\n\n", qtd_palavras);
-    // Propriedades_Imprime (texto_digitado->prop, qtd_palavras);
-    for (int i = 0; i < qtd_palavras; i++)
-    {
-        //Propriedades_Doc_Atribui(texto_digitado->prop[i], vet_ind_palavras[i], vet_freq[i], 0);
-        texto_digitado->prop[i] = TF_IDF_Classif(texto_digitado->prop[i], vet_tf_idf[i]);
-    }
-
-    for (int j = 0; j < qtd_docs; j++)
-    {
-
-        // retorna distancia entre o texto de referencia (ind_doc) e o texto atual (j)
-        docs[j]->knn = Calcula_Cosseno(texto_digitado->prop, docs[j]->prop, qtd_palavras, docs[j]->prop_usado);
-    }
-
-    Ordena_KNN(docs, qtd_docs, str, qtd_vizinhos);
-
-    // LIBERAR PROP E DOCS
-}
-
-void Ordena_KNN(Documentos *docs, int qtd_docs, char *str, int qtd_vizinhos)
-{
-
-    Documentos *cpy_docs = (Documentos *)calloc(qtd_docs, sizeof(Documentos));
-    int cont = qtd_vizinhos;
-
-    for (int i = 0; i < qtd_docs; i++)
-    {
-        cpy_docs[i] = (Documentos)calloc(1, sizeof(struct documentos));
-        strcpy(cpy_docs[i]->nome, docs[i]->nome);
-        strcpy(cpy_docs[i]->classe, docs[i]->classe);
-        cpy_docs[i]->knn = docs[i]->knn;
-    }
-
-    qsort(cpy_docs, qtd_docs, sizeof(Documentos), Compara_KNN);
-
-    if (qtd_docs < qtd_vizinhos)
-    {
-        cont = qtd_docs;
-    }
-
-    printf("\n\033[93m  ->\033[0m Top %d documentos mais proximos de '%s':\n\n", qtd_vizinhos, str);
-
-    for (int i = 0; i < cont; i++)
-    {
-        printf("\t\033[96m[\033[0m%d\033[96m]\033[0m - '%s', com %.2lf de proximidade;\n\n", i + 1, cpy_docs[i]->nome, cpy_docs[i]->knn);
-    }
-
-    for (int i = 0; i < qtd_docs; i++)
-        free(cpy_docs[i]);
-
-    free(cpy_docs);
-}
-
 int Compara_KNN(const void *fst, const void *scnd)
 {
     Documentos d1 = *(Documentos *)fst;
@@ -312,21 +306,10 @@ int Compara_KNN(const void *fst, const void *scnd)
     return 0;
 }
 
-Documentos Documentos_Classif_Constroi(char *str, int qtd_palavras, int *ind_palavras, int *frequencias)
+int Decrescente(const void *fst, const void *scnd)
 {
+    Documentos d1 = *(Documentos *)fst;
+    Documentos d2 = *(Documentos *)scnd;
 
-    Documentos doc_aux = Documentos_cria(str, "classe");
-
-    for (int j = 0; j < qtd_palavras; j++)
-    {
-        doc_aux->prop[j] = Documentos_Propriedade_Cria();
-        Propriedades_Doc_Atribui(doc_aux->prop[j], ind_palavras[j], frequencias[j], 0.00);
-        // printf ("indice palavra: %d, frequencia: %d;\n", ind_palavras[j], frequencias[j]);
-    }
-
-    doc_aux->prop_usado = qtd_palavras;
-
-    qsort(doc_aux->prop, doc_aux->prop_usado, sizeof(Propriedades), Ind_Crescente);
-
-    return doc_aux;
+    return (d2->qtd_palavras - d1->qtd_palavras);
 }

@@ -2,14 +2,7 @@
 #include <stdlib.h>
 #include "tads/indices.h"
 
-//liberar memoria dos indices em caso de erro
-//perguntar biblioteca - [esquecemos :)]
-//PASTAS - .O - MAKEFILE?
-//relatorios - .txt ou terminal?
-//temos todas as classes? e a qtd de classes?
-
 // CONFERIR: Devem ser usadas as funções qsort e bsearch sempre que for necessário ordenar vetores ou buscar itens em vetores ordenados.
-
 
 void Erros_Entrada_Indexador(int argc);
 
@@ -17,9 +10,10 @@ int main(int argc, char** argv) {
 
     Erros_Entrada_Indexador(argc);
     Indices ind = Indices_cria();
+
     ind = Le_Arquivo_Principal(ind, argv); //aqui esta o indexador de palavras e a estruturacao do indice de documentos
     Documentos_Indexador(ind); //aqui preenchemos o indice de documentos criado na funcao anterior
-    //Imprime_Tudo(ind);
+    
     Imprime_Binario(ind, argv);
     Indices_Libera(ind);
 
