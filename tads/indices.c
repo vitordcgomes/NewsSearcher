@@ -17,11 +17,11 @@ struct indices
     Palavras *palavras_ind;
     Documentos *documentos_ind;
 
-    long int palavras_usadas;
-    long int palavras_alocadas;
+    int palavras_usadas;
+    int palavras_alocadas;
 
-    long int documentos_usados;
-    long int documentos_alocados;
+    int documentos_usados;
+    int documentos_alocados;
 };
 
 // ---------------- MEMORIA ----------------
@@ -42,19 +42,18 @@ Indices Indices_cria()
 
 void Indices_Libera(Indices ind)
 {
+    for (int i = 0; i < ind->palavras_usadas; i++)
+    {
+        Palavras_Libera(ind->palavras_ind[i]);
+    }
+    free(ind->palavras_ind);
 
     for (int i = 0; i < ind->documentos_usados; i++)
     {
         Documentos_Libera(ind->documentos_ind[i]);
     }
-
-    for (int i = 0; i < ind->palavras_usadas; i++)
-    {
-        Palavras_Libera(ind->palavras_ind[i]);
-    }
-
     free(ind->documentos_ind);
-    free(ind->palavras_ind);
+    
     free(ind);
 }
 
@@ -109,8 +108,8 @@ void Documentos_Indexador(Indices ind)
     ind->palavras_ind = Palavras_Ordena(ind->palavras_ind, ind->palavras_usadas);
 
     printf("\nINDEXADOR:\n");
-    printf("\n\033[95mQuantidade de palavras distintas: \033[96m%ld\n", ind->palavras_usadas);
-    printf("\033[95mQuantidade de documentos distintos: \033[96m%ld\n\n\033[0m", ind->documentos_usados);
+    printf("\n\033[95mQuantidade de palavras distintas: \033[96m%d\n", ind->palavras_usadas);
+    printf("\033[95mQuantidade de documentos distintos: \033[96m%d\n\n\033[0m", ind->documentos_usados);
 }
 
 Indices Le_Arquivo_Principal(Indices ind, char **argv)
@@ -209,13 +208,13 @@ Indices Le_Binario(Indices ind, char *caminho)
     }
 
     // leitura de palavras
-    fread(&ind->palavras_usadas, sizeof(long int), 1, file);
+    fread(&ind->palavras_usadas, sizeof(int), 1, file);
     ind->palavras_ind = (Palavras *)realloc(ind->palavras_ind, ind->palavras_usadas * sizeof(Palavras));
     
     Palavras_Le_Binario(file, ind->palavras_ind, ind->palavras_usadas);
 
     // leitura documentos
-    fread(&ind->documentos_usados, sizeof(long int), 1, file);
+    fread(&ind->documentos_usados, sizeof(int), 1, file);
 
     ind->documentos_ind = (Documentos *)realloc(ind->documentos_ind, ind->documentos_usados * sizeof(Documentos));
     Documentos_Le_Binario(file, ind->documentos_ind, ind->documentos_usados);
@@ -239,16 +238,16 @@ void Imprime_Binario(Indices indices, char **argv)
         exit(0);
     }
 
-    long int qtd_pal = indices->palavras_usadas;
+    int qtd_pal = indices->palavras_usadas;
     // printf("\npalavras_usadas: %ld\n", qtd_pal);
 
-    fwrite(&qtd_pal, sizeof(long int), 1, file);
+    fwrite(&qtd_pal, sizeof(int), 1, file);
     Palavras_Escreve_Binario(file, indices->palavras_ind, qtd_pal);
 
-    long int qtd_doc = indices->documentos_usados;
+    int qtd_doc = indices->documentos_usados;
     // printf("\nqtd_doc_antes: %ld", qtd_doc);
 
-    fwrite(&qtd_doc, sizeof(long int), 1, file);
+    fwrite(&qtd_doc, sizeof(int), 1, file);
     Documentos_Escreve_Binario(file, indices->documentos_ind, qtd_doc);
 
     fclose(file);

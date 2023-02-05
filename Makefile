@@ -30,7 +30,7 @@ experimental: experimental.c
 	
 run: 
 	make
-	./indexador datasets/medium-small/test.txt binario.bin
+	./indexador datasets/medium-large/test.txt binario.bin
 	./principal binario.bin 15
 
 clean:
@@ -42,7 +42,7 @@ clean:
 
 valgrind:
 	make
-#	valgrind --leak-check=full --show-leak-kinds=all ./indexador datasets/medium-small/test.txt binario.bin
+	valgrind --leak-check=full --show-leak-kinds=all ./indexador datasets/medium-small/test.txt binario.bin
 	valgrind --leak-check=full --show-leak-kinds=all ./principal binario.bin 10
 
 gdb:
