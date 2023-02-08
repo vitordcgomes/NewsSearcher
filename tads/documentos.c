@@ -134,6 +134,9 @@ void Ordena_KNN(Documentos *docs, int qtd_docs, char *str, int qtd_vizinhos)
 {
 
     Documentos *cpy_docs = (Documentos *)calloc(qtd_docs, sizeof(Documentos));
+    char** classes_vizinhos = (char**)calloc(qtd_vizinhos, sizeof(char*));
+    int* frequencias = (int*)calloc(qtd_vizinhos, sizeof(int));
+    int classes_diff = 0;
 
     for (int i = 0; i < qtd_docs; i++)
     {
@@ -145,8 +148,35 @@ void Ordena_KNN(Documentos *docs, int qtd_docs, char *str, int qtd_vizinhos)
 
     qsort(cpy_docs, qtd_docs, sizeof(Documentos), Compara_KNN);
 
+    for (int i=0; i<qtd_vizinhos; i++){
+
+        char*classe = strdup(cpy_docs[i]->classe);
+        int* endereco = (int*)bsearch (&classe, classes_vizinhos, classes_diff, sizeof(char*), String_Compara);
+
+        if (endereco == NULL){
+        classes_vizinhos[classes_diff] = strdup(cpy_docs[i]->classe);
+        frequencias[classes_diff] = 1 ;
+        classes_diff++;
+
+        qsort(classes_vizinhos, classes_diff, sizeof(char*), String_Compara);
+        }
+
+        else {
+            int indice = endereco - (int*)classes_vizinhos;
+            frequencias[indice]++;
+        }
+       free (classe); 
+    }
+
+    int idx = 0;
+    for (int i=0; i<classes_diff; i++){
+        if (frequencias[idx] < frequencias[i])
+            idx = i;
+        printf ("classe : %s; freq: %d;\n", classes_vizinhos[i], frequencias[i]);
+    }
+
     char resp;
-    printf("Estima-se que a classe do texto digitado seja: \033[96m%s\033[0m! \nAcertamos? sim(s) ou nao(n):\033[95m ", cpy_docs[0]->classe);
+    printf("Estima-se que a classe do texto digitado seja: \033[96m%s\033[0m! \nAcertamos? sim(s) ou nao(n):\033[95m ", classes_vizinhos[idx]);
     scanf("%c%*c", &resp);
 
     if (resp == 's')
@@ -157,6 +187,11 @@ void Ordena_KNN(Documentos *docs, int qtd_docs, char *str, int qtd_vizinhos)
     for (int i = 0; i < qtd_docs; i++)
         free(cpy_docs[i]);
 
+    for (int i = 0; i < classes_diff; i++)
+        free (classes_vizinhos[i]);
+
+    free (classes_vizinhos);
+    free(frequencias);
     free(cpy_docs);
 }
 
